@@ -1,0 +1,766 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>lapsim_taster.ipynb · OUR Simulation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Roboto+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a Colab-style notebook. One column of cells; each code cell has a run gutter on the left. */
+:root {
+  color-scheme: light;
+  --page: #ffffff;
+  --header: #ffffff;
+  --code-bg: #f7f7f7;
+  --ink: #202124;
+  --ink-2: #5f6368;
+  --muted: #80868b;
+  --line: #dadce0;
+  --grid: #eef0f2;
+  --accent: #1a73e8;
+  --accent-soft: #e8f0fe;
+  --err-bg: #fce8e6;
+  --err: #c5221f;
+  /* driving phases, motorsport convention */
+  --acc: #1e8e3e;
+  --brk: #d93025;
+  --crn: #1a73e8;
+  --cap: #9aa0a6;
+  --base: #9aa0a6;
+  --hi: #e8710a;
+  /* VS Code Light+ syntax */
+  --syn-k: #0000ff;
+  --syn-f: #795e26;
+  --syn-s: #a31515;
+  --syn-n: #098658;
+  --syn-c: #008000;
+  --syn-v: #001080;
+  --f-ui: "Roboto", "Segoe UI", system-ui, sans-serif;
+  --f-code: "Roboto Mono", "Cascadia Mono", Consolas, ui-monospace, monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--page); color: var(--ink); font: 400 15px/1.5 var(--f-ui); }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+a { color: var(--accent); }
+
+/* header */
+.bar { position: sticky; top: 0; z-index: 10; background: var(--header); border-bottom: 1px solid var(--line); }
+.bar-in { max-width: 1000px; margin: 0 auto; padding: 10px max(16px, env(safe-area-inset-right)) 10px max(16px, env(safe-area-inset-left)); display: flex; align-items: center; gap: 12px; }
+.logo { width: 32px; height: 32px; border-radius: 6px; background: var(--ink); color: #fff; display: grid; place-items: center; font: 500 11px/1 var(--f-code); letter-spacing: 0.04em; flex: none; }
+.fname { font-size: 17px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fname small { display: block; font-size: 12px; color: var(--ink-2); }
+.bar .sp { flex: 1; }
+.tb { border: 1px solid var(--line); background: var(--page); border-radius: 18px; padding: 6px 14px; cursor: pointer; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.tb:hover { background: var(--code-bg); }
+.tb.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.tb.primary:hover { background: #1765cc; }
+.chip { font: 400 12px/1 var(--f-code); color: var(--ink-2); display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.chip i { width: 8px; height: 8px; border-radius: 50%; background: var(--acc); }
+@media (max-width: 620px) { .chip, .fname small { display: none; } .tb { padding: 6px 10px; } }
+
+/* notebook */
+.nb { max-width: 1000px; margin: 0 auto; padding: 18px max(16px, env(safe-area-inset-right)) 64px max(16px, env(safe-area-inset-left)); display: grid; gap: 14px; }
+.cell { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 0 8px; border-radius: 8px; padding: 6px 8px 6px 0; border: 1px solid transparent; }
+.cell:hover, .cell:focus-within { border-color: var(--line); }
+.gutter { display: flex; flex-direction: column; align-items: center; gap: 4px; padding-top: 6px; }
+.run { width: 30px; height: 30px; border-radius: 50%; border: 0; background: transparent; cursor: pointer; display: grid; place-items: center; color: var(--ink-2); }
+.run:hover { background: var(--code-bg); color: var(--ink); }
+.run svg { width: 22px; height: 22px; }
+.cell.fresh .run { color: var(--accent); }
+.count { font: 400 11px/1 var(--f-code); color: var(--muted); min-height: 11px; }
+.busy .run svg { animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.src { margin: 0; background: var(--code-bg); border-radius: 4px; padding: 10px 12px; font: 400 13.5px/1.6 var(--f-code); overflow-x: auto; white-space: pre; color: var(--ink); }
+.k { color: var(--syn-k); } .f { color: var(--syn-f); } .s { color: var(--syn-s); } .n { color: var(--syn-n); } .c { color: var(--syn-c); } .v { color: var(--syn-v); }
+
+.out { padding: 12px 4px 4px; display: grid; gap: 12px; min-width: 0; }
+.stdout { font: 400 13.5px/1.6 var(--f-code); white-space: pre-wrap; margin: 0; }
+.stdout.big { font-size: 22px; font-weight: 500; }
+.err { background: var(--err-bg); border-radius: 4px; padding: 10px 12px; font: 400 13px/1.6 var(--f-code); white-space: pre-wrap; margin: 0; }
+.err b { color: var(--err); font-weight: 500; }
+
+details.why { border-top: 1px solid var(--grid); padding-top: 6px; }
+details.why summary { cursor: pointer; color: var(--accent); font-size: 14px; width: max-content; }
+details.why p { margin: 6px 0 0; color: var(--ink-2); max-width: 70ch; }
+
+/* text cells */
+.text { display: block; padding: 4px 8px 4px 52px; }
+.text h1 { font: 400 30px/1.2 var(--f-ui); margin: 6px 0 6px; }
+.text h2 { font: 400 22px/1.3 var(--f-ui); margin: 14px 0 4px; }
+.text p { margin: 4px 0; color: var(--ink-2); max-width: 70ch; }
+.text ul { margin: 6px 0; padding-left: 20px; color: var(--ink-2); max-width: 70ch; }
+@media (max-width: 620px) { .text { padding-left: 8px; } .cell { grid-template-columns: 36px minmax(0, 1fr); } }
+
+/* outputs */
+.row { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); align-items: start; }
+@media (min-width: 760px) { .row.map-chart { grid-template-columns: minmax(0, 0.42fr) minmax(0, 1fr); } .row.halves { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.map { width: 100%; height: auto; display: block; max-height: 440px; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 13px; color: var(--ink-2); align-items: center; }
+.key { display: inline-flex; align-items: center; gap: 6px; }
+.key i { width: 16px; border-top: 3px solid currentColor; display: inline-block; border-radius: 2px; }
+.key i.thin { border-top-width: 2px; }
+.key i.area { height: 10px; border: 0; background: currentColor; opacity: 0.35; }
+.key i.dot { width: 10px; height: 10px; border: 0; border-radius: 50%; background: currentColor; }
+.ctl { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+.seg button { border: 0; background: var(--page); padding: 4px 10px; font-size: 13px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); }
+.chart { position: relative; min-width: 0; }
+.chart svg { display: block; width: 100%; overflow: visible; }
+svg text { font-family: var(--f-code); }
+.ax text { fill: var(--muted); font-size: 11px; }
+.gridline { stroke: var(--grid); }
+.baseline { stroke: var(--line); }
+.tip { position: absolute; pointer-events: none; background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; font-size: 12px; box-shadow: 0 2px 8px rgba(60,64,67,0.18); z-index: 3; min-width: 120px; }
+.tip .h { font: 400 11px/1.4 var(--f-code); color: var(--muted); }
+.tip .r { display: flex; align-items: center; gap: 6px; line-height: 1.5; }
+.tip .r i { width: 10px; border-top: 3px solid currentColor; }
+.tip .r b { font: 500 12px/1.5 var(--f-code); min-width: 5em; }
+.tip .r span { color: var(--ink-2); }
+
+/* ipywidgets-like slider */
+.widget { display: flex; align-items: center; gap: 10px; font: 400 13px/1 var(--f-code); color: var(--ink-2); flex-wrap: wrap; }
+.widget input[type="range"] { width: min(320px, 60vw); accent-color: var(--accent); }
+.widget output { color: var(--ink); min-width: 6ch; }
+
+/* 3D GGV */
+.ggv3d { width: 100%; aspect-ratio: 1 / 0.9; max-height: 420px; display: block; touch-action: pan-y; cursor: grab; background: #fff; border: 1px solid var(--grid); border-radius: 4px; }
+.ggv3d:active { cursor: grabbing; }
+.hint { font-size: 12px; color: var(--muted); }
+
+/* dataframe */
+.df { border-collapse: collapse; font: 400 13px/1.4 var(--f-code); }
+.df th, .df td { padding: 5px 14px 5px 0; text-align: right; border-bottom: 1px solid var(--grid); white-space: nowrap; }
+.df th { font-weight: 500; color: var(--ink); border-bottom-color: var(--line); }
+.df th:first-child, .df td:first-child { text-align: left; color: var(--ink-2); }
+.df td.good { color: var(--acc); }
+.df td.bad { color: var(--brk); }
+.scroll-x { overflow-x: auto; }
+.stats { display: flex; flex-wrap: wrap; gap: 6px 18px; font: 400 13px/1.4 var(--f-code); color: var(--ink-2); }
+.stats b { font-weight: 500; }
+
+/* Colab form cell */
+.form-cell { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 760px) { .form-cell { grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr); } }
+.form { display: grid; gap: 10px; align-content: start; padding: 6px 2px; }
+.form label { display: grid; grid-template-columns: 9ch minmax(0, 1fr); gap: 10px; align-items: center; font: 400 13px/1.2 var(--f-code); color: var(--ink-2); }
+.form select { font: 400 13px/1.2 var(--f-code); padding: 5px 8px; border: 1px solid var(--line); border-radius: 4px; background: #fff; color: var(--ink); width: 100%; max-width: 220px; }
+.guess { display: grid; gap: 8px; margin: 8px 0; max-width: 70ch; }
+.guess div { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; align-items: center; color: var(--ink); }
+.guess .ans { grid-column: 1 / -1; color: var(--ink-2); font-size: 14px; border-left: 3px solid var(--accent); padding-left: 10px; }
+.foot { font-size: 12px; color: var(--muted); padding-left: 52px; }
+@media (max-width: 620px) { .foot { padding-left: 8px; } }
+@media (prefers-reduced-motion: reduce) { .busy .run svg { animation: none; } }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="bar-in">
+    <div class="logo" aria-hidden="true">OUR</div>
+    <div class="fname">lapsim_taster.ipynb<small>Oxford University Racing · Simulation</small></div>
+    <span class="sp"></span>
+    <span class="chip" id="chip"><i></i><span></span></span>
+    <button class="tb" type="button" id="resetAll">Reset</button>
+    <button class="tb primary" type="button" id="runAll">▶ Run all</button>
+  </div>
+</header>
+
+<main class="nb" id="nb">
+  <div class="cell text">
+    <h1>One lap of Silverstone</h1>
+    <p>OUR was 11th fastest in Sprint at FSUK 2026. Let's compute that lap. Press <b>▶</b> on each cell, in order.</p>
+  </div>
+
+  <div class="cell code" data-cell="1">
+    <pre class="src"><span class="v">track</span> = <span class="f">load_track</span>(<span class="s">"FSUK_2026.gpx"</span>)   <span class="c"># phone GPS walk</span></pre>
+  </div>
+
+  <div class="cell code" data-cell="2">
+    <pre class="src"><span class="v">car</span> = <span class="f">load_car</span>(<span class="s">"car_default.yaml"</span>)
+<span class="v">car</span></pre>
+  </div>
+
+  <div class="cell code" data-cell="3">
+    <pre class="src"><span class="v">ggv</span> = <span class="f">build_ggv</span>(<span class="v">car</span>)   <span class="c"># the car's limits</span>
+<span class="v">ggv</span>.<span class="f">plot</span>()</pre>
+  </div>
+
+  <div class="cell code" data-cell="4">
+    <pre class="src"><span class="v">v_corner</span> = <span class="f">corner_limits</span>(<span class="v">track</span>, <span class="v">ggv</span>)  <span class="c"># v = √(a_lat/κ)</span></pre>
+  </div>
+
+  <div class="cell code" data-cell="5">
+    <pre class="src"><span class="v">v_fwd</span> = <span class="f">forward_pass</span>(<span class="v">track</span>, <span class="v">ggv</span>, <span class="v">v_corner</span>)   <span class="c"># accelerate</span></pre>
+  </div>
+
+  <div class="cell code" data-cell="6">
+    <pre class="src"><span class="v">v_bwd</span> = <span class="f">backward_pass</span>(<span class="v">track</span>, <span class="v">ggv</span>, <span class="v">v_corner</span>)  <span class="c"># brake</span></pre>
+  </div>
+
+  <div class="cell code" data-cell="7">
+    <pre class="src"><span class="v">lap</span> = <span class="v">np</span>.<span class="f">minimum</span>(<span class="v">v_fwd</span>, <span class="v">v_bwd</span>)
+<span class="v">lap_time</span> = <span class="v">np</span>.<span class="f">sum</span>(<span class="v">ds</span> / <span class="v">lap</span>)
+<span class="f">print</span>(<span class="k">f</span><span class="s">"Lap time: {</span><span class="v">lap_time</span><span class="s">:.2f} s"</span>)</pre>
+  </div>
+
+  <div class="cell text">
+    <h2>Your turn: change the car</h2>
+    <p>Other subteams ask us questions like these. Guess first, then try it.</p>
+    <div class="guess" id="guess"></div>
+  </div>
+
+  <div class="cell code" data-cell="8">
+    <div class="form-cell">
+      <pre class="src" id="formSrc"></pre>
+      <div class="form" id="form"></div>
+    </div>
+  </div>
+
+  <div class="cell text">
+    <h2>What this model leaves out</h2>
+    <ul>
+      <li>A perfect driver, always exactly at the limit.</li>
+      <li>No suspension movement or tyre temperature. Every slice is treated as steady.</li>
+      <li>One fixed line through every corner.</li>
+    </ul>
+    <p>We check it against data logged on the real car. Want to work on it? Come and talk to us.</p>
+  </div>
+  <p class="foot" id="prov"></p>
+</main>
+
+<script src="data/sim.js"></script>
+<script>
+(() => {
+"use strict";
+const D = window.SIM_DATA;
+if (!D) {
+  document.getElementById("nb").insertAdjacentHTML("afterbegin",
+    '<pre class="err"><b>FileNotFoundError</b>: data/sim.js did not load. Keep it next to index.html.</pre>');
+  return;
+}
+const B = D.baseline;
+const NS = "http://www.w3.org/2000/svg";
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const $ = (s, r = document) => r.querySelector(s);
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const svgEl = (tag, attrs = {}, parent) => {
+  const n = document.createElementNS(NS, tag);
+  for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+  if (parent) parent.appendChild(n);
+  return n;
+};
+const h = (tag, props = {}, ...kids) => {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(props)) {
+    if (k === "class") n.className = v; else if (k === "text") n.textContent = v; else n.setAttribute(k, v);
+  }
+  for (const c of kids) n.append(c);
+  return n;
+};
+
+// ---------- data helpers ----------
+const keyOf = s => `${s.mass_kg}|${s.cl}|${s.power_kW}|${s.mu}`;
+const RUNS = new Map(D.runs.map(r => [keyOf(r.setup), r]));
+const baseRun = RUNS.get(keyOf(D.baseline_setup));
+const RUN_DS = 2;
+for (const r of D.runs) {             // elapsed time along each 2 m trace, scaled to the sim's lap time
+  const t = [0];
+  for (let i = 1; i < r.sprint_v.length; i++) t.push(t[i - 1] + 2 * RUN_DS / Math.max((r.sprint_v[i - 1] + r.sprint_v[i]) / 3.6, 0.2));
+  const k = r.sprint_s / t[t.length - 1];
+  r.t = t.map(v => v * k);
+}
+const LAP_T = baseRun.sprint_s;
+const TX = B.x, TY = B.y, NT = TX.length;
+const PHASE = { A: ["Accelerating", "--acc"], B: ["Braking", "--brk"], C: ["At the cornering limit", "--crn"] };
+const phaseColor = c => css(PHASE[c][1]);
+const capShown = B.v_cap.map(c => c != null && c <= 120 ? c : null);
+function idxAtTime(t, x) { let lo = 0, hi = t.length - 1; while (hi - lo > 1) { const m = (lo + hi) >> 1; if (t[m] <= x) lo = m; else hi = m; } return lo; }
+
+// ---------- track map ----------
+function drawMap(svg, { colors = null, width = 1 } = {}) {
+  svg.replaceChildren();
+  const minX = Math.min(...TX), maxX = Math.max(...TX), minY = Math.min(...TY), maxY = Math.max(...TY), pad = 12;
+  svg.setAttribute("viewBox", `${minX - pad} ${-maxY - pad} ${maxX - minX + 2 * pad} ${maxY - minY + 2 * pad}`);
+  const lw = Math.max(maxX - minX, maxY - minY) / 140 * width;
+  let d = `M${TX[0]},${-TY[0]}`; for (let i = 2; i < NT; i += 2) d += `L${TX[i]},${-TY[i]}`;
+  svgEl("path", { d: d + "Z", fill: "none", stroke: colors ? css("--grid") : css("--ink-2"), "stroke-width": colors ? lw * 2.2 : lw, "stroke-linejoin": "round" }, svg);
+  if (colors) {
+    let start = 0;
+    for (let i = 1; i <= NT; i++) {
+      if (i === NT || colors[i] !== colors[start]) {
+        let p = `M${TX[start]},${-TY[start]}`;
+        for (let j = start + 1; j <= Math.min(i, NT - 1); j++) p += `L${TX[j]},${-TY[j]}`;
+        svgEl("path", { d: p, fill: "none", stroke: colors[start], "stroke-width": lw * 1.4, "stroke-linecap": "round", "stroke-linejoin": "round" }, svg);
+        start = i;
+      }
+    }
+  }
+  // start line and direction arrow
+  const a = Math.atan2(TY[6] - TY[0], TX[6] - TX[0]), nx = -Math.sin(a) * lw * 3, ny = Math.cos(a) * lw * 3;
+  svgEl("line", { x1: TX[0] + nx, y1: -(TY[0] + ny), x2: TX[0] - nx, y2: -(TY[0] - ny), stroke: css("--ink"), "stroke-width": lw * 0.8 }, svg);
+  const i2 = 30, ang = Math.atan2(-(TY[i2 + 3] - TY[i2]), TX[i2 + 3] - TX[i2]) * 180 / Math.PI, aw = lw * 2.2;
+  svgEl("path", { d: `M${-aw},${-aw}L${aw * 1.3},0L${-aw},${aw}Z`, fill: css("--ink"), stroke: "#fff", "stroke-width": lw * 0.4, transform: `translate(${TX[i2]},${-TY[i2]}) rotate(${ang})` }, svg);
+  const st = svgEl("text", { x: TX[0] - lw * 4.5, y: -TY[0] + lw * 1.6, "font-size": lw * 4.5, "text-anchor": "end", fill: css("--ink-2") }, svg);
+  st.textContent = "start";
+  return lw;
+}
+
+// ---------- line chart (speed vs distance) ----------
+let zoom = 300;  // shared by every speed chart: metres shown, 0 = whole lap
+// Redraw hooks for charts on screen. Each is tied to an element and dropped once that element is gone.
+let hooks = [];
+const onRedraw = (el, fn) => hooks.push({ el, fn });
+const redrawAll = () => { hooks = hooks.filter(x => x.el.isConnected); hooks.forEach(x => x.fn()); };
+function zoomControl(redraw, box) {
+  const seg = h("div", { class: "seg", role: "group", "aria-label": "Zoom" });
+  const opts = [[300, "First 300 m"], [0, "Whole lap"]];
+  for (const [v, label] of opts) {
+    const b = h("button", { type: "button", "aria-pressed": String(zoom === v), text: label });
+    b.addEventListener("click", () => { zoom = v; redrawAll(); });
+    seg.append(b);
+  }
+  const upd = () => seg.querySelectorAll("button").forEach((b, i) => b.setAttribute("aria-pressed", String(opts[i][0] === zoom)));
+  onRedraw(seg, upd); onRedraw(box, redraw);
+  return seg;
+}
+function lineChart(box, opt) {
+  box.replaceChildren();
+  const W = Math.max(280, box.clientWidth);
+  const H = opt.height || Math.round(Math.min(300, Math.max(210, W * 0.38)));
+  const m = { l: 40, r: 10, t: 22, b: 30 };
+  const svg = svgEl("svg", { viewBox: `0 0 ${W} ${H}`, height: H }, box);
+  const [x0, x1] = opt.x, [y0, y1] = opt.y;
+  const sx = v => m.l + (v - x0) / (x1 - x0) * (W - m.l - m.r);
+  const sy = v => H - m.b - (v - y0) / (y1 - y0) * (H - m.t - m.b);
+  const ax = svgEl("g", { class: "ax" }, svg);
+  for (const v of opt.yTicks) { svgEl("line", { x1: m.l, x2: W - m.r, y1: sy(v), y2: sy(v), class: "gridline" }, ax); svgEl("text", { x: m.l - 6, y: sy(v) + 4, "text-anchor": "end" }, ax).textContent = v; }
+  const step = (x1 - x0) > 400 ? 100 : 50;
+  for (let v = Math.ceil(x0 / step) * step; v <= x1; v += step) svgEl("text", { x: sx(v), y: H - m.b + 16, "text-anchor": "middle" }, ax).textContent = v;
+  svgEl("line", { x1: m.l, x2: W - m.r, y1: sy(y0), y2: sy(y0), class: "baseline" }, ax);
+  svgEl("text", { x: m.l - 6, y: 11, "text-anchor": "end" }, ax).textContent = "km/h";
+  svgEl("text", { x: W - m.r, y: H - 2, "text-anchor": "end" }, ax).textContent = "distance (m)";
+  const cid = "c" + Math.random().toString(36).slice(2);
+  svgEl("rect", { x: m.l, y: m.t - 2, width: W - m.l - m.r, height: H - m.t - m.b + 2 }, svgEl("clipPath", { id: cid }, svgEl("defs", {}, svg)));
+  const plot = svgEl("g", { "clip-path": `url(#${cid})` }, svg);
+  const inX = xv => xv >= x0 - 4 && xv <= x1 + 4;
+  for (const s of opt.series) {
+    if (s.shade) {   // area above the line, up to the top of the plot
+      let d = "", run = [];
+      const flush = () => { if (run.length > 1) d += `M${run[0][0]},${sy(y1)}` + run.map(p => `L${p[0]},${p[1]}`).join("") + `L${run[run.length - 1][0]},${sy(y1)}Z`; run = []; };
+      s.x.forEach((xv, i) => { const yv = s.y[i]; if (yv == null || !inX(xv)) { flush(); return; } run.push([sx(xv).toFixed(1), sy(Math.min(yv, y1)).toFixed(1)]); });
+      flush();
+      svgEl("path", { d, fill: s.color, "fill-opacity": 0.18 }, plot);
+    }
+    // stroke, split where the per-point colour changes
+    const col = i => s.colors ? s.colors[i] : s.color;
+    let d = "", pen = false, cur = null;
+    const flushPath = () => { if (d) svgEl("path", { d, fill: "none", stroke: cur, "stroke-width": s.width || 2, "stroke-dasharray": s.dash || "", "stroke-opacity": s.opacity || 1, "stroke-linejoin": "round", "stroke-linecap": "round" }, plot); d = ""; };
+    let px = null;
+    for (let i = 0; i < s.x.length; i++) {
+      const xv = s.x[i], yv = s.y[i];
+      if (yv == null || !inX(xv)) { pen = false; continue; }
+      const c = col(i), pt = sx(xv).toFixed(1) + "," + sy(Math.min(yv, y1 + 2)).toFixed(1);
+      if (c !== cur) { flushPath(); cur = c; if (pen && px) d = "M" + px; }
+      d += (pen ? "L" : "M") + pt; pen = true; px = pt;
+    }
+    flushPath();
+  }
+  // crosshair + tooltip
+  const cross = svgEl("line", { y1: m.t, y2: H - m.b, stroke: css("--muted"), visibility: "hidden" }, svg);
+  const tipS = opt.series.filter(s => !s.noTip);
+  const dots = tipS.map(() => svgEl("circle", { r: 4, stroke: "#fff", "stroke-width": 2, visibility: "hidden" }, svg));
+  const tip = h("div", { class: "tip" }); tip.hidden = true; box.append(tip);
+  const hit = svgEl("rect", { x: m.l, y: m.t, width: W - m.l - m.r, height: H - m.t - m.b, fill: "transparent" }, svg);
+  const show = cx => {
+    const r = svg.getBoundingClientRect(), xv = Math.max(x0, Math.min(x1, x0 + ((cx - r.left) * W / r.width - m.l) / (W - m.l - m.r) * (x1 - x0)));
+    cross.setAttribute("x1", sx(xv)); cross.setAttribute("x2", sx(xv)); cross.setAttribute("visibility", "visible");
+    tip.replaceChildren(h("div", { class: "h", text: `${Math.round(xv)} m` }));
+    tipS.forEach((s, k) => {
+      const i = Math.max(0, Math.min(s.y.length - 1, Math.round((xv - s.x[0]) / (s.x[1] - s.x[0])))), yv = s.y[i];
+      const c = s.colors ? s.colors[i] : s.color;
+      const label = s.labels ? s.labels[i] : s.label;
+      const ic = h("i"); ic.style.color = c;
+      tip.append(h("div", { class: "r" }, ic, h("b", { text: yv == null ? "no limit" : `${Math.round(yv)} km/h` }), h("span", { text: label })));
+      if (yv == null) dots[k].setAttribute("visibility", "hidden");
+      else { dots[k].setAttribute("cx", sx(xv)); dots[k].setAttribute("cy", sy(Math.min(yv, y1))); dots[k].setAttribute("fill", c); dots[k].setAttribute("visibility", "visible"); }
+    });
+    tip.hidden = false;
+    const bx = sx(xv) / W * r.width, tw = tip.offsetWidth;
+    tip.style.left = (bx + 12 + tw > r.width ? bx - tw - 12 : bx + 12) + "px"; tip.style.top = "4px";
+  };
+  hit.addEventListener("pointermove", e => show(e.clientX));
+  hit.addEventListener("pointerdown", e => show(e.clientX));
+  hit.addEventListener("pointerleave", () => { cross.setAttribute("visibility", "hidden"); dots.forEach(d => d.setAttribute("visibility", "hidden")); tip.hidden = true; });
+}
+const lapEnd = Math.ceil(B.s[B.s.length - 1] / 100) * 100;
+const speedChart = (box, series) => lineChart(box, { x: [0, zoom || lapEnd], y: [0, 110], yTicks: [0, 25, 50, 75, 100], series });
+const legend = items => h("div", { class: "legend" }, ...items.map(([label, color, kind]) => { const i = h("i", { class: kind || "" }); const k = h("span", { class: "key" }, i, h("span", { text: label })); k.style.color = color; k.lastChild.style.color = css("--ink-2"); return k; }));
+
+// ---------- 2D GGV slice ----------
+function ringPts(sl) {   // closed envelope: top edge left→right, bottom edge right→left
+  const p = [];
+  for (let i = sl.ay.length - 1; i >= 0; i--) p.push([-sl.ay[i], sl.ax_max[i]]);
+  for (let i = 1; i < sl.ay.length; i++) p.push([sl.ay[i], sl.ax_max[i]]);
+  for (let i = sl.ay.length - 1; i >= 0; i--) p.push([sl.ay[i], sl.ax_min[i]]);
+  for (let i = 1; i < sl.ay.length; i++) p.push([-sl.ay[i], sl.ax_min[i]]);
+  return p;
+}
+function ggvSlice(box, layers, maxH = 320) {
+  box.replaceChildren();
+  const W = Math.max(240, box.clientWidth), gx = [-2.3, 2.3], gy = [-2.2, 1.3], m = { l: 36, r: 6, t: 14, b: 26 };
+  const k = Math.min((W - m.l - m.r) / (gx[1] - gx[0]), maxH / (gy[1] - gy[0]));
+  const Hh = Math.round(k * (gy[1] - gy[0]) + m.t + m.b), ox = (W - m.l - m.r - k * (gx[1] - gx[0])) / 2;
+  const svg = svgEl("svg", { viewBox: `0 0 ${W} ${Hh}`, height: Hh }, box);
+  const sx = v => m.l + ox + (v - gx[0]) * k, sy = v => m.t + (gy[1] - v) * k;
+  const ax = svgEl("g", { class: "ax" }, svg);
+  for (let v = -2; v <= 2; v++) { svgEl("line", { x1: sx(v), x2: sx(v), y1: sy(gy[0]), y2: sy(gy[1]), class: "gridline" }, ax); svgEl("text", { x: sx(v), y: Hh - 8, "text-anchor": "middle" }, ax).textContent = v ? `${Math.abs(v)} g` : "0"; }
+  for (let v = -2; v <= 1; v++) { svgEl("line", { x1: sx(gx[0]), x2: sx(gx[1]), y1: sy(v), y2: sy(v), class: "gridline" }, ax); svgEl("text", { x: sx(gx[0]) - 4, y: sy(v) + 4, "text-anchor": "end" }, ax).textContent = v ? `${Math.abs(v)} g` : "0"; }
+  const lab = (x, y, t, a) => { const n = svgEl("text", { x, y, "text-anchor": a, fill: css("--ink-2"), "font-size": 11 }, svg); n.textContent = t; };
+  lab(sx(0), sy(gy[1]) + 2, "accelerate ↑", "middle"); lab(sx(0), sy(gy[0]) - 4, "brake ↓", "middle");
+  lab(sx(gx[1]), sy(gy[1]) + 2, "turn →", "end"); lab(sx(gx[0]), sy(gy[1]) + 2, "← turn", "start");
+  for (const L of layers) {
+    const d = ringPts(L.slice).map((p, i) => (i ? "L" : "M") + sx(p[0]).toFixed(1) + "," + sy(p[1]).toFixed(1)).join("") + "Z";
+    svgEl("path", { d, fill: L.fill || "none", "fill-opacity": L.fillOpacity || 0, stroke: L.color, "stroke-width": L.width || 2, "stroke-dasharray": L.dash || "", "stroke-linejoin": "round" }, svg);
+  }
+}
+
+// ---------- 3D GGV (canvas, orthographic, drag to rotate) ----------
+const G3 = B.ggv3d, RINGS = G3.map(ringPts);
+const SHOW_RING = i => G3[i].v_kph % 10 === 0;
+const V3 = G3.map(s => s.v_kph), VMIN3 = V3[0], VMAX3 = V3[V3.length - 1], HEIGHT = 2.6;
+const ggv3 = { yaw: -0.6, pitch: 0.55, auto: !reduceMotion, sel: 60, canvas: null, raf: 0 };
+function draw3d() {
+  const cv = ggv3.canvas; if (!cv || !cv.isConnected) return;
+  const dpr = window.devicePixelRatio || 1, W = cv.clientWidth, Hc = cv.clientHeight;
+  if (cv.width !== Math.round(W * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(Hc * dpr); }
+  const g = cv.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, Hc);
+  const cy = Math.cos(ggv3.yaw), sy_ = Math.sin(ggv3.yaw), cp = Math.cos(ggv3.pitch), sp = Math.sin(ggv3.pitch);
+  const k = Math.min(W / 5.6, Hc / (HEIGHT * cp + 4.6 * sp + 0.9));
+  const ox = W / 2, oy = Hc / 2 + k * (HEIGHT * cp) / 2;
+  const hOf = v => (v - VMIN3) / (VMAX3 - VMIN3) * HEIGHT;
+  const P = (lat, lon, hgt) => { const x = lat * cy - lon * sy_, d = lat * sy_ + lon * cy; return [ox + k * x, oy - k * (hgt * cp + d * sp)]; };
+  const line = (pts, color, w, alpha = 1) => { g.beginPath(); pts.forEach((p, i) => i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1])); g.strokeStyle = color; g.globalAlpha = alpha; g.lineWidth = w; g.stroke(); g.globalAlpha = 1; };
+  // floor axes
+  g.font = `11px ${css("--f-code")}`; g.fillStyle = css("--muted");
+  line([P(-2.2, 0, 0), P(2.2, 0, 0)], css("--line"), 1); line([P(0, -2.2, 0), P(0, 1.4, 0)], css("--line"), 1);
+  line([P(0, 0, 0), P(0, 0, HEIGHT * 1.06)], css("--line"), 1);
+  const txt = (s, p, align = "left") => { g.textAlign = align; g.fillText(s, p[0], p[1]); };
+  txt("turn", P(2.35, 0, 0)); txt("accelerate", P(0, 1.55, 0)); txt("brake", P(0, -2.35, 0));
+  // meridians
+  const n = RINGS[0].length;
+  for (let j = 0; j < n; j += Math.round(n / 12)) line(RINGS.map((r, i) => P(r[j][0], r[j][1], hOf(V3[i]))), css("--line"), 1, 0.8);
+  // rings, light (slow) to dark (fast)
+  const lo = [183, 211, 246], hi = [13, 54, 107];
+  RINGS.forEach((r, i) => {
+    if (!SHOW_RING(i)) return;
+    const t = i / (RINGS.length - 1), c = `rgb(${lo.map((v, q) => Math.round(v + (hi[q] - v) * t)).join(",")})`;
+    line([...r, r[0]].map(p => P(p[0], p[1], hOf(V3[i]))), c, 1.2);
+  });
+  // selected speed: filled ring + label
+  const si = V3.indexOf(ggv3.sel), hs = hOf(ggv3.sel), rp = [...RINGS[si], RINGS[si][0]].map(p => P(p[0], p[1], hs));
+  g.beginPath(); rp.forEach((p, i) => i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]));
+  g.fillStyle = css("--hi"); g.globalAlpha = 0.16; g.fill(); g.globalAlpha = 1;
+  line(rp, css("--hi"), 3);
+  g.fillStyle = css("--ink"); txt(`${ggv3.sel} km/h`, P(RINGS[si][0][0] - 0.15, RINGS[si][0][1], hs), "right");
+  g.fillStyle = css("--muted");
+  [VMIN3, VMAX3].forEach(v => { const i = V3.indexOf(v); txt(`${v} km/h`, P(RINGS[i][0][0] - 0.15, RINGS[i][0][1], hOf(v)), "right"); });
+}
+function loop3d() {
+  if (ggv3.auto) ggv3.yaw += 0.004;
+  draw3d();
+  ggv3.raf = ggv3.canvas && ggv3.canvas.isConnected ? requestAnimationFrame(loop3d) : 0;
+}
+function attach3d(cv) {
+  ggv3.canvas = cv;
+  let drag = null;
+  cv.addEventListener("pointerdown", e => { drag = [e.clientX, e.clientY, e.pointerType]; ggv3.auto = false; cv.setPointerCapture(e.pointerId); });
+  cv.addEventListener("pointermove", e => {
+    if (!drag) return;
+    ggv3.yaw += (e.clientX - drag[0]) * 0.012;
+    if (drag[2] === "mouse") ggv3.pitch = Math.max(0.05, Math.min(1.45, ggv3.pitch + (e.clientY - drag[1]) * 0.008));
+    drag[0] = e.clientX; drag[1] = e.clientY; if (reduceMotion) draw3d();
+  });
+  const end = () => { drag = null; };
+  cv.addEventListener("pointerup", end); cv.addEventListener("pointercancel", end);
+  if (!ggv3.raf) ggv3.raf = requestAnimationFrame(loop3d);
+}
+
+// ---------- replay (map dot) ----------
+function replay(svg, lw, runs) {  // runs: [{t:[], color}] where index i of t is at 2 m * i (or 1 m for baseline)
+  const dots = runs.map(r => svgEl("circle", { r: lw * 2.6, fill: r.color, stroke: "#fff", "stroke-width": lw * 0.7 }, svg));
+  const st = { t: 0, on: false, last: null, rate: 4 };
+  const end = Math.max(...runs.map(r => r.t[r.t.length - 1]));
+  const place = () => runs.forEach((r, k) => { const i = Math.min(idxAtTime(r.t, st.t) * r.step, NT - 1); dots[k].setAttribute("cx", TX[i]); dots[k].setAttribute("cy", -TY[i]); });
+  const tick = ts => {
+    if (!svg.isConnected) return;
+    if (st.on) { if (st.last != null) { st.t = Math.min(end, st.t + (ts - st.last) / 1000 * st.rate); if (st.t >= end) { st.on = false; st.onEnd && st.onEnd(); } } st.last = ts; st.onTick && st.onTick(st.t); place(); }
+    else st.last = null;
+    requestAnimationFrame(tick);
+  };
+  place(); requestAnimationFrame(tick);
+  st.play = () => { if (st.t >= end) st.t = 0; if (reduceMotion) { st.t = end; place(); st.onTick && st.onTick(st.t); st.onEnd && st.onEnd(); return; } st.on = true; };
+  st.pause = () => { st.on = false; };
+  st.end = end;
+  return st;
+}
+
+// ---------- cells ----------
+const why = text => h("details", { class: "why" }, h("summary", { text: "Why?" }), h("p", { text: text }));
+const stdout = (text, big) => h("pre", { class: "stdout" + (big ? " big" : ""), text });
+const NEEDS = { 1: [], 2: [], 3: [2], 4: [1, 3], 5: [4], 6: [4], 7: [5, 6], 8: [1, 2] };
+const DEFINES = { 1: "track", 2: "car", 3: "ggv", 4: "v_corner", 5: "v_fwd", 6: "v_bwd", 7: "lap", 8: "result" };
+const ran = new Set();
+let execCount = 0;
+
+const CELLS = {
+  1(out) {
+    const svg = svgEl("svg", { class: "map", role: "img", "aria-label": "FSUK 2026 sprint course" });
+    out.append(h("div", { class: "row map-chart" }, h("div", {}, svg),
+      h("div", { style: "display:grid;gap:8px;align-content:start" },
+        stdout(`length   ${Math.round(B.s[B.s.length - 1])} m\nslices   ${Math.round(B.s[B.s.length - 1] / D.meta.ds_m).toLocaleString("en-GB")} × 10 cm\ntightest bend radius   ${(1 / Math.max(...B.kappa.map(Math.abs))).toFixed(1)} m`))),
+      why("A team member walked the racing line at Silverstone with a phone in July 2026. The sim smooths the GPS trace and cuts it into 10 cm slices. For each slice it only needs to know how tight the bend is."));
+    drawMap(svg);
+  },
+  2(out) {
+    const c = D.car;
+    const rows = [["mass (with driver)", c.mass_kg, "kg"], ["peak motor torque", c.peak_torque_Nm, "Nm"], ["power limit (FS rules)", c.power_limit_kW, "kW"],
+      ["driven wheels", c.drivetrain === "RWD" ? "rear" : c.drivetrain, ""], ["downforce coeff. C_L", c.cl.toFixed(1), ""], ["drag coeff. C_D", Number(c.cd).toFixed(1), ""], ["tyre grip μ", c.mu.toFixed(2), ""]];
+    const t = h("table", { class: "df" }, h("thead", {}, h("tr", {}, h("th", { text: "" }), h("th", { text: "value" }), h("th", { text: "unit" }))),
+      h("tbody", {}, ...rows.map(r => h("tr", {}, ...r.map(v => h("td", { text: String(v) }))))));
+    out.append(h("div", { class: "scroll-x" }, t), why("These numbers come from the other subteams: chassis, aero, powertrain. Change one and every lap time changes. That is how the sim helps them decide."));
+  },
+  3(out) {
+    const cv = h("canvas", { class: "ggv3d", role: "img", "aria-label": "3D GGV diagram: grip envelope rings stacked by speed" });
+    const slice = h("div", { class: "chart" });
+    const read = stdout("");
+    const rng = h("input", { type: "range", min: String(VMIN3), max: String(VMAX3), step: "5", value: String(ggv3.sel), id: "ggvSpeed", "aria-label": "speed" });
+    const outv = h("output", { for: "ggvSpeed", text: `${ggv3.sel} km/h` });
+    const upd = () => {
+      const sl = G3[V3.indexOf(ggv3.sel)];
+      ggvSlice(slice, [
+        { slice: G3[0], color: css("--muted"), width: 1.25, dash: "4 3" },
+        { slice: sl, color: css("--hi"), width: 2.5, fill: css("--hi"), fillOpacity: 0.12 },
+      ]);
+      read.textContent = `at ${ggv3.sel} km/h:  accelerate ${sl.ax_max[0].toFixed(2)} g   brake ${(-sl.ax_min[0]).toFixed(2)} g   turn ${sl.ay[sl.ay.length - 1].toFixed(2)} g`;
+      outv.textContent = `${ggv3.sel} km/h`;
+      if (reduceMotion) draw3d();
+    };
+    rng.addEventListener("input", () => { ggv3.sel = +rng.value; upd(); });
+    out.append(
+      h("div", { class: "widget" }, h("label", { for: "ggvSpeed", text: "speed" }), rng, outv),
+      h("div", { class: "row halves" },
+        h("div", { style: "display:grid;gap:4px" }, cv, h("span", { class: "hint", text: "Drag to rotate. Each ring is one speed." })),
+        h("div", { style: "display:grid;gap:6px" }, slice, legend([["10 km/h", css("--muted"), "thin"], [`selected speed`, css("--hi")]]))),
+      read,
+      why("Inside the shape is possible; outside it the tyres slide. The tyres share their grip between braking, accelerating and turning, so the car cannot do all three at full strength: that is why it is round. The top is flat because only the rear wheels drive. Speed it up and the shape widens, because the wings push the car down harder."));
+    attach3d(cv); upd(); onRedraw(slice, upd);
+  },
+  4(out) {
+    const box = h("div", { class: "chart" });
+    const draw = () => speedChart(box, [{ label: "corner limit", color: css("--cap"), width: 1.5, shade: true, x: B.s, y: capShown }]);
+    out.append(h("div", { class: "ctl" }, legend([["too fast: the tyres would slide", css("--cap"), "area"]]), zoomControl(draw, box)), box,
+      why("In a bend the tyres must provide the sideways force. The tighter the bend, the lower the speed limit. Where the line stops, the bend is so gentle it sets no limit."));
+    draw();
+  },
+  5(out) {
+    const box = h("div", { class: "chart" });
+    const draw = () => speedChart(box, [
+      { label: "corner limit", color: css("--cap"), width: 1, shade: true, x: B.s, y: capShown, noTip: true },
+      { label: "forward pass", color: css("--acc"), width: 2, x: B.s, y: B.v_fwd }]);
+    out.append(h("div", { class: "ctl" }, legend([["forward pass (accelerating)", css("--acc")], ["corner limit", css("--cap"), "area"]]), zoomControl(draw, box)), box,
+      why("Accelerate as hard as the GGV allows, from a standing start. When the speed reaches a bend's limit it drops straight down. That would mean stopping instantly, which no car can do. The next cell fixes that."));
+    draw();
+  },
+  6(out) {
+    const box = h("div", { class: "chart" });
+    const draw = () => speedChart(box, [
+      { label: "corner limit", color: css("--cap"), width: 1, shade: true, x: B.s, y: capShown, noTip: true },
+      { label: "forward pass", color: css("--acc"), width: 1.5, opacity: 0.45, x: B.s, y: B.v_fwd },
+      { label: "backward pass", color: css("--brk"), width: 2, x: B.s, y: B.v_bwd }]);
+    out.append(h("div", { class: "ctl" }, legend([["backward pass (braking)", css("--brk")], ["forward pass", css("--acc"), "thin"]]), zoomControl(draw, box)), box,
+      why("The same idea, run from the finish back to the start using the braking limit. Read it right to left: the red line shows where the driver must start braking for each bend."));
+    draw();
+  },
+  7(out) {
+    const colors = [...B.phase].map(phaseColor), labels = [...B.phase].map(c => PHASE[c][0]);
+    const svg = svgEl("svg", { class: "map", role: "img", "aria-label": "Track coloured by accelerating, braking and cornering" });
+    const box = h("div", { class: "chart" });
+    const draw = () => speedChart(box, [
+      { label: "corner limit", color: css("--cap"), width: 1, shade: true, x: B.s, y: capShown, noTip: true },
+      { label: "lap", colors, labels, width: 2.5, x: B.s, y: B.v }]);
+    const share = { A: 0, B: 0, C: 0 };
+    for (let i = 0; i < B.t.length - 1; i++) share[B.phase[i]] += B.t[i + 1] - B.t[i];
+    const tot = share.A + share.B + share.C, pct = c => `${Math.round(share[c] / tot * 100)}%`;
+    const clock = stdout("", true);
+    const btn = h("button", { class: "tb", type: "button", text: "▶ Replay" });
+    out.append(stdout(`Lap time: ${LAP_T.toFixed(2)} s`, true),
+      legend([["accelerating " + pct("A"), css("--acc")], ["braking " + pct("B"), css("--brk")], ["at the cornering limit " + pct("C"), css("--crn")]]),
+      h("div", { class: "row map-chart" },
+        h("div", { style: "display:grid;gap:8px" }, svg, h("div", { class: "ctl" }, btn, clock)),
+        h("div", { style: "display:grid;gap:8px;align-content:start" }, h("div", { class: "ctl" }, zoomControl(draw, box)), box)),
+      why("At every slice the car can go no faster than either curve, so the lap is the lower one. Add up slice length ÷ speed over every slice to get the lap time. Look how little time is spent just cornering: an FS car is almost always on the throttle or the brakes."));
+    const lw = drawMap(svg, { colors });
+    const rp = replay(svg, lw, [{ t: B.t.slice(0, -1).concat([LAP_T]), step: 1, color: css("--ink") }]);
+    clock.style.fontSize = "16px";
+    rp.onTick = t => { clock.textContent = `${t.toFixed(2)} s  ${Math.round(B.v[idxAtTime(B.t, t)])} km/h`; };
+    rp.onEnd = () => { btn.textContent = "▶ Replay"; };
+    btn.addEventListener("click", () => { if (rp.on) { rp.pause(); btn.textContent = "▶ Replay"; } else { rp.play(); btn.textContent = "❚❚ Pause"; } });
+    draw();
+    rp.play(); btn.textContent = "❚❚ Pause";
+  },
+  8(out) { renderResult(out); },
+};
+
+// ---------- cell 8: Colab form ----------
+const PARAMS = [
+  { key: "mass_kg", name: "mass_kg", fmt: v => String(v) },
+  { key: "cl", name: "downforce", fmt: v => v.toFixed(1) },
+  { key: "power_kW", name: "power_kW", fmt: v => String(v) },
+  { key: "mu", name: "tyre_mu", fmt: v => v.toFixed(2) },
+];
+const setup = { ...D.baseline_setup };
+function renderFormSrc() {
+  const src = $("#formSrc"); src.replaceChildren();
+  const pad = s => s.padEnd(10);
+  for (const p of PARAMS) {
+    const opts = D.grid[p.key].map(p.fmt).join(", ");
+    src.append(h("span", { class: "v", text: pad(p.name) }), " = ", h("span", { class: "n", text: p.fmt(setup[p.key]).padEnd(5) }), "  ", h("span", { class: "c", text: `#@param [${opts}]` }), "\n");
+  }
+  const v = t => h("span", { class: "v", text: t }), f = t => h("span", { class: "f", text: t });
+  src.append("\n", v("my_car"), " = ", v("car"), ".", f("copy"), "(", PARAMS.map(p => p.name).join(", "), ")\n",
+    f("compare"), "(", f("simulate"), "(", v("my_car"), ", ", v("track"), "), ", v("baseline"), ")");
+}
+const form = $("#form");
+for (const p of PARAMS) {
+  const sel = h("select", { id: `p-${p.key}` });
+  D.grid[p.key].forEach(v => { const o = h("option", { value: String(v), text: p.fmt(v) + (v === D.baseline_setup[p.key] ? "  (baseline)" : "") }); sel.append(o); });
+  sel.value = String(setup[p.key]);
+  sel.addEventListener("change", () => { setup[p.key] = +sel.value; renderFormSrc(); runCell(8, { quick: true }); });
+  form.append(h("label", { for: sel.id }, h("span", { text: p.name }), sel));
+}
+renderFormSrc();
+const syncForm = () => PARAMS.forEach(p => { $(`#p-${p.key}`).value = String(setup[p.key]); });
+
+let race = null;
+function renderResult(out) {
+  const run = RUNS.get(keyOf(setup));
+  const ev = [["sprint", "sprint_s"], ["acceleration (75 m)", "accel_s"], ["skidpad", "skidpad_s"]];
+  const tb = h("tbody");
+  for (const [name, k] of ev) {
+    const dl = run[k] - baseRun[k];
+    const cls = Math.abs(dl) < 0.005 ? "" : dl < 0 ? "good" : "bad";
+    const txt = Math.abs(dl) < 0.005 ? "same" : `${dl < 0 ? "▼" : "▲"} ${Math.abs(dl).toFixed(2)} s ${dl < 0 ? "faster" : "slower"}`;
+    tb.append(h("tr", {}, h("td", { text: name }), h("td", { text: `${baseRun[k].toFixed(2)} s` }), h("td", { text: `${run[k].toFixed(2)} s` }), h("td", { class: cls, text: txt })));
+  }
+  const df = h("table", { class: "df" }, h("thead", {}, h("tr", {}, h("th", { text: "event" }), h("th", { text: "baseline" }), h("th", { text: "your car" }), h("th", { text: "difference" }))), tb);
+  const box = h("div", { class: "chart" });
+  const xs = run.sprint_v.map((_, i) => i * RUN_DS);
+  const draw = () => lineChart(box, { x: [0, zoom || lapEnd], y: [0, 120], yTicks: [0, 30, 60, 90, 120], height: 220, series: [
+    { label: "baseline", color: css("--base"), width: 1.5, x: xs, y: baseRun.sprint_v },
+    { label: "your car", color: css("--accent"), width: 2.25, x: xs, y: run.sprint_v }] });
+  const svg = svgEl("svg", { class: "map", role: "img", "aria-label": "Your car racing the baseline" });
+  const gap = stdout("");
+  const btn = h("button", { class: "tb", type: "button", text: "▶ Race the baseline" });
+  out.append(h("div", { class: "scroll-x" }, df),
+    h("div", { class: "row map-chart" },
+      h("div", { style: "display:grid;gap:8px" }, svg, h("div", { class: "ctl" }, btn), gap),
+      h("div", { style: "display:grid;gap:8px;align-content:start" }, h("div", { class: "ctl" }, legend([["baseline", css("--base"), "thin"], ["your car", css("--accent")]]), zoomControl(draw, box)), box)),
+    why("Every combination here was run in our real sim: 225 cars. The sim is best at differences between cars, like these few tenths. The absolute lap time depends on things the model leaves out."));
+  draw();
+  const lw = drawMap(svg, { width: 0.8 });
+  race = replay(svg, lw, [{ t: baseRun.t, step: RUN_DS, color: css("--base") }, { t: run.t, step: RUN_DS, color: css("--accent") }]);
+  race.onTick = t => {
+    const a = Math.min(idxAtTime(baseRun.t, t) * RUN_DS, NT - 1), b = Math.min(idxAtTime(run.t, t) * RUN_DS, NT - 1);
+    gap.textContent = `${t.toFixed(1)} s   your car is ${Math.abs(b - a)} m ${b >= a ? "ahead" : "behind"}`;
+  };
+  race.onEnd = () => {
+    const d = run.sprint_s - baseRun.sprint_s;
+    gap.textContent = Math.abs(d) < 0.005 ? "Dead heat." : `Finished ${Math.abs(d).toFixed(2)} s ${d < 0 ? "ahead" : "behind"}.`;
+    btn.textContent = "▶ Race again";
+  };
+  btn.addEventListener("click", () => { if (race.on) { race.pause(); btn.textContent = "▶ Race the baseline"; } else { race.play(); btn.textContent = "❚❚ Pause"; } });
+}
+
+// guesses before cell 8
+const sec = (r, k) => { const d = r[k] - baseRun[k]; return `${Math.abs(d).toFixed(2)} s ${d < 0 ? "faster" : "slower"}`; };
+const GUESSES = [
+  { q: "Is a car 20 kg lighter a whole second faster per lap?", set: { mass_kg: D.baseline_setup.mass_kg - 20 },
+    a: r => `No: only ${sec(r, "sprint_s")}. Tyre grip grows with the weight on it, so a lighter car corners at almost the same speed.` },
+  { q: "Do bigger wings make the 75 m acceleration run faster?", set: { cl: 3 },
+    a: r => `No: ${sec(r, "accel_s")}. The sprint gets ${sec(r, "sprint_s")}, but on a short straight the car is too slow for the wings to help, and it still pays for the drag.` },
+  { q: "How much time do our wings buy us per lap?", set: { cl: 0 },
+    a: r => `Without them the sprint is ${sec(r, "sprint_s")}. In a straight line the car is ${sec(r, "accel_s")}, because there is no drag.` },
+];
+for (const G of GUESSES) {
+  const ans = h("div", { class: "ans" }); ans.hidden = true;
+  const b = h("button", { class: "tb", type: "button", text: "Try it" });
+  b.addEventListener("click", () => {
+    Object.assign(setup, D.baseline_setup, G.set); syncForm(); renderFormSrc();
+    if (runCell(8, { quick: true })) { ans.textContent = G.a(RUNS.get(keyOf(setup))); ans.hidden = false; }
+  });
+  $("#guess").append(h("div", {}, h("span", { text: G.q }), b, ans));
+}
+
+// ---------- running cells ----------
+const PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 8.2v7.6l6-3.8z" fill="currentColor"/></svg>';
+const SPIN = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="16 50"/></svg>';
+document.querySelectorAll(".cell.code").forEach(cell => {
+  const n = +cell.dataset.cell;
+  const body = h("div", { style: "min-width:0" });
+  while (cell.firstChild) body.append(cell.firstChild);
+  const run = h("button", { class: "run", type: "button", "aria-label": `Run cell ${n}` }); run.innerHTML = PLAY;
+  const gut = h("div", { class: "gutter" }, run, h("span", { class: "count", text: "[ ]" }));
+  const out = h("div", { class: "out" }); out.hidden = true;
+  body.append(out); cell.append(gut, body); cell.classList.add("fresh");
+  run.addEventListener("click", () => runCell(n));
+});
+function cellEl(n) { return $(`.cell.code[data-cell="${n}"]`); }
+function runCell(n, { quick = false } = {}) {
+  const cell = cellEl(n), out = $(".out", cell), run = $(".run", cell), count = $(".count", cell);
+  const missing = NEEDS[n].filter(d => !ran.has(d));
+  if (n === 8 && race) race.pause();
+  const finish = () => {
+    cell.classList.remove("busy", "fresh"); run.innerHTML = PLAY;
+    count.textContent = `[${++execCount}]`;
+    out.replaceChildren(); out.hidden = false;
+    if (missing.length) {
+      const name = DEFINES[missing[0]];
+      out.append(h("pre", { class: "err" }, h("b", { text: "NameError" }), `: name '${name}' is not defined\n\nRun cell [${missing[0]}] first: it defines ${name}.`));
+      ran.delete(n);
+    } else {
+      CELLS[n](out); ran.add(n);
+    }
+  };
+  if (quick || reduceMotion) { finish(); return !missing.length; }
+  cell.classList.add("busy"); run.innerHTML = SPIN; count.textContent = "[*]";
+  setTimeout(finish, 450);
+  return !missing.length;
+}
+$("#runAll").addEventListener("click", async () => {
+  for (let n = 1; n <= 8; n++) { runCell(n, { quick: true }); await new Promise(r => setTimeout(r, reduceMotion ? 0 : 120)); }
+});
+$("#resetAll").addEventListener("click", () => {
+  ran.clear(); execCount = 0; if (race) race.pause();
+  Object.assign(setup, D.baseline_setup); syncForm(); renderFormSrc();
+  document.querySelectorAll(".cell.code").forEach(c => { $(".out", c).replaceChildren(); $(".out", c).hidden = true; $(".count", c).textContent = "[ ]"; c.classList.add("fresh"); });
+  document.querySelectorAll("#guess .ans").forEach(a => { a.hidden = true; });
+  window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+});
+
+// header chip + footer
+$("#chip span").textContent = `lapsim ${D.meta.lapsim_rev}`;
+$("#chip").title = `Results generated ${D.meta.generated.replace("T", " ")}`;
+$("#prov").textContent = `Every number on this page was computed by the OUR lap time simulation (lapsim ${D.meta.lapsim_rev}, ${D.meta.generated.slice(0, 10)}). Track: walked GPS trace of the FSUK 2026 course at Silverstone.`;
+
+let rz; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(redrawAll, 200); });
+})();
+</script>
+</body>
+</html>
