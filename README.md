@@ -17,7 +17,7 @@ Each code cell starts with a one-line comment saying what it does.
 | 5 | `lap_time`, `replay` | Lap time, then a replay you can move with the progress bar or by clicking or dragging on the track or the speed chart: car on the track, its point on the 3D GGV and on the slice, and a cursor on the speed chart, all in step | The car rides the edge of the GGV almost all lap: it is always at the limit |
 | 6 | Colab-style sliders | Same layout as cell 5: race controls and progress bar, then track, 3D GGV and slice, then speed layers and event times. The speed slider compares the two GGVs; playing or dragging the race shows both cars live | Change one number and watch it travel through the simulation |
 
-Then a closing text cell asks *What would you improve?* The examples stay hidden until *Show some examples* is pressed. They are listed roughly in the order the team would tackle them (fixed aero, a phone-GPS track, simple tyres, no suspension, no heat, a perfect driver, no transients); each opens to why it matters and how we could fix it.
+Then a closing text cell asks *What would you improve?* The examples stay hidden until *Show some examples* is pressed. Each one (fixed aero, a phone-GPS track, simple tyres, no suspension, no heat, a perfect driver, no transients) opens to why it matters and how we could fix it.
 
 Cells depend on each other the way a real notebook does: running cell 4 before cell 3 gives a `NameError`.
 
