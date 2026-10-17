@@ -891,7 +891,7 @@ const CELLS = {
       caption.textContent = STEPS[step - 1][1];
     }
     out.append(h("div", { class: "ctl" }, btns, zoomControl(draw, box)), keys, box, caption,
-      why("Corner limits: in a bend the tyres must provide the sideways force, so v = √(a_lat ÷ curvature), with a_lat read from the GGV. Forward pass: from rest, each slice the speed grows by v² + 2·a·Δs, with a the most the GGV and the 80 kW limit allow, cut down to the corner limit. Backward pass: the same from the finish backwards, using the braking limit. The lap is the lower of the two."));
+      why(`Corner limits: in a bend the tyres must provide the sideways force, so v = √(a_lat ÷ curvature), with a_lat read from the GGV. Forward pass: from rest, each slice the speed grows by v² + 2·a·Δs, with a the most the GGV and the ${CAR.power_limit_kW} kW limit allow, cut down to the corner limit. Backward pass: the same from the finish backwards, using the braking limit. The lap is the lower of the two.`));
     draw();
   },
   5(out) {
@@ -1078,7 +1078,7 @@ function renderWorkbench(out) {
       cv,
       h("div", { class: "stack" }, ss, sliceBox, sliceRead)),
     h("div", { class: "row wb2" }, h("div", { class: "stack" }, toggles, box), h("div", { class: "scroll-x" }, df)),
-    why("Every combination here was run in our real sim: 225 cars. Watch which boxes in the chain light up. Power only changes the top of the GGV and the straights. Grip changes everything. Mass changes surprisingly little, because grip grows with the weight on the tyres. In the race, both dots ride the edge of their own GGV: a bigger shape lets your car carry more speed."));
+    why(`Every combination here was run in our real sim: ${D.runs.length} cars. Watch which boxes in the chain light up. Power only changes the top of the GGV and the straights. Grip changes everything. Mass changes surprisingly little, because grip grows with the weight on the tyres. In the race, both dots ride the edge of their own GGV: a bigger shape lets your car carry more speed.`));
 
   wb.update = () => {
     const r = RUNS.get(keyOf(setup)); if (!r) return;

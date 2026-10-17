@@ -38,15 +38,36 @@ Short on time: in cell 3 skip the force presets, and in cell 4 go straight to �
 
 ## Where the numbers come from
 
-Every number is pre-computed by the team's lap time simulation, which lives in a private repo. This repo holds only the results (`data/sim.js`): the solver's stages for the baseline car, per-tyre forces on a grid of operating points, and 225 car setups on a grid of mass × downforce × power limit × tyre grip, each with its own GGV and solver stages. The page does no physics itself.
+Every number is pre-computed by the team's lap time simulation, which lives in the private `lap-sim` repo. This repo holds only the results (`data/sim.js`): the solver's stages for the baseline car, per-tyre forces on a grid of operating points, and a grid of car setups (mass × downforce × power limit × tyre grip), each with its own GGV and solver stages. The page does no physics itself.
 
-To regenerate after the model changes, run this from the private `lap-sim` repo and commit the new `data/sim.js` here:
+## Updating
+
+| To change | Edit | Then |
+|---|---|---|
+| The car (mass, CoG, aero, tyres, motor…) | `config/car_default.yaml` in `lap-sim` | Full export |
+| The model itself | `lapsim/` in `lap-sim` | Full export |
+| The slider values on the page | `GRID` in `lap-sim/explore/taster-export/export_taster_data.py` | Full export |
+| Text, layout, colours | `index.html` in this repo | Just commit and push |
+
+The baseline car is always `car_default.yaml` as it stands; its values are added to the slider grid automatically, and drag keeps the yaml's Cd/Cl ratio when downforce changes.
+
+**Full export**, from the `lap-sim` repo root (about 15 minutes on a 32-thread machine):
 
 ```bash
+.venv\Scripts\activate          # macOS / Linux: source .venv/bin/activate
 python explore/taster-export/export_taster_data.py --out ../lapsim-taster/data/sim.js
 ```
 
-Add `--reuse-runs` to recompute only the baseline (about a minute) and keep the 225 grid runs (30 to 40 minutes).
+Add `--reuse-runs` to recompute only the baseline car and the force diagrams (about a minute) and keep the existing grid runs. Only use it when the grid would not change.
+
+Then check and publish, from this repo:
+
+```bash
+python -m http.server 8000      # open http://localhost:8000 and click Run all
+git add data/sim.js index.html
+git commit -m "Update taster data"
+git push                        # the live page updates about a minute later
+```
 
 ## Files
 
