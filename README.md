@@ -14,10 +14,10 @@ Each code cell starts with a one-line comment saying what it does.
 | 2 | `load_car` | Parameters next to a top and side view with dimensions | The model is one rigid body on four tyres; these numbers come from the other subteams |
 | 3 | `build_ggv`, `forces_at` | 3D GGV, a slice at any speed with a draggable point, and the forces on each tyre at that point | The GGV is everything the car can do; its edge is where the tyres reach 100% |
 | 4 | `corner_limits` … `np.minimum` | One speed chart built up in four steps (① ② ③ ④) | Corners set the speed, accelerating takes distance, braking starts before the corner, the lap is the lower curve |
-| 5 | `lap_time`, `replay` | Lap time, then a replay with a draggable progress bar: car on the track, its point on the 3D GGV and on the slice, and a cursor on the speed chart, all in step | The car rides the edge of the GGV almost all lap: it is always at the limit |
+| 5 | `lap_time`, `replay` | Lap time, then a replay you can move with the progress bar or by clicking or dragging on the track or the speed chart: car on the track, its point on the 3D GGV and on the slice, and a cursor on the speed chart, all in step | The car rides the edge of the GGV almost all lap: it is always at the limit |
 | 6 | Colab-style sliders | Same layout as cell 5: race controls and progress bar, then track, 3D GGV and slice, then speed layers and event times. The speed slider compares the two GGVs; playing or dragging the race shows both cars live | Change one number and watch it travel through the simulation |
 
-Then a closing text cell asks *What would you improve?*: seven ideas (suspension, tyres, driver, transients, aero, the track, heat), each opening first to why it matters, then to how we could fix it.
+Then a closing text cell asks *What would you improve?* The list stays hidden until *Show what is missing* is pressed; each short item (no suspension, simple tyres, a perfect driver, no transients, fixed aero, a phone-GPS track, no heat) opens to why it matters and how we could fix it.
 
 Cells depend on each other the way a real notebook does: running cell 4 before cell 3 gives a `NameError`.
 

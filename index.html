@@ -99,12 +99,13 @@ details.why p { margin: 6px 0 0; color: var(--ink-2); max-width: 76ch; }
 .text h1 { font: 400 30px/1.2 var(--f-ui); margin: 6px 0 6px; }
 .text h2 { font: 400 22px/1.3 var(--f-ui); margin: 14px 0 4px; }
 .text p { margin: 4px 0; color: var(--ink-2); max-width: 76ch; }
-.ideas { display: grid; gap: 6px; margin: 10px 0; max-width: 76ch; }
+.reveal { margin: 10px 0; max-width: 76ch; }
+.reveal > summary { cursor: pointer; color: var(--accent); width: max-content; }
+.ideas { display: grid; gap: 6px; margin-top: 10px; }
 .ideas details { border: 1px solid var(--line); border-radius: 6px; padding: 8px 12px; }
-.ideas summary { cursor: pointer; font-weight: 500; }
-.ideas details p { margin: 6px 0 2px; }
-.ideas details details { border: 0; padding: 0; margin-top: 6px; }
-.ideas details details summary { font-weight: 400; color: var(--accent); }
+.ideas summary { cursor: pointer; font-weight: 500; color: var(--ink); }
+.ideas p { margin: 6px 0 2px; }
+.ideas p b { font-weight: 500; color: var(--ink); }
 @media (max-width: 620px) { .text { padding-left: 8px; } .cell { grid-template-columns: 36px minmax(0, 1fr); } }
 
 /* output layouts */
@@ -166,6 +167,10 @@ svg text { font-family: var(--f-code); }
 /* car drawings */
 .drawing { width: 100%; height: auto; display: block; }
 .pad { touch-action: none; cursor: crosshair; }
+/* Figures you can click or drag never select their own text. */
+.chart, .map, .ggv3d, .drawing { user-select: none; -webkit-user-select: none; }
+/* Click or drag to move a replay. Vertical swipes still scroll the page on phones. */
+.seek { cursor: pointer; touch-action: pan-y; }
 
 /* dataframe */
 .df { border-collapse: collapse; font: 400 13px/1.4 var(--f-code); }
@@ -263,16 +268,18 @@ svg text { font-family: var(--f-code); }
 
   <div class="cell text">
     <h2>What would you improve?</h2>
-    <p>Before you open these, think: what is this model missing? Open one to see why it matters, then open it again to see how we could fix it.</p>
-    <div class="ideas">
-      <details><summary>The car has no suspension</summary><p>The model treats the car as one rigid block, so weight shifts between the tyres instantly and nothing rolls or pitches. On the real car, springs and anti-roll bars decide how much load each tyre gets, and that changes the grip.</p><details><summary>How could we fix it?</summary><p>Add roll and pitch stiffness front and rear, so load transfer is split the way the real suspension splits it. Then use it to compare spring and anti-roll bar setups.</p></details></details>
-      <details><summary>The tyres are very simple</summary><p>Every tyre has one grip number and an ellipse. Real tyres change their grip with slip angle, load, temperature and pressure.</p><details><summary>How could we fix it?</summary><p>Fit a proper tyre model, for example Pacejka's Magic Formula, to Tire Test Consortium (TTC) test data, and use it in place of the ellipse.</p></details></details>
-      <details><summary>The driver is perfect</summary><p>The car is always exactly at the limit, on one fixed line. No real driver does that.</p><details><summary>How could we fix it?</summary><p>Add a driver model that keeps a margin, or optimise the racing line itself, and compare with lap data from our drivers.</p></details></details>
-      <details><summary>Nothing takes time to happen</summary><p>Each 10 cm slice is treated as steady, as if the car could switch from braking to cornering instantly.</p><details><summary>How could we fix it?</summary><p>Build a dynamic model that steps forward in time, with yaw and weight transfer, and use it for corner entry and slaloms.</p></details></details>
-      <details><summary>The wings never change</summary><p>Downforce, drag and where the downforce acts are fixed numbers. On track they change with ride height, pitch and yaw.</p><details><summary>How could we fix it?</summary><p>Use an aero map from CFD or testing (downforce and balance against ride height), and check the numbers with the aero team: the front/rear balance is one we are confirming right now.</p></details></details>
-      <details><summary>The track comes from a phone</summary><p>Phone GPS is only good to a few metres, and the line was walked, not driven.</p><details><summary>How could we fix it?</summary><p>Rebuild the track from GPS and speed data logged on the car, or optimise the line inside the track edges.</p></details></details>
-      <details><summary>Nothing gets hot</summary><p>One lap barely warms the battery. Over the 22 km endurance event it heats up and the car has to cut power; motors and inverters heat up too.</p><details><summary>How could we fix it?</summary><p>Our sim already tracks battery temperature. Adding motor and inverter temperatures, and cooling, would let us plan power limits for endurance.</p></details></details>
-    </div>
+    <p>Think first: what is this model missing? Then reveal the list and open any idea.</p>
+    <details class="reveal"><summary>Show what is missing</summary>
+      <div class="ideas">
+        <details><summary>No suspension</summary><p>The car is one rigid block, so weight shifts between the tyres instantly and nothing rolls or pitches. On the real car, springs and anti-roll bars decide how much load each tyre gets, and that changes the grip.</p><p><b>Fix:</b> add roll and pitch stiffness front and rear, so load transfer is split the way the suspension splits it, then compare spring and anti-roll bar setups.</p></details>
+        <details><summary>Simple tyres</summary><p>Every tyre has one grip number and an ellipse. Real tyres change their grip with slip angle, load, temperature and pressure.</p><p><b>Fix:</b> fit a proper tyre model, for example Pacejka's Magic Formula, to Tire Test Consortium (TTC) test data, and use it in place of the ellipse.</p></details>
+        <details><summary>A perfect driver</summary><p>The car is always exactly at the limit, on one fixed line. No real driver does that.</p><p><b>Fix:</b> add a driver model that keeps a margin, or optimise the racing line itself, and compare with lap data from our drivers.</p></details>
+        <details><summary>No transients</summary><p>Each 10 cm slice is treated as steady, as if the car could switch from braking to cornering instantly.</p><p><b>Fix:</b> build a dynamic model that steps forward in time, with yaw and weight transfer, for corner entry and slaloms.</p></details>
+        <details><summary>Fixed aero</summary><p>Downforce, drag and where the downforce acts are fixed numbers. On track they change with ride height, pitch and yaw.</p><p><b>Fix:</b> use an aero map from CFD or testing, and check the numbers with the aero team: the front/rear balance is one we are confirming right now.</p></details>
+        <details><summary>A phone-GPS track</summary><p>Phone GPS is only good to a few metres, and the line was walked, not driven.</p><p><b>Fix:</b> rebuild the track from GPS and speed data logged on the car, or optimise the line inside the track edges.</p></details>
+        <details><summary>No heat</summary><p>One lap barely warms the battery. Over the 22 km endurance event it heats up and the car has to cut power; motors and inverters heat up too.</p><p><b>Fix:</b> the sim already tracks battery temperature; adding motor and inverter temperatures and cooling would let us plan power limits for endurance.</p></details>
+      </div>
+    </details>
     <p>Got an idea? That is what the simulation team works on. Come and talk to us.</p>
   </div>
   <p class="foot" id="prov"></p>
@@ -412,6 +419,22 @@ function player(host, end, onFrame) {
   st.seek = t => { st.t = Math.max(0, Math.min(st.end, t)); st.last = null; onFrame(st.t); };
   return st;
 }
+// Press and drag on el to move a replay. toTime(event) gives the time to jump to.
+function seekOnDrag(el, toTime, onSeek) {
+  el.classList.add("seek");
+  const go = e => { const t = toTime(e); if (t != null && isFinite(t)) onSeek(t); };
+  el.addEventListener("pointerdown", e => { e.preventDefault(); el.setPointerCapture(e.pointerId); go(e); el.onpointermove = go; });
+  const stop = () => { el.onpointermove = null; };
+  el.addEventListener("pointerup", stop); el.addEventListener("pointercancel", stop);
+}
+function nearestTrackIndex(svg, e) {   // track point (one per metre) closest to a click on the map
+  const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+  const q = pt.matrixTransform(svg.getScreenCTM().inverse()), x = q.x, y = -q.y;
+  let best = 0, bd = Infinity;
+  for (let i = 0; i < NT; i++) { const d = (TX[i] - x) ** 2 + (TY[i] - y) ** 2; if (d < bd) { bd = d; best = i; } }
+  return best;
+}
+const timeAtMetre = (trace, m) => trace.t[Math.max(0, Math.min(trace.t.length - 1, Math.round(m / trace.ds)))];
 function scrubber(end, onSeek) {   // draggable progress bar for a replay, in seconds
   const rng = h("input", { type: "range", class: "scrub", min: "0", max: String(end), step: "0.05", value: "0", "aria-label": "replay position (s)" });
   rng.addEventListener("input", () => onSeek(+rng.value));
@@ -514,7 +537,8 @@ function lineChart(box, opt) {
   hit.addEventListener("pointermove", e => show(e.clientX));
   hit.addEventListener("pointerdown", e => show(e.clientX));
   hit.addEventListener("pointerleave", () => { cross.setAttribute("visibility", "hidden"); dots.forEach(d => d.setAttribute("visibility", "hidden")); tip.hidden = true; });
-  return { svg, sx, sy, top: m.t, bottom: H - m.b };
+  const xAt = clientX => { const r = svg.getBoundingClientRect(); return Math.max(x0, Math.min(x1, x0 + ((clientX - r.left) * W / r.width - m.l) / (W - m.l - m.r) * (x1 - x0))); };
+  return { svg, sx, sy, xAt, top: m.t, bottom: H - m.b };
 }
 const lapEnd = Math.ceil(B.s[B.s.length - 1] / 100) * 100;
 const speedChart = (box, series, extra = {}) => lineChart(box, { x: [0, zoom || lapEnd], y: [0, 110], yTicks: [0, 25, 50, 75, 100], series, ...extra });
@@ -627,7 +651,7 @@ function make3d(cv, src) {
   }
   // Drawn on demand: when its data changes, when dragged, on resize. It never spins by itself.
   let drag = null;
-  cv.addEventListener("pointerdown", e => { drag = [e.clientX, e.clientY, e.pointerType]; cv.setPointerCapture(e.pointerId); });
+  cv.addEventListener("pointerdown", e => { e.preventDefault(); drag = [e.clientX, e.clientY, e.pointerType]; cv.setPointerCapture(e.pointerId); });
   cv.addEventListener("pointermove", e => {
     if (!drag) return;
     st.yaw += (e.clientX - drag[0]) * 0.012;
@@ -817,7 +841,7 @@ const CELLS = {
       const svgP = pad.svg, P = pad;
       // x on the pad is lateral g turning right, so a left turn (ay > 0) is to the left.
       const move = e => { const r = svgP.getBoundingClientRect(); const [x, ax] = P.inv((e.clientX - r.left) * P.W / r.width, (e.clientY - r.top) * P.H / r.height); gf.ax10 = Math.round(ax * 10); gf.ay10 = Math.round(-x * 10); drawForces(); };
-      svgP.addEventListener("pointerdown", e => { svgP.setPointerCapture(e.pointerId); move(e); svgP.onpointermove = move; });
+      svgP.addEventListener("pointerdown", e => { e.preventDefault(); svgP.setPointerCapture(e.pointerId); move(e); svgP.onpointermove = move; });
       const stop = () => { svgP.onpointermove = null; };
       svgP.addEventListener("pointerup", stop); svgP.addEventListener("pointercancel", stop);
       read.textContent = `at ${gf.v} km/h:  ${sliceReadout(sl)}`;
@@ -912,6 +936,8 @@ const CELLS = {
     };
     rp = player(svg, LAP_T, frame);
     rp.rate = speed.rate;
+    seekOnDrag(svg, e => timeAtMetre(BTRACE, nearestTrackIndex(svg, e)), t => rp.seek(t));
+    seekOnDrag(box, e => chart && timeAtMetre(BTRACE, chart.xAt(e.clientX)), t => rp.seek(t));
     rp.onEnd = () => { btn.textContent = "▶ Replay"; };
     btn.addEventListener("click", () => { if (rp.on) { rp.pause(); btn.textContent = "▶ Replay"; } else { rp.play(); btn.textContent = rp.on ? "❚❚ Pause" : "▶ Replay"; } });
     onRedraw(box, drawChart);
@@ -1092,9 +1118,14 @@ function renderWorkbench(out) {
     });
     wb.race.rate = wb.rate;
     wb.race.onEnd = () => { btn.textContent = "▶ Race again"; };
+    wb.yT = yT;
     gap.textContent = ""; btn.textContent = "▶ Race";
   };
   onRedraw(box, drawSpeed);
+  // Click or drag on the track or the speed chart: jump to when your car is there.
+  const seekTo = t => { if (wb.race) wb.race.seek(t); };
+  seekOnDrag(svg, e => wb.yT && timeAtMetre(wb.yT, nearestTrackIndex(svg, e)), seekTo);
+  seekOnDrag(box, e => wb.yT && chart && timeAtMetre(wb.yT, chart.xAt(e.clientX)), seekTo);
   wb.update();
 }
 
