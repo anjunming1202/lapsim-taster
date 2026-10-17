@@ -83,9 +83,10 @@ a { color: var(--accent); }
 .src .ln.on { background: #fde7c7; }
 .k { color: var(--syn-k); } .f { color: var(--syn-f); } .s { color: var(--syn-s); } .n { color: var(--syn-n); } .c { color: var(--syn-c); } .v { color: var(--syn-v); }
 
-.out { padding: 12px 4px 4px; display: grid; gap: 12px; min-width: 0; }
+.out { padding: 12px 4px 4px; display: grid; gap: 10px; min-width: 0; }
 .stdout { font: 400 13.5px/1.6 var(--f-code); white-space: pre-wrap; margin: 0; }
 .stdout.big { font-size: 22px; font-weight: 500; }
+.stdout.sm { font-size: 12px; }
 .err { background: var(--err-bg); border-radius: 4px; padding: 10px 12px; font: 400 13px/1.6 var(--f-code); white-space: pre-wrap; margin: 0; }
 .err b { color: var(--err); font-weight: 500; }
 
@@ -98,27 +99,33 @@ details.why p { margin: 6px 0 0; color: var(--ink-2); max-width: 76ch; }
 .text h1 { font: 400 30px/1.2 var(--f-ui); margin: 6px 0 6px; }
 .text h2 { font: 400 22px/1.3 var(--f-ui); margin: 14px 0 4px; }
 .text p { margin: 4px 0; color: var(--ink-2); max-width: 76ch; }
-.text ul { margin: 6px 0; padding-left: 20px; color: var(--ink-2); max-width: 76ch; }
+.ideas { display: grid; gap: 6px; margin: 10px 0; max-width: 76ch; }
+.ideas details { border: 1px solid var(--line); border-radius: 6px; padding: 8px 12px; }
+.ideas summary { cursor: pointer; font-weight: 500; }
+.ideas details p { margin: 6px 0 2px; }
 @media (max-width: 620px) { .text { padding-left: 8px; } .cell { grid-template-columns: 36px minmax(0, 1fr); } }
 
 /* output layouts */
 .row { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); align-items: start; }
-.stack { display: grid; gap: 8px; align-content: start; min-width: 0; }
+.stack { display: grid; gap: 6px; align-content: start; min-width: 0; }
 @media (min-width: 760px) {
   .row.map-chart { grid-template-columns: minmax(0, 0.42fr) minmax(0, 1fr); }
   .row.halves { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .row.car3 { grid-template-columns: minmax(0, 0.95fr) minmax(0, 0.55fr) minmax(0, 1.3fr); align-items: center; }
   .row.fbd { grid-template-columns: minmax(0, 0.62fr) minmax(0, 1.38fr); align-items: center; }
-  .row.wb3 { grid-template-columns: minmax(0, 0.95fr) minmax(0, 0.45fr) minmax(0, 1.05fr); }
+  .row.tri { grid-template-columns: minmax(0, 0.5fr) minmax(0, 1fr) minmax(0, 1fr); align-items: center; }
+  .row.wb3 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.5fr); align-items: center; }
+  .row.wb2 { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
 }
 .map { width: 100%; height: auto; display: block; max-height: 440px; }
-.map.sm { max-height: 300px; }
+.map.sm { max-height: 280px; }
 .legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; color: var(--ink-2); align-items: center; }
 .key { display: inline-flex; align-items: center; gap: 6px; }
 .key i { width: 16px; border-top: 3px solid currentColor; display: inline-block; border-radius: 2px; }
 .key i.thin { border-top-width: 2px; }
 .key i.dash { border-top: 2px dashed currentColor; }
 .key i.area { height: 10px; border: 0; background: currentColor; opacity: 0.35; }
+.key i.dot { width: 10px; height: 10px; border: 0; border-radius: 50%; background: currentColor; }
 .key span { color: var(--ink-2); }
 .ctl { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
@@ -140,16 +147,15 @@ svg text { font-family: var(--f-code); }
 .tip .r i { width: 10px; border-top: 3px solid currentColor; }
 .tip .r b { font: 500 12px/1.5 var(--f-code); min-width: 5em; }
 .tip .r span { color: var(--ink-2); }
-.panel-t { font-size: 13px; font-weight: 500; color: var(--ink); }
 .caption { font-size: 14px; color: var(--ink-2); margin: 0; min-height: 1.5em; }
 
 /* ipywidgets-like slider */
 .widget { display: flex; align-items: center; gap: 10px; font: 400 13px/1 var(--f-code); color: var(--ink-2); flex-wrap: wrap; }
-.widget input[type="range"] { width: min(260px, 50vw); accent-color: var(--accent); }
+.widget input[type="range"] { width: min(220px, 45vw); accent-color: var(--accent); }
 .widget output { color: var(--ink); min-width: 7ch; }
 
 /* 3D GGV */
-.ggv3d { width: 100%; aspect-ratio: 1 / 0.82; max-height: 320px; display: block; touch-action: pan-y; cursor: grab; background: #fff; border: 1px solid var(--grid); border-radius: 4px; }
+.ggv3d { width: 100%; aspect-ratio: 1 / 0.82; max-height: 300px; display: block; touch-action: pan-y; cursor: grab; background: #fff; border: 1px solid var(--grid); border-radius: 4px; }
 .ggv3d:active { cursor: grabbing; }
 .hint { font-size: 12px; color: var(--muted); }
 
@@ -187,7 +193,7 @@ svg text { font-family: var(--f-code); }
 
 /* cause chain */
 .chain { display: flex; flex-wrap: wrap; align-items: stretch; gap: 6px; }
-.chain .node { border: 1px solid var(--line); border-radius: 6px; padding: 5px 9px; min-width: 110px; flex: 1 1 110px; display: grid; gap: 1px; background: #fff; transition: background-color 0.2s, border-color 0.2s; }
+.chain .node { border: 1px solid var(--line); border-radius: 6px; padding: 4px 9px; min-width: 110px; flex: 1 1 110px; display: grid; gap: 0; background: #fff; transition: background-color 0.2s, border-color 0.2s; }
 .chain .node b { font-weight: 500; font-size: 13px; }
 .chain .node span { font: 400 12px/1.35 var(--f-code); color: var(--muted); }
 .chain .node.on { border-color: var(--hi); background: #fef3e8; }
@@ -220,11 +226,13 @@ svg text { font-family: var(--f-code); }
   </div>
 
   <div class="cell code" data-cell="1">
-    <pre class="src"><span class="v">track</span> = <span class="f">load_track</span>(<span class="s">"FSUK_2026.gpx"</span>)   <span class="c"># phone GPS walk</span></pre>
+    <pre class="src"><span class="c"># 1. The track: a line with a curvature every 10 cm</span>
+<span class="v">track</span> = <span class="f">load_track</span>(<span class="s">"FSUK_2026.gpx"</span>)</pre>
   </div>
 
   <div class="cell code" data-cell="2">
-    <pre class="src"><span class="v">car</span> = <span class="f">load_car</span>(<span class="s">"car_default.yaml"</span>)
+    <pre class="src"><span class="c"># 2. The car: one rigid body on four tyres</span>
+<span class="v">car</span> = <span class="f">load_car</span>(<span class="s">"car_default.yaml"</span>)
 <span class="v">car</span></pre>
   </div>
 
@@ -233,18 +241,15 @@ svg text { font-family: var(--f-code); }
   </div>
 
   <div class="cell code" data-cell="4">
-    <pre class="src" id="passSrc"><span class="ln" data-ln="1"><span class="v">v_corner</span> = <span class="f">corner_limits</span>(<span class="v">track</span>, <span class="v">ggv</span>)            <span class="c"># ① v = √(a_lat/κ)</span></span><span class="ln" data-ln="2"><span class="v">v_fwd</span>    = <span class="f">forward_pass</span>(<span class="v">track</span>, <span class="v">ggv</span>, <span class="v">v_corner</span>)   <span class="c"># ② accelerate</span></span><span class="ln" data-ln="3"><span class="v">v_bwd</span>    = <span class="f">backward_pass</span>(<span class="v">track</span>, <span class="v">ggv</span>, <span class="v">v_corner</span>)  <span class="c"># ③ brake</span></span></pre>
+    <pre class="src" id="passSrc"><span class="c"># 4. Build the speed profile, one slice of track at a time</span>
+<span class="ln" data-ln="1"><span class="v">v_corner</span> = <span class="f">corner_limits</span>(<span class="v">track</span>, <span class="v">ggv</span>)            <span class="c"># ① v = √(a_lat/κ)</span></span><span class="ln" data-ln="2"><span class="v">v_fwd</span>    = <span class="f">forward_pass</span>(<span class="v">track</span>, <span class="v">ggv</span>, <span class="v">v_corner</span>)   <span class="c"># ② accelerate</span></span><span class="ln" data-ln="3"><span class="v">v_bwd</span>    = <span class="f">backward_pass</span>(<span class="v">track</span>, <span class="v">ggv</span>, <span class="v">v_corner</span>)  <span class="c"># ③ brake</span></span><span class="ln" data-ln="4"><span class="v">lap</span>      = <span class="v">np</span>.<span class="f">minimum</span>(<span class="v">v_fwd</span>, <span class="v">v_bwd</span>)               <span class="c"># ④ the lower curve</span></span></pre>
   </div>
 
   <div class="cell code" data-cell="5">
-    <pre class="src"><span class="v">lap</span> = <span class="v">np</span>.<span class="f">minimum</span>(<span class="v">v_fwd</span>, <span class="v">v_bwd</span>)
+    <pre class="src"><span class="c"># 5. Drive it: add up the time of every slice, then replay the lap</span>
 <span class="v">lap_time</span> = <span class="v">np</span>.<span class="f">sum</span>(<span class="v">ds</span> / <span class="v">lap</span>)
-<span class="f">print</span>(<span class="k">f</span><span class="s">"Lap time: {</span><span class="v">lap_time</span><span class="s">:.2f} s"</span>)</pre>
-  </div>
-
-  <div class="cell text">
-    <h2>Your turn: change the car</h2>
-    <p>Move a slider. The chain shows which parts of the simulation change; the plots show how. The grey tick under each slider is the baseline car.</p>
+<span class="f">print</span>(<span class="k">f</span><span class="s">"Lap time: {</span><span class="v">lap_time</span><span class="s">:.2f} s"</span>)
+<span class="f">replay</span>(<span class="v">lap</span>, <span class="v">ggv</span>)</pre>
   </div>
 
   <div class="cell code" data-cell="6">
@@ -253,13 +258,18 @@ svg text { font-family: var(--f-code); }
   </div>
 
   <div class="cell text">
-    <h2>What this model leaves out</h2>
-    <ul>
-      <li>A perfect driver, always exactly at the limit.</li>
-      <li>No suspension movement or tyre temperature. Every slice is treated as steady.</li>
-      <li>One fixed line through every corner.</li>
-    </ul>
-    <p>We check it against data logged on the real car. Want to work on it? Come and talk to us.</p>
+    <h2>What would you improve?</h2>
+    <p>Before you open these, think: what is this model missing?</p>
+    <div class="ideas">
+      <details><summary>The car has no suspension</summary><p>It is one rigid body, so weight moves between the tyres instantly. A real car rolls and pitches, and how the springs and anti-roll bars share that load changes the grip. Modelling roll stiffness front and rear is a natural next step.</p></details>
+      <details><summary>The tyres are very simple</summary><p>One grip number and an ellipse. Real tyre grip depends on slip angle, temperature and pressure. Fitting a proper tyre model (for example Pacejka) to Tire Test Consortium (TTC) data is a classic project.</p></details>
+      <details><summary>The driver is perfect</summary><p>The car is always exactly at the limit, on one fixed line. Real drivers keep a margin and choose their own line. A driver model or a racing-line optimiser would capture that.</p></details>
+      <details><summary>Nothing takes time to happen</summary><p>Each 10 cm slice is treated as steady. When a real car turns in, it takes a moment to start rotating. A dynamic (transient) model would show that.</p></details>
+      <details><summary>The wings never change</summary><p>Downforce, drag and where the downforce acts are fixed numbers here. On track they change with ride height, pitch and yaw, and the front/rear balance is one of the values we are checking with the aero team right now.</p></details>
+      <details><summary>The track comes from a phone</summary><p>Phone GPS is only good to a few metres, and the line was walked, not driven. Data logged on the car would give a better track.</p></details>
+      <details><summary>Nothing gets hot</summary><p>One lap barely warms the battery. Over the 22 km endurance event it heats up and the car has to cut power. Our sim already models some of this; motor and inverter temperatures are not in yet.</p></details>
+    </div>
+    <p>Got an idea? That is what the simulation team works on. Come and talk to us.</p>
   </div>
   <p class="foot" id="prov"></p>
 </main>
@@ -309,17 +319,45 @@ for (const r of D.runs) {   // elapsed time along each 2 m trace, scaled to the 
   r.t = t.map(v => v * k);
 }
 const LAP_T = baseRun.sprint_s;
+B.tLap = B.t.slice(0, -1).concat([LAP_T]);
 const TX = B.x, TY = B.y, NT = TX.length;
+const KAPPA2 = XS2.map((_, i) => B.kappa[Math.min(i * RUN_DS, NT - 1)]);
 const PHASE = { A: ["Accelerating", "--acc"], B: ["Braking", "--brk"], C: ["At the cornering limit", "--crn"] };
 const PCOL = {};
 const phaseColor = c => PCOL[c] || (PCOL[c] = css(PHASE[c][1]));
 const capShown = arr => arr.map(c => c != null && c <= 120 ? c : null);
 function idxAtTime(t, x) { let lo = 0, hi = t.length - 1; while (hi - lo > 1) { const m = (lo + hi) >> 1; if (t[m] <= x) lo = m; else hi = m; } return lo; }
-const V3 = baseRun.ggv3d.map(s => s.v_kph), VMIN3 = V3[0], VMAX3 = V3[V3.length - 1];
+const V3 = baseRun.ggv3d.map(s => s.v_kph), VMIN3 = V3[0], VMAX3 = V3[V3.length - 1], VSTEP3 = V3[1] - V3[0];
 const sliceAt = (run, v) => run.ggv3d.find(s => s.v_kph === v);
+function sliceInterp(run, v) {   // GGV slice at any speed, linear between the stored 10 km/h rings
+  const vv = Math.max(VMIN3, Math.min(VMAX3, v));
+  const i = Math.min(V3.length - 2, Math.floor((vv - VMIN3) / VSTEP3)), f = (vv - V3[i]) / VSTEP3;
+  const a = run.ggv3d[i], b = run.ggv3d[i + 1], mix = (p, q) => p.map((x, k) => x + (q[k] - x) * f);
+  return { v_kph: vv, ay: mix(a.ay, b.ay), ax_max: mix(a.ax_max, b.ax_max), ax_min: mix(a.ax_min, b.ax_min) };
+}
+// The car's operating point along a lap, from the sim's own speed and the track:
+// lateral g = v²·curvature, longitudinal g from the change in v² between slices (as in the solver).
+function opTrace(vKph, kappa, ds) {
+  const n = vKph.length, ax = new Float32Array(n), ay = new Float32Array(n);
+  for (let i = 0; i < n; i++) {
+    const v = vKph[i] / 3.6, i0 = Math.max(i - 1, 0), i1 = Math.min(i + 1, n - 1);
+    ay[i] = v * v * kappa[i] / G;
+    ax[i] = ((vKph[i1] / 3.6) ** 2 - (vKph[i0] / 3.6) ** 2) / (2 * ds * (i1 - i0)) / G;
+  }
+  return { ax, ay };
+}
+B.op = opTrace(B.v, B.kappa, 1);
+const opOf = r => r.op || (r.op = opTrace(r.v, KAPPA2, RUN_DS));
+// Where a car is at time t: index into its trace, track index, speed and operating point.
+function carAt(trace, t) {
+  const i = idxAtTime(trace.t, t);
+  return { i, k: Math.min(Math.round(i * trace.ds), NT - 1), v: trace.v[i], ax: trace.op.ax[i], ay: trace.op.ay[i], s: i * trace.ds, phase: trace.phase[i] };
+}
+const traceOf = r => ({ t: r.t, ds: RUN_DS, v: r.v, op: opOf(r), phase: r.phase });
+const BTRACE = { t: B.tLap, ds: 1, v: B.v, op: B.op, phase: B.phase };
 
 // ---------- redraw hooks (zoom + resize) ----------
-let zoom = 300;  // metres shown in every speed chart, 0 = whole lap
+let zoom = 300;  // metres shown in the step-by-step chart, 0 = whole lap
 let hooks = [];
 const onRedraw = (el, fn) => hooks.push({ el, fn });
 const redrawAll = () => { hooks = hooks.filter(x => x.el.isConnected); hooks.forEach(x => x.fn()); };
@@ -340,12 +378,34 @@ const legend = items => h("div", { class: "legend" }, ...items.map(([label, colo
 }));
 function speedSlider(initial, onChange) {   // ipywidgets-style: label, slider, value
   const id = "spd" + Math.random().toString(36).slice(2, 7);
-  const rng = h("input", { type: "range", min: String(VMIN3), max: String(VMAX3), step: "10", value: String(initial), id, "aria-label": "speed" });
+  const rng = h("input", { type: "range", min: String(VMIN3), max: String(VMAX3), step: String(VSTEP3), value: String(initial), id, "aria-label": "speed" });
   const out = h("output", { for: id, text: `${initial} km/h` });
   rng.addEventListener("input", () => { out.textContent = `${rng.value} km/h`; onChange(+rng.value); });
   const el = h("div", { class: "widget" }, h("label", { for: id, text: "speed" }), rng, out);
   el.set = v => { rng.value = String(v); out.textContent = `${v} km/h`; };
   return el;
+}
+function rateControl(get, set) {
+  const seg = h("div", { class: "seg", role: "group", "aria-label": "Replay speed" });
+  [1, 2, 4].forEach(r => { const b = h("button", { type: "button", text: `${r}×`, "aria-pressed": String(get() === r) }); b.addEventListener("click", () => { set(r); seg.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); }); seg.append(b); });
+  return seg;
+}
+
+// ---------- player: one clock that drives every panel of a cell ----------
+function player(host, end, onFrame) {
+  const st = { t: 0, on: false, last: null, rate: 2, end };
+  const tick = ts => {
+    if (!host.isConnected) return;
+    if (st.on) {
+      if (st.last != null) { st.t = Math.min(st.end, st.t + (ts - st.last) / 1000 * st.rate); onFrame(st.t); if (st.t >= st.end) { st.on = false; st.onEnd && st.onEnd(); } }
+      st.last = ts;
+    } else st.last = null;
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+  st.play = () => { if (st.t >= st.end) st.t = 0; if (reduceMotion) { st.t = st.end; onFrame(st.t); st.onEnd && st.onEnd(); return; } st.on = true; };
+  st.pause = () => { st.on = false; };
+  return st;
 }
 
 // ---------- track map ----------
@@ -375,6 +435,8 @@ function drawMap(svg, { colors = null, width = 1 } = {}) {
   return lw;
 }
 const colorsPerMetre = phase2m => { const c = []; for (let i = 0; i < NT; i++) c.push(phaseColor(phase2m[Math.min(Math.round(i / RUN_DS), phase2m.length - 1)])); return c; };
+const mapDot = (svg, lw, color) => svgEl("circle", { r: lw * 2.6, fill: color, stroke: "#fff", "stroke-width": lw * 0.7, cx: TX[0], cy: -TY[0] }, svg);
+const placeDot = (dot, k) => { dot.setAttribute("cx", TX[k]); dot.setAttribute("cy", -TY[k]); };
 
 // ---------- line chart (speed vs distance) ----------
 function lineChart(box, opt) {
@@ -441,11 +503,14 @@ function lineChart(box, opt) {
   hit.addEventListener("pointermove", e => show(e.clientX));
   hit.addEventListener("pointerdown", e => show(e.clientX));
   hit.addEventListener("pointerleave", () => { cross.setAttribute("visibility", "hidden"); dots.forEach(d => d.setAttribute("visibility", "hidden")); tip.hidden = true; });
+  return { svg, sx, sy, top: m.t, bottom: H - m.b };
 }
 const lapEnd = Math.ceil(B.s[B.s.length - 1] / 100) * 100;
 const speedChart = (box, series, extra = {}) => lineChart(box, { x: [0, zoom || lapEnd], y: [0, 110], yTicks: [0, 25, 50, 75, 100], series, ...extra });
+const lapChart = (box, series, height = 200) => lineChart(box, { x: [0, lapEnd], y: [0, 120], yTicks: [0, 30, 60, 90, 120], series, height });
 
 // ---------- 2D GGV slice ----------
+// x = lateral g, positive when turning right; y = longitudinal g, positive when accelerating.
 function ringPts(sl) {   // closed envelope: top edge left→right, bottom edge right→left
   const p = [];
   for (let i = sl.ay.length - 1; i >= 0; i--) p.push([-sl.ay[i], sl.ax_max[i]]);
@@ -467,22 +532,44 @@ function ggvSlice(box, layers, maxH = 300) {
   const lab = (x, y, t, a) => svgText(svg, x, y, t, { "text-anchor": a, fill: css("--ink-2"), "font-size": 11 });
   lab(sx(0), sy(gy[1]) + 2, "accelerate ↑", "middle"); lab(sx(0), sy(gy[0]) - 4, "brake ↓", "middle");
   lab(sx(gx[1]), sy(gy[1]) + 2, "turn →", "end"); lab(sx(gx[0]), sy(gy[1]) + 2, "← turn", "start");
-  for (const L of layers) {
-    const d = ringPts(L.slice).map((p, i) => (i ? "L" : "M") + sx(p[0]).toFixed(1) + "," + sy(p[1]).toFixed(1)).join("") + "Z";
-    svgEl("path", { d, fill: L.fill || "none", "fill-opacity": L.fillOpacity || 0, stroke: L.color, "stroke-width": L.width || 2, "stroke-dasharray": L.dash || "", "stroke-linejoin": "round" }, svg);
-  }
-  return { svg, sx, sy, W, H: Hh, inv: (px, py) => [(px - m.l - ox) / k + gx[0], gy[1] - (py - m.t) / k] };
+  const ringD = sl => ringPts(sl).map((p, i) => (i ? "L" : "M") + sx(p[0]).toFixed(1) + "," + sy(p[1]).toFixed(1)).join("") + "Z";
+  for (const L of layers) svgEl("path", { d: ringD(L.slice), fill: L.fill || "none", "fill-opacity": L.fillOpacity || 0, stroke: L.color, "stroke-width": L.width || 2, "stroke-dasharray": L.dash || "", "stroke-linejoin": "round" }, svg);
+  return { svg, sx, sy, W, H: Hh, ringD, inv: (px, py) => [(px - m.l - ox) / k + gx[0], gy[1] - (py - m.t) / k] };
 }
-const sliceReadout = (sl, v) => `at ${v} km/h:  accelerate ${sl.ax_max[0].toFixed(2)} g   brake ${(-sl.ax_min[0]).toFixed(2)} g   turn ${sl.ay[sl.ay.length - 1].toFixed(2)} g`;
+// A slice that is updated many times a second: axes drawn once, shapes and dots moved in place.
+function liveSlice(box, maxH) {
+  let base = null, paths = [], dots = [], last = { layers: [], points: [] };
+  const frame = () => { base = ggvSlice(box, [], maxH); paths = []; dots = []; };
+  const set = s => {
+    last = s;
+    s.layers.forEach((L, i) => {
+      const p = paths[i] || (paths[i] = svgEl("path", { "stroke-linejoin": "round" }, base.svg));
+      p.setAttribute("d", base.ringD(L.slice)); p.setAttribute("fill", L.fill || "none"); p.setAttribute("fill-opacity", L.fillOpacity || 0);
+      p.setAttribute("stroke", L.color); p.setAttribute("stroke-width", L.width || 2); p.setAttribute("stroke-dasharray", L.dash || "");
+    });
+    paths.slice(s.layers.length).forEach(p => p.setAttribute("d", ""));
+    s.points.forEach((P, i) => {
+      const d = dots[i] || (dots[i] = svgEl("circle", { r: 6, stroke: "#fff", "stroke-width": 2.5 }, base.svg));
+      d.setAttribute("cx", base.sx(-P.ay)); d.setAttribute("cy", base.sy(P.ax)); d.setAttribute("fill", P.color); d.setAttribute("visibility", "visible");
+    });
+    dots.slice(s.points.length).forEach(d => d.setAttribute("visibility", "hidden"));
+  };
+  frame();
+  onRedraw(box, () => { frame(); set(last); });
+  return { set };
+}
+const sliceReadout = sl => `accelerate ${sl.ax_max[0].toFixed(2)} g   brake ${(-sl.ax_min[0]).toFixed(2)} g   turn ${sl.ay[sl.ay.length - 1].toFixed(2)} g`;
 
 // ---------- 3D GGV (canvas, orthographic, drag to rotate) ----------
+// src() returns { rings: [{run, ghost}], hl: [{slice, v, color, ghost}], pts: [{ax, ay, v, color}] }.
 const HEIGHT = 2.6;
-function make3d(cv, getRun, getSel, getPoint) {
-  const st = { yaw: -0.6, pitch: 0.55, auto: !reduceMotion, cache: null, rings: null };
-  const rings = () => { const r = getRun(); if (st.cache !== r) { st.cache = r; st.rings = r.ggv3d.map(ringPts); } return st.rings; };
+function make3d(cv, src) {
+  const st = { yaw: -0.6, pitch: 0.55, auto: !reduceMotion };
+  const cache = new Map();
+  const ringsOf = run => { if (!cache.has(run)) cache.set(run, run.ggv3d.map(ringPts)); return cache.get(run); };
   function draw() {
     if (!cv.isConnected) return;
-    const R = rings(), sel = getSel();
+    const S = src();
     const dpr = window.devicePixelRatio || 1, W = cv.clientWidth, Hc = cv.clientHeight;
     if (!W || !Hc) return;
     if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(Hc * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(Hc * dpr); }
@@ -490,32 +577,42 @@ function make3d(cv, getRun, getSel, getPoint) {
     const cy = Math.cos(st.yaw), sy_ = Math.sin(st.yaw), cp = Math.cos(st.pitch), sp = Math.sin(st.pitch);
     const k = Math.min(W / 5.6, Hc / (HEIGHT * cp + 4.6 * sp + 0.9));
     const ox = W / 2, oy = Hc / 2 + k * (HEIGHT * cp) / 2;
-    const hOf = v => (v - VMIN3) / (VMAX3 - VMIN3) * HEIGHT;
+    const hOf = v => (Math.max(VMIN3, Math.min(VMAX3, v)) - VMIN3) / (VMAX3 - VMIN3) * HEIGHT;
     const P = (lat, lon, hgt) => { const x = lat * cy - lon * sy_, d = lat * sy_ + lon * cy; return [ox + k * x, oy - k * (hgt * cp + d * sp)]; };
-    const line = (pts, color, w, alpha = 1) => { g.beginPath(); pts.forEach((p, i) => i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1])); g.strokeStyle = color; g.globalAlpha = alpha; g.lineWidth = w; g.stroke(); g.globalAlpha = 1; };
+    const line = (pts, color, w, alpha = 1, dash = null) => { g.beginPath(); pts.forEach((p, i) => i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1])); g.strokeStyle = color; g.globalAlpha = alpha; g.lineWidth = w; g.setLineDash(dash || []); g.stroke(); g.globalAlpha = 1; g.setLineDash([]); };
     const txt = (s, p, align = "left") => { g.textAlign = align; g.fillText(s, p[0], p[1]); };
+    const ring3 = (pts, hgt) => [...pts, pts[0]].map(p => P(p[0], p[1], hgt));
     g.font = `11px ${css("--f-code")}`; g.fillStyle = css("--muted");
     line([P(-2.2, 0, 0), P(2.2, 0, 0)], css("--line"), 1); line([P(0, -2.2, 0), P(0, 1.4, 0)], css("--line"), 1);
     line([P(0, 0, 0), P(0, 0, HEIGHT * 1.06)], css("--line"), 1);
     txt("turn", P(2.35, 0, 0)); txt("accelerate", P(0, 1.55, 0)); txt("brake", P(0, -2.35, 0));
-    const n = R[0].length;
-    for (let j = 0; j < n; j += Math.round(n / 12)) line(R.map((r, i) => P(r[j][0], r[j][1], hOf(V3[i]))), css("--line"), 1, 0.8);
     const lo = [183, 211, 246], hi = [13, 54, 107];
-    R.forEach((r, i) => {
-      const t = i / (R.length - 1), c = `rgb(${lo.map((v, q) => Math.round(v + (hi[q] - v) * t)).join(",")})`;
-      line([...r, r[0]].map(p => P(p[0], p[1], hOf(V3[i]))), c, 1.2);
-    });
-    const si = V3.indexOf(sel), hs = hOf(sel), rp = [...R[si], R[si][0]].map(p => P(p[0], p[1], hs));
-    g.beginPath(); rp.forEach((p, i) => i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]));
-    g.fillStyle = css("--hi"); g.globalAlpha = 0.16; g.fill(); g.globalAlpha = 1;
-    line(rp, css("--hi"), 3);
-    if (getPoint) {   // the operating point picked on the slice
-      const pt = getPoint(), q = P(pt.ay, pt.ax, hs);
-      g.beginPath(); g.arc(q[0], q[1], 5, 0, Math.PI * 2); g.fillStyle = css("--hi"); g.fill(); g.lineWidth = 2; g.strokeStyle = "#fff"; g.stroke();
+    let meridians = false;
+    for (const { run, ghost } of S.rings) {
+      const R = ringsOf(run);
+      if (!ghost && !meridians) {
+        meridians = true;
+        const n = R[0].length;
+        for (let j = 0; j < n; j += Math.round(n / 12)) line(R.map((r, i) => P(r[j][0], r[j][1], hOf(V3[i]))), css("--line"), 1, 0.8);
+      }
+      R.forEach((r, i) => {
+        if (ghost) line(ring3(r, hOf(V3[i])), css("--base"), 1, 0.7, [3, 3]);
+        else { const t = i / (R.length - 1); line(ring3(r, hOf(V3[i])), `rgb(${lo.map((v, q) => Math.round(v + (hi[q] - v) * t)).join(",")})`, 1.2); }
+      });
     }
-    g.fillStyle = css("--ink"); txt(`${sel} km/h`, P(R[si][0][0] - 0.2, R[si][0][1], hs), "right");
+    for (const L of S.hl) {
+      const rp = ring3(ringPts(L.slice), hOf(L.v));
+      if (!L.ghost) { g.beginPath(); rp.forEach((p, i) => i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1])); g.fillStyle = L.color; g.globalAlpha = 0.16; g.fill(); g.globalAlpha = 1; }
+      line(rp, L.color, L.ghost ? 1.75 : 2.75, 1, L.ghost ? [4, 3] : null);
+    }
+    for (const p of S.pts) {
+      const q = P(-p.ay, p.ax, hOf(p.v));
+      g.beginPath(); g.arc(q[0], q[1], 5.5, 0, Math.PI * 2); g.fillStyle = p.color; g.fill(); g.lineWidth = 2; g.strokeStyle = "#fff"; g.stroke();
+    }
+    const R0 = ringsOf(S.rings[0].run), first = S.hl[0];
     g.fillStyle = css("--muted");
-    [VMIN3, VMAX3].filter(v => v !== sel).forEach(v => { const i = V3.indexOf(v); txt(`${v} km/h`, P(R[i][0][0] - 0.2, R[i][0][1], hOf(v)), "right"); });
+    [VMIN3, VMAX3].forEach(v => { const r = R0[V3.indexOf(v)][0]; if (!first || Math.abs(first.v - v) > 12) txt(`${v} km/h`, P(r[0] - 0.2, r[1], hOf(v)), "right"); });
+    if (first) { const r = ringPts(first.slice)[0]; g.fillStyle = css("--ink"); txt(`${Math.round(first.v)} km/h`, P(r[0] - 0.2, r[1], hOf(first.v)), "right"); }
   }
   const loop = () => { if (!cv.isConnected) return; if (st.auto) st.yaw += 0.004; draw(); requestAnimationFrame(loop); };
   let drag = null;
@@ -531,6 +628,7 @@ function make3d(cv, getRun, getSel, getPoint) {
   requestAnimationFrame(loop);
   return { draw };
 }
+const canvas3d = label => h("canvas", { class: "ggv3d", role: "img", "aria-label": label });
 
 // ---------- car drawings: side view + top view ----------
 // Units are metres. Text grows when a drawing is shown small (phones).
@@ -630,39 +728,21 @@ function topView(svg, W) {
 }
 
 // ---------- free body diagram data ----------
+// ay > 0 is a left turn. Data holds left turns only; a right turn is the mirror image.
 function fbdPoint(v, ax10, ay10) {
   const pts = FBD.pts[FBD.speeds_kph.indexOf(v)], mirror = ay10 < 0, a = Math.abs(ay10);
   let best = null, bd = 1e9;
   for (const p of pts) { const d = (p[0] - ax10) ** 2 + (p[1] - a) ** 2; if (d < bd) { bd = d; best = p; } }
   const q = best.slice(2), w = [0, 1, 2, 3].map(i => ({ Fz: q[i], Fx: q[4 + i], Fy: q[8 + i], Fxmax: q[12 + i], Fymax: q[16 + i] }));
-  // Data holds left turns only; a right turn is the mirror image: swap left/right, flip lateral force.
   const ws = mirror ? [w[1], w[0], w[3], w[2]].map(x => ({ ...x, Fy: -x.Fy })) : w;
   return { ax: best[0] / 10, ay: (mirror ? -best[1] : best[1]) / 10, w: ws };
 }
 
-// ---------- replay (map dots) ----------
-function replay(svg, lw, runs) {  // runs: [{t:[], step (metres per sample), color}]
-  const dots = runs.map(r => svgEl("circle", { r: lw * 2.6, fill: r.color, stroke: "#fff", "stroke-width": lw * 0.7 }, svg));
-  const st = { t: 0, on: false, last: null, rate: 4 };
-  const end = Math.max(...runs.map(r => r.t[r.t.length - 1]));
-  const place = () => runs.forEach((r, k) => { const i = Math.min(idxAtTime(r.t, st.t) * r.step, NT - 1); dots[k].setAttribute("cx", TX[i]); dots[k].setAttribute("cy", -TY[i]); });
-  const tick = ts => {
-    if (!svg.isConnected) return;
-    if (st.on) { if (st.last != null) { st.t = Math.min(end, st.t + (ts - st.last) / 1000 * st.rate); if (st.t >= end) { st.on = false; st.onEnd && st.onEnd(); } } st.last = ts; st.onTick && st.onTick(st.t); place(); }
-    else st.last = null;
-    requestAnimationFrame(tick);
-  };
-  place(); requestAnimationFrame(tick);
-  st.play = () => { if (st.t >= end) st.t = 0; if (reduceMotion) { st.t = end; place(); st.onTick && st.onTick(st.t); st.onEnd && st.onEnd(); return; } st.on = true; };
-  st.pause = () => { st.on = false; };
-  return st;
-}
-
 // ---------- cells ----------
 const why = text => h("details", { class: "why" }, h("summary", { text: "Why?" }), h("p", { text }));
-const stdout = (text, big) => h("pre", { class: "stdout" + (big ? " big" : ""), text });
+const stdout = (text, cls = "") => h("pre", { class: "stdout " + cls, text });
 const NEEDS = { 1: [], 2: [], 3: [2], 4: [1, 3], 5: [4], 6: [1, 2] };
-const DEFINES = { 1: "track", 2: "car", 3: "ggv", 4: "v_corner", 5: "lap", 6: "my_car" };
+const DEFINES = { 1: "track", 2: "car", 3: "ggv", 4: "lap", 5: "lap_time", 6: "my_car" };
 const ran = new Set();
 let execCount = 0;
 
@@ -671,7 +751,8 @@ const gf = { v: 60, ax10: -12, ay10: 8 };
 function renderGgvSrc() {
   const p = fbdPoint(gf.v, gf.ax10, gf.ay10), n = t => h("span", { class: "n", text: t });
   $("#ggvSrc").replaceChildren(
-    h("span", { class: "v", text: "ggv" }), " = ", h("span", { class: "f", text: "build_ggv" }), "(", h("span", { class: "v", text: "car" }), ")   ", h("span", { class: "c", text: "# the car's limits" }), "\n",
+    h("span", { class: "c", text: "# 3. The GGV: everything the car can do, at every speed" }), "\n",
+    h("span", { class: "v", text: "ggv" }), " = ", h("span", { class: "f", text: "build_ggv" }), "(", h("span", { class: "v", text: "car" }), ")\n",
     h("span", { class: "v", text: "ggv" }), ".", h("span", { class: "f", text: "forces_at" }), "(speed=", n(String(gf.v)), ", ax=", n(p.ax.toFixed(1)), ", ay=", n(p.ay.toFixed(1)), ")   ",
     h("span", { class: "c", text: "# pick a point, see the forces" }));
 }
@@ -681,8 +762,7 @@ const CELLS = {
   1(out) {
     const svg = svgEl("svg", { class: "map", role: "img", "aria-label": "FSUK 2026 sprint course" });
     out.append(h("div", { class: "row map-chart" }, h("div", {}, svg),
-      h("div", { class: "stack" },
-        stdout(`length   ${Math.round(B.s[B.s.length - 1])} m\nslices   ${Math.round(B.s[B.s.length - 1] / D.meta.ds_m).toLocaleString("en-GB")} × 10 cm\ntightest bend radius   ${(1 / Math.max(...B.kappa.map(Math.abs))).toFixed(1)} m`))),
+      stdout(`length   ${Math.round(B.s[B.s.length - 1])} m\nslices   ${Math.round(B.s[B.s.length - 1] / D.meta.ds_m).toLocaleString("en-GB")} × 10 cm\ntightest bend radius   ${(1 / Math.max(...B.kappa.map(Math.abs))).toFixed(1)} m`)),
       why("A team member walked the racing line at Silverstone with a phone in July 2026. The sim smooths the GPS trace and cuts it into 10 cm slices. For each slice it only needs to know how tight the bend is."));
     drawMap(svg);
   },
@@ -694,25 +774,24 @@ const CELLS = {
       h("tbody", {}, ...rows.map(r => h("tr", {}, ...r.map(v => h("td", { text: String(v) }))))));
     const side = svgEl("svg", { class: "drawing", role: "img", "aria-label": "Side view with wheelbase, centre of gravity height and centre of pressure" });
     const top = svgEl("svg", { class: "drawing", role: "img", "aria-label": "Top view with track width and wheelbase" });
-    const topBox = h("div", { style: "max-width:220px;width:100%;justify-self:center" }, top);
-    out.append(h("div", { class: "row car3" }, h("div", { class: "scroll-x" }, t), topBox, h("div", {}, side)),
-      why("The model treats the car as one rigid body on four tyres. These few numbers are all it needs: the mass and where its centre of gravity (CoG) sits, the wheelbase and track width, where the wings push down (centre of pressure, CoP), the tyres' grip and the motor. They come from the other subteams."));
+    out.append(h("div", { class: "row car3" }, h("div", { class: "scroll-x" }, t), h("div", { style: "max-width:220px;width:100%;justify-self:center" }, top), h("div", {}, side)),
+      why("These few numbers are all the model needs: the mass and where its centre of gravity (CoG) sits, the wheelbase and track width, where the wings push down (centre of pressure, CoP), the tyres' grip and the motor. They come from the other subteams."));
     const draw = () => { sideView(side, null); topView(top, null); };
     onRedraw(side, draw); draw();
   },
   3(out) {
-    const cv = h("canvas", { class: "ggv3d", role: "img", "aria-label": "3D GGV diagram: grip envelope rings stacked by speed" });
+    const cv = canvas3d("3D GGV diagram: grip envelope rings stacked by speed");
     const padBox = h("div", { class: "chart" });
     const read = stdout("");
     const side = svgEl("svg", { class: "drawing", role: "img", "aria-label": "Side view free body diagram" });
     const top = svgEl("svg", { class: "drawing", role: "img", "aria-label": "Top view: load and grip used at each tyre" });
     let pad = null, dot = null, pt = fbdPoint(gf.v, gf.ax10, gf.ay10);
-    const g3 = make3d(cv, () => baseRun, () => gf.v, () => pt);
+    const g3 = make3d(cv, () => ({ rings: [{ run: baseRun }], hl: [{ slice: sliceAt(baseRun, gf.v), v: gf.v, color: css("--hi") }], pts: [{ ax: pt.ax, ay: pt.ay, v: gf.v, color: css("--hi") }] }));
     const slider = speedSlider(gf.v, v => { gf.v = v; drawPad(); });
     function drawForces() {   // cheap: runs on every pointer move
       pt = fbdPoint(gf.v, gf.ax10, gf.ay10);
       gf.ax10 = Math.round(pt.ax * 10); gf.ay10 = Math.round(pt.ay * 10);   // snap to the grid point shown
-      dot.setAttribute("cx", pad.sx(pt.ay)); dot.setAttribute("cy", pad.sy(pt.ax));
+      dot.setAttribute("cx", pad.sx(-pt.ay)); dot.setAttribute("cy", pad.sy(pt.ax));
       const aero = FBD.aero[FBD.speeds_kph.indexOf(gf.v)], w = pt.w;
       sideView(side, { mg: CAR.mass_kg * G, dfF: aero.df_front, dfR: aero.df_rear, drag: aero.drag, NzF: w[0].Fz + w[1].Fz, NzR: w[2].Fz + w[3].Fz, FxF: w[0].Fx + w[1].Fx, FxR: w[2].Fx + w[3].Fx });
       topView(top, pt);
@@ -724,11 +803,12 @@ const CELLS = {
       pad.svg.classList.add("pad");
       dot = svgEl("circle", { r: 7, fill: css("--hi"), stroke: "#fff", "stroke-width": 2.5 }, pad.svg);
       const svgP = pad.svg, P = pad;
-      const move = e => { const r = svgP.getBoundingClientRect(); const [ay, ax] = P.inv((e.clientX - r.left) * P.W / r.width, (e.clientY - r.top) * P.H / r.height); gf.ax10 = Math.round(ax * 10); gf.ay10 = Math.round(ay * 10); drawForces(); };
+      // x on the pad is lateral g turning right, so a left turn (ay > 0) is to the left.
+      const move = e => { const r = svgP.getBoundingClientRect(); const [x, ax] = P.inv((e.clientX - r.left) * P.W / r.width, (e.clientY - r.top) * P.H / r.height); gf.ax10 = Math.round(ax * 10); gf.ay10 = Math.round(-x * 10); drawForces(); };
       svgP.addEventListener("pointerdown", e => { svgP.setPointerCapture(e.pointerId); move(e); svgP.onpointermove = move; });
       const stop = () => { svgP.onpointermove = null; };
       svgP.addEventListener("pointerup", stop); svgP.addEventListener("pointercancel", stop);
-      read.textContent = sliceReadout(sl, gf.v);
+      read.textContent = `at ${gf.v} km/h:  ${sliceReadout(sl)}`;
       drawForces();
     }
     const PRE = [["Hard braking", 90, s => [Math.round(Math.min(...s.ax_min) * 10), 0]], ["Fast corner", 90, s => [0, Math.floor(s.ay[s.ay.length - 1] * 10)]],
@@ -736,13 +816,11 @@ const CELLS = {
     const preBox = h("div", { class: "ctl" });
     PRE.forEach(([name, v, f]) => { const b = h("button", { class: "tb sm", type: "button", text: name }); b.addEventListener("click", () => { gf.v = v; slider.set(v); [gf.ax10, gf.ay10] = f(sliceAt(baseRun, v)); drawPad(); }); preBox.append(b); });
     out.append(h("div", { class: "ctl" }, slider, preBox),
-      h("div", { class: "row halves" },
-        h("div", { class: "stack" }, cv, h("span", { class: "hint", text: "All speeds stacked. Drag to rotate." })),
-        h("div", { class: "stack" }, padBox, h("span", { class: "hint", text: "One speed. Drag the dot: brake, turn, accelerate." }))),
+      h("div", { class: "row halves" }, h("div", { class: "stack" }, cv, h("span", { class: "hint", text: "Drag to rotate." })), padBox),
       read,
       h("div", { class: "row fbd" }, h("div", { style: "max-width:300px;width:100%;justify-self:center" }, top), h("div", {}, side)),
       legend([["weight", css("--ink")], ["wing force", css("--accent")], ["ground support", css("--f-ground")], ["tyre force", css("--f-tyre")], ["acceleration", css("--hi")], ["grip ellipse (red at 100%)", css("--brk"), "area"]]),
-      why("The GGV is everything the car can do: inside the shape is possible, outside the tyres slide. Each ring is one speed; faster rings are wider because the wings press the car down harder. To build it, the model shifts weight between the tyres (forwards when braking, outwards in a corner), adds the wing forces, and asks how much force each tyre can still give: up to its ellipse, which grows with the load on it. The edge of the shape is where the tyres reach 100%. The top is flat because only the rear wheels drive."));
+      why("Inside the shape is possible; outside it the tyres slide. Each ring is one speed; faster rings are wider because the wings press the car down harder. To build it, the model shifts weight between the tyres (forwards when braking, outwards in a corner), adds the wing forces, and asks how much force each tyre can still give: up to its ellipse, which grows with the load on it. The edge of the shape is where the tyres reach 100%. The top is flat because only the rear wheels drive."));
     onRedraw(padBox, drawPad);
     drawPad();
   },
@@ -753,53 +831,77 @@ const CELLS = {
       ["① corner limits", "The grey area is too fast: the tyres would slide. The tighter the bend, the lower the limit."],
       ["② + accelerate", "Flat out from the start. At each bend the speed drops straight down: that would be impossible, instant braking."],
       ["③ + brake", "Worked backwards from the finish with the braking limit. Read it right to left: this is where braking must start."],
+      ["④ the lower curve", "At every slice the car can go no faster than either curve. The lower one is the lap: green accelerating, red braking, blue at the cornering limit."],
     ];
     let step = 1;
     const btns = h("div", { class: "steps", role: "group", "aria-label": "Step" });
     STEPS.forEach(([label], i) => { const b = h("button", { type: "button", text: label }); b.addEventListener("click", () => { step = i + 1; draw(); }); btns.append(b); });
     const keys = h("div");
+    const lapColors = [...B.phase].map(phaseColor), lapLabels = [...B.phase].map(c => PHASE[c][0]);
     function draw() {
       btns.querySelectorAll("button").forEach((b, i) => b.setAttribute("aria-pressed", String(i + 1 === step)));
       document.querySelectorAll("#passSrc .ln").forEach(l => l.classList.toggle("on", +l.dataset.ln === step));
+      const fade = step === 4;
       const s = [{ label: "corner limit", color: css("--cap"), width: 1.5, shade: true, x: B.s, y: capShown(B.v_cap), noTip: step > 1 }];
-      if (step >= 2) s.push({ label: "forward pass", color: css("--acc"), width: step === 2 ? 2.25 : 1.5, opacity: step === 2 ? 1 : 0.5, x: B.s, y: B.v_fwd });
-      if (step >= 3) s.push({ label: "backward pass", color: css("--brk"), width: 2.25, x: B.s, y: B.v_bwd });
+      if (step >= 2) s.push({ label: "forward pass", color: css("--acc"), width: step === 2 ? 2.25 : 1.5, opacity: step === 2 ? 1 : fade ? 0.3 : 0.5, x: B.s, y: B.v_fwd, noTip: fade });
+      if (step >= 3) s.push({ label: "backward pass", color: css("--brk"), width: fade ? 1.5 : 2.25, opacity: fade ? 0.3 : 1, x: B.s, y: B.v_bwd, noTip: fade });
+      if (step === 4) s.push({ label: "lap", colors: lapColors, labels: lapLabels, width: 2.75, x: B.s, y: B.v });
       speedChart(box, s);
-      const items = [["corner limit (too fast above)", css("--cap"), "area"]];
-      if (step >= 2) items.push(["forward pass: accelerating", css("--acc")]);
-      if (step >= 3) items.push(["backward pass: braking", css("--brk")]);
+      const items = [["corner limit", css("--cap"), "area"]];
+      if (step === 2 || step === 3) items.push(["forward: accelerating", css("--acc")]);
+      if (step === 3) items.push(["backward: braking", css("--brk")]);
+      if (step === 4) items.push(["accelerating", css("--acc")], ["braking", css("--brk")], ["at the cornering limit", css("--crn")]);
       keys.replaceChildren(legend(items));
       caption.textContent = STEPS[step - 1][1];
     }
     out.append(h("div", { class: "ctl" }, btns, zoomControl(draw, box)), keys, box, caption,
-      why("Corner limits: in a bend the tyres must provide the sideways force, so v = √(a_lat ÷ curvature), with a_lat read from the GGV. Forward pass: starting from rest, each slice the speed grows by v² + 2·a·Δs, with a the most the GGV and the 80 kW limit allow, and it is cut down to the corner limit. Backward pass: the same from the finish backwards, using the braking limit. The next cell takes the lower of the two."));
+      why("Corner limits: in a bend the tyres must provide the sideways force, so v = √(a_lat ÷ curvature), with a_lat read from the GGV. Forward pass: from rest, each slice the speed grows by v² + 2·a·Δs, with a the most the GGV and the 80 kW limit allow, cut down to the corner limit. Backward pass: the same from the finish backwards, using the braking limit. The lap is the lower of the two."));
     draw();
   },
   5(out) {
-    const colors = [...B.phase].map(phaseColor), labels = [...B.phase].map(c => PHASE[c][0]);
-    const svg = svgEl("svg", { class: "map", role: "img", "aria-label": "Track coloured by accelerating, braking and cornering" });
-    const box = h("div", { class: "chart" });
-    const draw = () => speedChart(box, [
-      { label: "corner limit", color: css("--cap"), width: 1, shade: true, x: B.s, y: capShown(B.v_cap), noTip: true },
-      { label: "lap", colors, labels, width: 2.5, x: B.s, y: B.v }]);
+    const lapColors = [...B.phase].map(phaseColor), lapLabels = [...B.phase].map(c => PHASE[c][0]);
     const share = { A: 0, B: 0, C: 0 };
     for (let i = 0; i < B.t.length - 1; i++) share[B.phase[i]] += B.t[i + 1] - B.t[i];
     const tot = share.A + share.B + share.C, pct = c => `${Math.round(share[c] / tot * 100)}%`;
-    const clock = stdout(""); clock.style.fontSize = "16px";
-    const btn = h("button", { class: "tb", type: "button", text: "▶ Replay" });
-    out.append(stdout(`Lap time: ${LAP_T.toFixed(2)} s`, true),
+    const svg = svgEl("svg", { class: "map", role: "img", "aria-label": "Track coloured by accelerating, braking and cornering, with the car replaying the lap" });
+    const cv = canvas3d("3D GGV with the car's operating point during the lap");
+    const sliceBox = h("div", { class: "chart" });
+    const box = h("div", { class: "chart" });
+    const clock = stdout("", "sm");
+    const btn = h("button", { class: "tb sm", type: "button", text: "▶ Replay" });
+    const speed = { rate: 2 };   // the player is created below; the buttons only touch this
+    out.append(stdout(`Lap time: ${LAP_T.toFixed(2)} s`, "big"),
+      h("div", { class: "ctl" }, btn, rateControl(() => speed.rate, r => { speed.rate = r; rp.rate = r; }), clock),
+      h("div", { class: "row tri" }, svg, cv, sliceBox),
       legend([["accelerating " + pct("A"), css("--acc")], ["braking " + pct("B"), css("--brk")], ["at the cornering limit " + pct("C"), css("--crn")]]),
-      h("div", { class: "row map-chart" },
-        h("div", { class: "stack" }, svg, h("div", { class: "ctl" }, btn, clock)),
-        h("div", { class: "stack" }, h("div", { class: "ctl" }, zoomControl(draw, box)), box)),
-      why("At every slice the car can go no faster than either curve, so the lap is the lower one. Add up slice length ÷ speed over every slice to get the lap time. Look how little time is spent just cornering: an FS car is almost always on the throttle or the brakes."));
-    const lw = drawMap(svg, { colors });
-    const rp = replay(svg, lw, [{ t: B.t.slice(0, -1).concat([LAP_T]), step: 1, color: css("--ink") }]);
-    rp.onTick = t => { clock.textContent = `${t.toFixed(2)} s  ${Math.round(B.v[idxAtTime(B.t, t)])} km/h`; };
+      box,
+      why("Add up slice length ÷ speed over every slice and you get the lap time. Watch the dot on the GGV: it rides the edge of the shape almost all lap, along the bottom when braking, the sides in a corner, up the sides when accelerating out. That is the sim's key assumption: the car is always at the limit."));
+    const lw = drawMap(svg, { colors: lapColors });
+    const dot = mapDot(svg, lw, css("--ink"));
+    let now = carAt(BTRACE, 0), chart = null, cursor = null, cdot = null;
+    const g3 = make3d(cv, () => ({ rings: [{ run: baseRun }], hl: [{ slice: sliceInterp(baseRun, now.v), v: now.v, color: css("--hi") }], pts: [{ ax: now.ax, ay: now.ay, v: now.v, color: phaseColor(now.phase) }] }));
+    const sl = liveSlice(sliceBox, 230);
+    const drawChart = () => {
+      chart = lapChart(box, [{ label: "corner limit", color: css("--cap"), width: 1, shade: true, x: B.s, y: capShown(B.v_cap), noTip: true }, { label: "lap", colors: lapColors, labels: lapLabels, width: 2.25, x: B.s, y: B.v }]);
+      cursor = svgEl("line", { y1: chart.top, y2: chart.bottom, stroke: css("--ink"), "stroke-width": 1, "stroke-opacity": 0.5 }, chart.svg);
+      cdot = svgEl("circle", { r: 5, stroke: "#fff", "stroke-width": 2 }, chart.svg);
+      frame(rp ? rp.t : 0);
+    };
+    function frame(t) {
+      now = carAt(BTRACE, t);
+      placeDot(dot, now.k);
+      sl.set({ layers: [{ slice: sliceInterp(baseRun, now.v), color: css("--hi"), width: 2.5, fill: css("--hi"), fillOpacity: 0.1 }], points: [{ ax: now.ax, ay: now.ay, color: phaseColor(now.phase) }] });
+      if (cursor) { const x = chart.sx(now.s); cursor.setAttribute("x1", x); cursor.setAttribute("x2", x); cdot.setAttribute("cx", x); cdot.setAttribute("cy", chart.sy(now.v)); cdot.setAttribute("fill", phaseColor(now.phase)); }
+      clock.textContent = `${t.toFixed(2)} s   ${Math.round(now.v)} km/h   ${PHASE[now.phase][0].toLowerCase()}`;
+      if (reduceMotion) g3.draw();
+    }
+    const rp = player(svg, LAP_T, frame);
+    rp.rate = speed.rate;
     rp.onEnd = () => { btn.textContent = "▶ Replay"; };
     btn.addEventListener("click", () => { if (rp.on) { rp.pause(); btn.textContent = "▶ Replay"; } else { rp.play(); btn.textContent = "❚❚ Pause"; } });
-    draw();
-    rp.play(); btn.textContent = "❚❚ Pause";
+    onRedraw(box, drawChart);
+    drawChart();
+    rp.play(); btn.textContent = rp.on ? "❚❚ Pause" : "▶ Replay";
   },
   6(out) { renderWorkbench(out); },
 };
@@ -815,12 +917,13 @@ const setup = { ...D.baseline_setup };
 function renderFormSrc() {
   const src = $("#formSrc"); src.replaceChildren();
   const v = t => h("span", { class: "v", text: t }), f = t => h("span", { class: "f", text: t });
+  src.append(h("span", { class: "c", text: "# 6. Your turn: change the car, then race the baseline" }), "\n");
   for (const p of PARAMS) {
     const vals = D.grid[p.key];
     src.append(v(p.name.padEnd(9)), " = ", h("span", { class: "n", text: p.fmt(setup[p.key]).padEnd(5) }), " ",
       h("span", { class: "c", text: `#@param {type:"slider", min:${p.fmt(vals[0])}, max:${p.fmt(vals[vals.length - 1])}}` }), "\n");
   }
-  src.append("\n", v("my_car"), " = ", v("car"), ".", f("copy"), "(", PARAMS.map(p => p.name).join(", "), ")\n",
+  src.append(v("my_car"), " = ", v("car"), ".", f("copy"), "(", PARAMS.map(p => p.name).join(", "), ")\n",
     f("compare"), "(", f("simulate"), "(", v("my_car"), ", ", v("track"), "), ", v("baseline"), ")");
 }
 const form = $("#form");
@@ -840,10 +943,12 @@ for (const p of PARAMS) {
 renderFormSrc();
 const syncForm = () => PARAMS.forEach(p => { const vals = D.grid[p.key], r = $(`#p-${p.key}`); r.value = String(vals.indexOf(setup[p.key])); $(`output[for="p-${p.key}"]`).textContent = p.fmt(setup[p.key]); });
 
-const wb = { run: baseRun, update: () => {}, race: null, v: 90 };
+// Your car is orange, the baseline grey, in every panel of this cell.
+const wb = { run: baseRun, update: () => {}, race: null, v: 90, live: null };
 const meanDiff = (a, b) => { let s = 0, n = 0; for (let i = 0; i < a.length; i++) if (a[i] != null && b[i] != null && a[i] <= 120 && b[i] <= 120) { s += a[i] - b[i]; n++; } return n ? s / n : 0; };
 const sgn = (x, d = 1, u = "") => `${x > 0 ? "+" : x < 0 ? "−" : "±"}${Math.abs(x).toFixed(d)}${u}`;
 function renderWorkbench(out) {
+  const YOU = css("--hi"), BASE = css("--base");
   // cause chain
   const nodes = {};
   const chain = h("div", { class: "chain", "aria-live": "polite" });
@@ -853,7 +958,40 @@ function renderWorkbench(out) {
     chain.append(nodes[k]);
   });
   const setNode = (k, on, text) => { nodes[k].classList.toggle("on", on); nodes[k].lastChild.textContent = text; };
-  // speed chart with layer toggles
+  // 3D + slice: static at the slider speed, or live during a race
+  const cv = canvas3d("3D GGV: your car against the baseline");
+  const g3 = make3d(cv, () => {
+    const rings = [{ run: wb.run }, { run: baseRun, ghost: true }];
+    if (wb.live) {
+      const { you, base } = wb.live;
+      return { rings, hl: [{ slice: sliceInterp(wb.run, you.v), v: you.v, color: YOU }, { slice: sliceInterp(baseRun, base.v), v: base.v, color: BASE, ghost: true }],
+        pts: [{ ax: base.ax, ay: base.ay, v: base.v, color: BASE }, { ax: you.ax, ay: you.ay, v: you.v, color: YOU }] };
+    }
+    return { rings, hl: [{ slice: sliceAt(wb.run, wb.v), v: wb.v, color: YOU }, { slice: sliceAt(baseRun, wb.v), v: wb.v, color: BASE, ghost: true }], pts: [] };
+  });
+  const sliceBox = h("div", { class: "chart" });
+  const sl = liveSlice(sliceBox, 220);
+  const sliceRead = stdout("", "sm");
+  const drawSlice = () => {
+    if (wb.live) {
+      const { you, base } = wb.live;
+      sl.set({ layers: [{ slice: sliceInterp(baseRun, base.v), color: BASE, width: 1.5, dash: "4 3" }, { slice: sliceInterp(wb.run, you.v), color: YOU, width: 2.25, fill: YOU, fillOpacity: 0.1 }],
+        points: [{ ax: base.ax, ay: base.ay, color: BASE }, { ax: you.ax, ay: you.ay, color: YOU }] });
+      return;
+    }
+    const s = sliceAt(wb.run, wb.v);
+    sl.set({ layers: [{ slice: sliceAt(baseRun, wb.v), color: BASE, width: 1.5, dash: "4 3" }, { slice: s, color: YOU, width: 2.25, fill: YOU, fillOpacity: 0.1 }], points: [] });
+    sliceRead.textContent = sliceReadout(s);
+    if (reduceMotion) g3.draw();
+  };
+  const ss = speedSlider(wb.v, v => { wb.v = v; drawSlice(); });
+  // track + race
+  const svg = svgEl("svg", { class: "map sm", role: "img", "aria-label": "Your car racing the baseline" });
+  let dots = null;
+  const gap = stdout("", "sm");
+  const btn = h("button", { class: "tb sm", type: "button", text: "▶ Race" });
+  btn.addEventListener("click", () => { const rc = wb.race; if (!rc) return; if (rc.on) { rc.pause(); btn.textContent = "▶ Race"; } else { rc.play(); btn.textContent = "❚❚ Pause"; } });
+  // speed chart with layer toggles, plus a dot per car during a race
   const layers = { cap: true, fwd: false, bwd: false, lap: true, base: true };
   const toggles = h("div", { class: "ctl" });
   [["cap", "corner limit", "--cap"], ["fwd", "forward", "--acc"], ["bwd", "backward", "--brk"], ["lap", "your lap", "--ink"], ["base", "baseline", "--base"]].forEach(([k, label, col]) => {
@@ -863,46 +1001,38 @@ function renderWorkbench(out) {
     toggles.append(h("label", { class: "toggle" }, cb, ic, h("span", { text: label })));
   });
   const box = h("div", { class: "chart" });
+  let chart = null, cdots = null;
   const drawSpeed = () => {
     const r = wb.run, s = [];
     if (layers.cap) s.push({ label: "corner limit", color: css("--cap"), width: 1, shade: true, x: XS2, y: capShown(r.v_cap), noTip: true });
-    if (layers.base) s.push({ label: "baseline lap", color: css("--base"), width: 1.5, dash: "4 3", x: XS2, y: baseRun.v });
+    if (layers.base) s.push({ label: "baseline lap", color: BASE, width: 1.5, dash: "4 3", x: XS2, y: baseRun.v });
     if (layers.fwd) s.push({ label: "forward pass", color: css("--acc"), width: 1.5, opacity: 0.7, x: XS2, y: r.v_fwd });
     if (layers.bwd) s.push({ label: "backward pass", color: css("--brk"), width: 1.5, opacity: 0.7, x: XS2, y: r.v_bwd });
     if (layers.lap) s.push({ label: "your lap", colors: [...r.phase].map(phaseColor), labels: [...r.phase].map(c => PHASE[c][0]), width: 2.25, x: XS2, y: r.v });
-    speedChart(box, s, { y: [0, 120], yTicks: [0, 30, 60, 90, 120], height: 210 });
+    chart = lapChart(box, s, 190);
+    cdots = [BASE, YOU].map(c => svgEl("circle", { r: 5, fill: c, stroke: "#fff", "stroke-width": 2, visibility: "hidden" }, chart.svg));
+    if (wb.live) placeChartDots();
   };
-  const zc = zoomControl(drawSpeed, box);
-  // GGV slice with the baseline ghost
-  const sliceBox = h("div", { class: "chart" });
-  const sliceRead = h("pre", { class: "stdout", style: "font-size:12px" });
-  const drawSlice = () => {
-    const sl = sliceAt(wb.run, wb.v);
-    ggvSlice(sliceBox, [{ slice: sliceAt(baseRun, wb.v), color: css("--base"), width: 1.5, dash: "4 3" }, { slice: sl, color: css("--hi"), width: 2.25, fill: css("--hi"), fillOpacity: 0.1 }], 220);
-    sliceRead.textContent = `accel ${sl.ax_max[0].toFixed(2)} g  brake ${(-sl.ax_min[0]).toFixed(2)} g  turn ${sl.ay[sl.ay.length - 1].toFixed(2)} g`;
+  const placeChartDots = () => {
+    if (!chart || !wb.live) return;
+    [wb.live.base, wb.live.you].forEach((c, i) => { cdots[i].setAttribute("cx", chart.sx(c.s)); cdots[i].setAttribute("cy", chart.sy(c.v)); cdots[i].setAttribute("visibility", "visible"); });
   };
-  const ss = speedSlider(wb.v, v => { wb.v = v; drawSlice(); });
-  // map + race + results
-  const svg = svgEl("svg", { class: "map sm", role: "img", "aria-label": "Your car racing the baseline" });
-  const gap = h("pre", { class: "stdout", style: "font-size:12px" });
-  const btn = h("button", { class: "tb sm", type: "button", text: "▶ Race the baseline" });
-  btn.addEventListener("click", () => { const rc = wb.race; if (!rc) return; if (rc.on) { rc.pause(); btn.textContent = "▶ Race the baseline"; } else { rc.play(); btn.textContent = "❚❚ Pause"; } });
   const tbody = h("tbody");
-  const df = h("table", { class: "df" }, h("thead", {}, h("tr", {}, h("th", { text: "event" }), h("th", { text: "base" }), h("th", { text: "yours" }), h("th", { text: "Δ" }))), tbody);
+  const df = h("table", { class: "df" }, h("thead", {}, h("tr", {}, h("th", { text: "event (s)" }), h("th", { text: "base" }), h("th", { text: "yours" }), h("th", { text: "Δ" }))), tbody);
 
   out.append(chain,
-    h("div", { class: "stack" }, h("div", { class: "ctl" }, h("span", { class: "panel-t", text: "Speed along the lap" }), toggles, zc), box),
     h("div", { class: "row wb3" },
-      h("div", { class: "stack" }, h("span", { class: "panel-t", text: "GGV: yours (orange) vs baseline (dashed)" }), ss, sliceBox, sliceRead),
-      h("div", { class: "stack" }, svg, legend([["accel", css("--acc")], ["brake", css("--brk")], ["corner", css("--crn")]])),
-      h("div", { class: "stack" }, h("span", { class: "panel-t", text: "Event times (s)" }), h("div", { class: "scroll-x" }, df), h("div", { class: "ctl" }, btn), gap,
-        h("span", { class: "hint", text: "Grey dot: baseline. Blue dot: your car." }))),
-    why("Every combination here was run in our real sim: 225 cars. Watch which boxes in the chain light up. Power only changes the top of the GGV and the straights. Grip changes everything. Mass changes surprisingly little, because grip grows with the weight on the tyres. The sim is best at differences like these; the absolute lap time depends on what the model leaves out."));
+      cv,
+      h("div", { class: "stack" }, ss, sliceBox, sliceRead),
+      h("div", { class: "stack" }, svg, h("div", { class: "ctl" }, btn, legend([["yours", YOU, "dot"], ["baseline", BASE, "dot"]])), gap)),
+    h("div", { class: "row wb2" },
+      h("div", { class: "stack" }, toggles, box),
+      h("div", { class: "scroll-x" }, df)),
+    why("Every combination here was run in our real sim: 225 cars. Watch which boxes in the chain light up. Power only changes the top of the GGV and the straights. Grip changes everything. Mass changes surprisingly little, because grip grows with the weight on the tyres. In the race, both dots ride the edge of their own GGV: a bigger shape lets your car carry more speed."));
 
   wb.update = () => {
     const r = RUNS.get(keyOf(setup)); if (!r) return;
-    wb.run = r;
-    if (wb.race) wb.race.pause();
+    wb.run = r; wb.live = null;
     const changed = PARAMS.filter(p => setup[p.key] !== D.baseline_setup[p.key]).map(p => `${p.name} ${p.fmt(setup[p.key])}`);
     setNode("car", changed.length > 0, changed.length ? changed.join(", ") : "baseline");
     const s90 = sliceAt(r, 90), b90 = sliceAt(baseRun, 90), s30 = sliceAt(r, 30), b30 = sliceAt(baseRun, 30);
@@ -920,17 +1050,28 @@ function renderWorkbench(out) {
       const d = r[k] - baseRun[k], cls = Math.abs(d) < 0.005 ? "" : d < 0 ? "good" : "bad";
       tbody.append(h("tr", {}, h("td", { text: name }), h("td", { text: baseRun[k].toFixed(2) }), h("td", { text: r[k].toFixed(2) }), h("td", { class: cls, text: Math.abs(d) < 0.005 ? "–" : sgn(d, 2) })));
     }
-    drawSlice(); drawSpeed();
+    drawSlice(); drawSpeed(); g3.draw();
+    // track and race
     const lw = drawMap(svg, { colors: colorsPerMetre(r.phase), width: 0.9 });
-    wb.race = replay(svg, lw, [{ t: baseRun.t, step: RUN_DS, color: css("--base") }, { t: r.t, step: RUN_DS, color: css("--accent") }]);
-    wb.race.onTick = t => {
-      const a = Math.min(idxAtTime(baseRun.t, t) * RUN_DS, NT - 1), b = Math.min(idxAtTime(r.t, t) * RUN_DS, NT - 1);
-      gap.textContent = `${t.toFixed(1)} s  you are ${Math.abs(b - a)} m ${b >= a ? "ahead" : "behind"}`;
+    dots = [mapDot(svg, lw, BASE), mapDot(svg, lw, YOU)];
+    const yT = traceOf(r), bT = traceOf(baseRun);
+    if (wb.race) wb.race.pause();
+    wb.race = player(svg, Math.max(r.sprint_s, baseRun.sprint_s), t => {
+      const you = carAt(yT, t), base = carAt(bT, t);
+      wb.live = { you, base };
+      placeDot(dots[0], base.k); placeDot(dots[1], you.k);
+      drawSlice(); placeChartDots();
+      gap.textContent = `${t.toFixed(1)} s   you are ${Math.abs(Math.round(you.s - base.s))} m ${you.s >= base.s ? "ahead" : "behind"}`;
+      if (reduceMotion) g3.draw();
+    });
+    wb.race.onEnd = () => {
+      wb.live = null; drawSlice(); cdots.forEach(d => d.setAttribute("visibility", "hidden")); g3.draw();
+      gap.textContent = Math.abs(dl) < 0.005 ? "Dead heat." : `Finished ${Math.abs(dl).toFixed(2)} s ${dl < 0 ? "ahead" : "behind"}.`;
+      btn.textContent = "▶ Race again";
     };
-    wb.race.onEnd = () => { gap.textContent = Math.abs(dl) < 0.005 ? "Dead heat." : `Finished ${Math.abs(dl).toFixed(2)} s ${dl < 0 ? "ahead" : "behind"}.`; btn.textContent = "▶ Race again"; };
-    gap.textContent = ""; btn.textContent = "▶ Race the baseline";
+    gap.textContent = ""; btn.textContent = "▶ Race";
   };
-  onRedraw(sliceBox, drawSlice);
+  onRedraw(box, drawSpeed);
   wb.update();
 }
 

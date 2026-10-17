@@ -6,14 +6,18 @@ A hands-on introduction to lap time simulation for the Oxford University Racing 
 
 ## The cells
 
+Each code cell starts with a one-line comment saying what it does.
+
 | Cell | Code | Output | The point |
 |---|---|---|---|
 | 1 | `load_track` | FSUK 2026 course map | The track is just a line with a curvature at every 10 cm |
 | 2 | `load_car` | Parameters next to a top and side view with dimensions | The model is one rigid body on four tyres; these numbers come from the other subteams |
 | 3 | `build_ggv`, `forces_at` | 3D GGV, a slice at any speed with a draggable point, and the forces on each tyre at that point | The GGV is everything the car can do; its edge is where the tyres reach 100% |
-| 4 | `corner_limits`, `forward_pass`, `backward_pass` | One speed chart built up in three steps (① ② ③) | Corners set the speed, accelerating takes distance, braking starts before the corner |
-| 5 | `np.minimum` | Lap time; track and speed coloured by accelerating / braking / cornering | That is the whole algorithm |
-| 6 | Colab-style sliders | Cause chain, speed layers, GGV against the baseline, track, event times, race | Change one number and watch it travel through the simulation |
+| 4 | `corner_limits` … `np.minimum` | One speed chart built up in four steps (① ② ③ ④) | Corners set the speed, accelerating takes distance, braking starts before the corner, the lap is the lower curve |
+| 5 | `lap_time`, `replay` | Lap time, then a replay: car on the track, its point on the 3D GGV and on the slice, and a cursor on the speed chart, all in step | The car rides the edge of the GGV almost all lap: it is always at the limit |
+| 6 | Colab-style sliders | Cause chain, your GGV against the baseline in 3D and as a slice, a race on the track, speed layers, event times | Change one number and watch it travel through the simulation |
+
+Then a closing text cell asks *What would you improve?*, with seven ideas to open one by one (suspension, tyres, driver, transients, aero, the track, heat).
 
 Cells depend on each other the way a real notebook does: running cell 4 before cell 3 gives a `NameError`.
 
@@ -23,11 +27,12 @@ Cells depend on each other the way a real notebook does: running cell 4 before c
 |---|---|---|
 | 0–1 min | Cells 1 and 2. | "A lap sim needs two things: a track and a car." |
 | 1–3 min | Cell 3. Move the speed slider, then press *Hard braking* and *Fast corner*. | "This shape is everything the car can do. Its edge is where the tyres run out of grip." |
-| 3–5 min | Cell 4: press ①, ②, ③. Then cell 5. | "Corner limits, accelerate forwards, brake backwards, take the lower curve. 57.45 s." |
-| 5–9 min | Cell 6. Ask the group to guess first, then move one slider at a time. | "Power only changes the straights. Grip changes everything. Mass changes surprisingly little." |
-| 9–10 min | Last text cell. | What the model leaves out, and how to join. |
+| 3–5 min | Cell 4: press ① to ④. | "Corner limits, accelerate forwards, brake backwards, take the lower curve." |
+| 5–6 min | Cell 5. Point at the dot on the GGV. | "57.45 s. Watch the dot: it stays on the edge of the shape. The car is always at the limit." |
+| 6–9 min | Cell 6. Ask the group to guess first, move one slider, then press *Race*. | "Power only changes the straights. Grip changes everything. Mass changes surprisingly little." |
+| 9–10 min | *What would you improve?* Let them guess before opening the ideas. | "That is what the simulation team works on." |
 
-Short on time: in cell 3 skip the force presets, and in cell 4 go straight to ③.
+Short on time: in cell 3 skip the force presets, and in cell 4 go straight to ④.
 
 **Run all** in the header fills every cell at once, for anyone who arrives late. **Reset** clears the outputs for the next group.
 
