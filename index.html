@@ -268,16 +268,16 @@ svg text { font-family: var(--f-code); }
 
   <div class="cell text">
     <h2>What would you improve?</h2>
-    <p>Think first: what is this model missing? Then reveal the list and open any idea.</p>
-    <details class="reveal"><summary>Show what is missing</summary>
+    <p>Think first: what is this model missing? Then look at some examples, roughly in the order we would tackle them.</p>
+    <details class="reveal"><summary>Show some examples</summary>
       <div class="ideas">
-        <details><summary>No suspension</summary><p>The car is one rigid block, so weight shifts between the tyres instantly and nothing rolls or pitches. On the real car, springs and anti-roll bars decide how much load each tyre gets, and that changes the grip.</p><p><b>Fix:</b> add roll and pitch stiffness front and rear, so load transfer is split the way the suspension splits it, then compare spring and anti-roll bar setups.</p></details>
-        <details><summary>Simple tyres</summary><p>Every tyre has one grip number and an ellipse. Real tyres change their grip with slip angle, load, temperature and pressure.</p><p><b>Fix:</b> fit a proper tyre model, for example Pacejka's Magic Formula, to Tire Test Consortium (TTC) test data, and use it in place of the ellipse.</p></details>
-        <details><summary>A perfect driver</summary><p>The car is always exactly at the limit, on one fixed line. No real driver does that.</p><p><b>Fix:</b> add a driver model that keeps a margin, or optimise the racing line itself, and compare with lap data from our drivers.</p></details>
-        <details><summary>No transients</summary><p>Each 10 cm slice is treated as steady, as if the car could switch from braking to cornering instantly.</p><p><b>Fix:</b> build a dynamic model that steps forward in time, with yaw and weight transfer, for corner entry and slaloms.</p></details>
         <details><summary>Fixed aero</summary><p>Downforce, drag and where the downforce acts are fixed numbers. On track they change with ride height, pitch and yaw.</p><p><b>Fix:</b> use an aero map from CFD or testing, and check the numbers with the aero team: the front/rear balance is one we are confirming right now.</p></details>
         <details><summary>A phone-GPS track</summary><p>Phone GPS is only good to a few metres, and the line was walked, not driven.</p><p><b>Fix:</b> rebuild the track from GPS and speed data logged on the car, or optimise the line inside the track edges.</p></details>
+        <details><summary>Simple tyres</summary><p>Every tyre has one grip number and an ellipse. Real tyres change their grip with slip angle, load, temperature and pressure.</p><p><b>Fix:</b> fit a proper tyre model, for example Pacejka's Magic Formula, to Tire Test Consortium (TTC) test data, and use it in place of the ellipse.</p></details>
+        <details><summary>No suspension</summary><p>The car is one rigid block, so weight shifts between the tyres instantly and nothing rolls or pitches. On the real car, springs and anti-roll bars decide how much load each tyre gets, and that changes the grip.</p><p><b>Fix:</b> add roll and pitch stiffness front and rear, so load transfer is split the way the suspension splits it, then compare spring and anti-roll bar setups.</p></details>
         <details><summary>No heat</summary><p>One lap barely warms the battery. Over the 22 km endurance event it heats up and the car has to cut power; motors and inverters heat up too.</p><p><b>Fix:</b> the sim already tracks battery temperature; adding motor and inverter temperatures and cooling would let us plan power limits for endurance.</p></details>
+        <details><summary>A perfect driver</summary><p>The car is always exactly at the limit, on one fixed line. No real driver does that.</p><p><b>Fix:</b> add a driver model that keeps a margin, or optimise the racing line itself, and compare with lap data from our drivers.</p></details>
+        <details><summary>No transients</summary><p>Each 10 cm slice is treated as steady, as if the car could switch from braking to cornering instantly.</p><p><b>Fix:</b> build a dynamic model that steps forward in time, with yaw and weight transfer, for corner entry and slaloms.</p></details>
       </div>
     </details>
     <p>Got an idea? That is what the simulation team works on. Come and talk to us.</p>
