@@ -51,13 +51,14 @@ a { color: var(--accent); }
 
 /* header */
 .bar { position: sticky; top: 0; z-index: 10; background: var(--page); border-bottom: 1px solid var(--line); }
-.bar-in { max-width: 1040px; margin: 0 auto; padding: 10px max(16px, env(safe-area-inset-right)) 10px max(16px, env(safe-area-inset-left)); display: flex; align-items: center; gap: 12px; }
+.bar-in { max-width: 1080px; margin: 0 auto; padding: 10px max(16px, env(safe-area-inset-right)) 10px max(16px, env(safe-area-inset-left)); display: flex; align-items: center; gap: 12px; }
 .logo { width: 32px; height: 32px; border-radius: 6px; background: var(--ink); color: #fff; display: grid; place-items: center; font: 500 11px/1 var(--f-code); letter-spacing: 0.04em; flex: none; }
 .fname { font-size: 17px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .fname small { display: block; font-size: 12px; color: var(--ink-2); }
 .bar .sp { flex: 1; }
 .tb { border: 1px solid var(--line); background: var(--page); border-radius: 18px; padding: 6px 14px; cursor: pointer; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
 .tb:hover { background: var(--code-bg); }
+.tb.sm { padding: 3px 10px; font-size: 13px; }
 .tb.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
 .tb.primary:hover { background: #1765cc; }
 .chip { font: 400 12px/1 var(--f-code); color: var(--ink-2); display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
@@ -65,7 +66,7 @@ a { color: var(--accent); }
 @media (max-width: 620px) { .chip, .fname small { display: none; } .tb { padding: 6px 10px; } }
 
 /* notebook */
-.nb { max-width: 1040px; margin: 0 auto; padding: 18px max(16px, env(safe-area-inset-right)) 64px max(16px, env(safe-area-inset-left)); display: grid; gap: 14px; }
+.nb { max-width: 1080px; margin: 0 auto; padding: 18px max(16px, env(safe-area-inset-right)) 64px max(16px, env(safe-area-inset-left)); display: grid; gap: 14px; }
 .cell { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 0 8px; border-radius: 8px; padding: 6px 8px 6px 0; border: 1px solid transparent; }
 .cell:hover, .cell:focus-within { border-color: var(--line); }
 .gutter { display: flex; flex-direction: column; align-items: center; gap: 4px; padding-top: 6px; }
@@ -78,6 +79,8 @@ a { color: var(--accent); }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 .src { margin: 0; background: var(--code-bg); border-radius: 4px; padding: 10px 12px; font: 400 13.5px/1.6 var(--f-code); overflow-x: auto; white-space: pre; color: var(--ink); }
+.src .ln { display: block; border-radius: 3px; margin: 0 -6px; padding: 0 6px; transition: background-color 0.2s; }
+.src .ln.on { background: #fde7c7; }
 .k { color: var(--syn-k); } .f { color: var(--syn-f); } .s { color: var(--syn-s); } .n { color: var(--syn-n); } .c { color: var(--syn-c); } .v { color: var(--syn-v); }
 
 .out { padding: 12px 4px 4px; display: grid; gap: 12px; min-width: 0; }
@@ -88,25 +91,29 @@ a { color: var(--accent); }
 
 details.why { border-top: 1px solid var(--grid); padding-top: 6px; }
 details.why summary { cursor: pointer; color: var(--accent); font-size: 14px; width: max-content; }
-details.why p { margin: 6px 0 0; color: var(--ink-2); max-width: 72ch; }
+details.why p { margin: 6px 0 0; color: var(--ink-2); max-width: 76ch; }
 
 /* text cells */
 .text { display: block; padding: 4px 8px 4px 52px; }
 .text h1 { font: 400 30px/1.2 var(--f-ui); margin: 6px 0 6px; }
 .text h2 { font: 400 22px/1.3 var(--f-ui); margin: 14px 0 4px; }
-.text p { margin: 4px 0; color: var(--ink-2); max-width: 72ch; }
-.text ul { margin: 6px 0; padding-left: 20px; color: var(--ink-2); max-width: 72ch; }
+.text p { margin: 4px 0; color: var(--ink-2); max-width: 76ch; }
+.text ul { margin: 6px 0; padding-left: 20px; color: var(--ink-2); max-width: 76ch; }
 @media (max-width: 620px) { .text { padding-left: 8px; } .cell { grid-template-columns: 36px minmax(0, 1fr); } }
 
-/* outputs */
-.row { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); align-items: start; }
+/* output layouts */
+.row { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); align-items: start; }
 .stack { display: grid; gap: 8px; align-content: start; min-width: 0; }
 @media (min-width: 760px) {
   .row.map-chart { grid-template-columns: minmax(0, 0.42fr) minmax(0, 1fr); }
   .row.halves { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .row.car3 { grid-template-columns: minmax(0, 0.95fr) minmax(0, 0.55fr) minmax(0, 1.3fr); align-items: center; }
+  .row.fbd { grid-template-columns: minmax(0, 0.62fr) minmax(0, 1.38fr); align-items: center; }
+  .row.wb3 { grid-template-columns: minmax(0, 0.95fr) minmax(0, 0.45fr) minmax(0, 1.05fr); }
 }
 .map { width: 100%; height: auto; display: block; max-height: 440px; }
-.legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 13px; color: var(--ink-2); align-items: center; }
+.map.sm { max-height: 300px; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; color: var(--ink-2); align-items: center; }
 .key { display: inline-flex; align-items: center; gap: 6px; }
 .key i { width: 16px; border-top: 3px solid currentColor; display: inline-block; border-radius: 2px; }
 .key i.thin { border-top-width: 2px; }
@@ -118,7 +125,7 @@ details.why p { margin: 6px 0 0; color: var(--ink-2); max-width: 72ch; }
 .seg button { border: 0; background: var(--page); padding: 4px 10px; font-size: 13px; cursor: pointer; }
 .seg button + button { border-left: 1px solid var(--line); }
 .seg button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); }
-.toggle { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 14px; padding: 3px 10px 3px 8px; font-size: 13px; cursor: pointer; user-select: none; }
+.toggle { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 14px; padding: 2px 10px 2px 8px; font-size: 13px; cursor: pointer; user-select: none; }
 .toggle input { margin: 0; accent-color: var(--accent); }
 .toggle i { width: 14px; border-top: 3px solid currentColor; }
 .chart { position: relative; min-width: 0; }
@@ -133,54 +140,64 @@ svg text { font-family: var(--f-code); }
 .tip .r i { width: 10px; border-top: 3px solid currentColor; }
 .tip .r b { font: 500 12px/1.5 var(--f-code); min-width: 5em; }
 .tip .r span { color: var(--ink-2); }
+.panel-t { font-size: 13px; font-weight: 500; color: var(--ink); }
+.caption { font-size: 14px; color: var(--ink-2); margin: 0; min-height: 1.5em; }
 
 /* ipywidgets-like slider */
 .widget { display: flex; align-items: center; gap: 10px; font: 400 13px/1 var(--f-code); color: var(--ink-2); flex-wrap: wrap; }
-.widget input[type="range"] { width: min(300px, 55vw); accent-color: var(--accent); }
+.widget input[type="range"] { width: min(260px, 50vw); accent-color: var(--accent); }
 .widget output { color: var(--ink); min-width: 7ch; }
 
 /* 3D GGV */
-.ggv3d { width: 100%; aspect-ratio: 1 / 0.9; max-height: 400px; display: block; touch-action: pan-y; cursor: grab; background: #fff; border: 1px solid var(--grid); border-radius: 4px; }
+.ggv3d { width: 100%; aspect-ratio: 1 / 0.82; max-height: 320px; display: block; touch-action: pan-y; cursor: grab; background: #fff; border: 1px solid var(--grid); border-radius: 4px; }
 .ggv3d:active { cursor: grabbing; }
 .hint { font-size: 12px; color: var(--muted); }
 
 /* car drawings */
 .drawing { width: 100%; height: auto; display: block; }
-.drawing text { font-family: var(--f-code); }
 .pad { touch-action: none; cursor: crosshair; }
-.side-wrap { max-width: 760px; width: 100%; justify-self: center; }
-.top-wrap { max-width: 340px; width: 100%; justify-self: center; }
 
 /* dataframe */
 .df { border-collapse: collapse; font: 400 13px/1.4 var(--f-code); }
-.df th, .df td { padding: 5px 14px 5px 0; text-align: right; border-bottom: 1px solid var(--grid); white-space: nowrap; }
+.df th, .df td { padding: 4px 12px 4px 0; text-align: right; border-bottom: 1px solid var(--grid); white-space: nowrap; }
 .df th { font-weight: 500; color: var(--ink); border-bottom-color: var(--line); }
 .df th:first-child, .df td:first-child { text-align: left; color: var(--ink-2); }
 .df td.good { color: var(--acc); }
 .df td.bad { color: var(--brk); }
 .scroll-x { overflow-x: auto; }
 
-/* Colab form cell */
-.form-cell { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); }
-@media (min-width: 860px) { .form-cell { grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); } }
-.form { display: grid; gap: 12px; align-content: start; padding: 4px 2px; }
-.form label { display: grid; grid-template-columns: 10ch minmax(0, 1fr) 6ch; gap: 10px; align-items: center; font: 400 13px/1.2 var(--f-code); color: var(--ink-2); }
-.form input[type="range"] { width: 100%; accent-color: var(--accent); }
+/* step buttons (cell 4) */
+.steps { display: flex; flex-wrap: wrap; gap: 6px; }
+.steps button { border: 1px solid var(--line); background: #fff; border-radius: 16px; padding: 4px 12px; cursor: pointer; font-size: 13px; }
+.steps button[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+
+/* cell 6: Colab form with sliders, sticky on phones */
+.body6 { display: grid; gap: 10px 14px; grid-template-columns: minmax(0, 1fr); min-width: 0; }
+.body6 > .out { grid-column: 1 / -1; }
+@media (min-width: 860px) { .body6 { grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); } }
+@media (max-width: 859px) {
+  #form { position: sticky; top: 53px; z-index: 5; background: #fff; border-bottom: 1px solid var(--line); box-shadow: 0 4px 8px -6px rgba(60,64,67,0.3); }
+}
+.form { display: grid; gap: 8px; align-content: start; padding: 6px 2px 8px; }
+.form label { display: grid; grid-template-columns: 10ch minmax(0, 1fr) 5ch; gap: 10px; align-items: center; font: 400 13px/1.2 var(--f-code); color: var(--ink-2); }
+.rng { position: relative; display: block; padding-bottom: 6px; }
+.rng input { width: 100%; margin: 0; accent-color: var(--accent); display: block; }
+.rng .bt { position: absolute; bottom: 0; width: 2px; height: 6px; background: var(--muted); transform: translateX(-1px); border-radius: 1px; }
 .form output { color: var(--ink); text-align: right; }
 
 /* cause chain */
 .chain { display: flex; flex-wrap: wrap; align-items: stretch; gap: 6px; }
-.chain .node { border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; min-width: 120px; flex: 1 1 120px; display: grid; gap: 2px; background: #fff; transition: background-color 0.2s, border-color 0.2s; }
+.chain .node { border: 1px solid var(--line); border-radius: 6px; padding: 5px 9px; min-width: 110px; flex: 1 1 110px; display: grid; gap: 1px; background: #fff; transition: background-color 0.2s, border-color 0.2s; }
 .chain .node b { font-weight: 500; font-size: 13px; }
 .chain .node span { font: 400 12px/1.35 var(--f-code); color: var(--muted); }
 .chain .node.on { border-color: var(--hi); background: #fef3e8; }
 .chain .node.on span { color: var(--ink); }
 .chain .arr { align-self: center; color: var(--muted); font-size: 14px; }
-@media (max-width: 620px) { .chain .arr { display: none; } .chain .node { flex-basis: 45%; } }
+@media (max-width: 620px) { .chain .arr { display: none; } .chain .node { flex-basis: 30%; min-width: 0; } }
 
 .foot { font-size: 12px; color: var(--muted); padding-left: 52px; }
 @media (max-width: 620px) { .foot { padding-left: 8px; } }
-@media (prefers-reduced-motion: reduce) { .busy .run svg { animation: none; } .chain .node { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .busy .run svg { animation: none; } .chain .node, .src .ln { transition: none; } }
 </style>
 </head>
 <body>
@@ -212,27 +229,14 @@ svg text { font-family: var(--f-code); }
   </div>
 
   <div class="cell code" data-cell="3">
-    <pre class="src"><span class="v">ggv</span> = <span class="f">build_ggv</span>(<span class="v">car</span>)   <span class="c"># the car's limits</span>
-<span class="v">ggv</span>.<span class="f">plot</span>()</pre>
+    <pre class="src" id="ggvSrc"></pre>
   </div>
 
   <div class="cell code" data-cell="4">
-    <pre class="src" id="fbdSrc"></pre>
+    <pre class="src" id="passSrc"><span class="ln" data-ln="1"><span class="v">v_corner</span> = <span class="f">corner_limits</span>(<span class="v">track</span>, <span class="v">ggv</span>)            <span class="c"># ① v = √(a_lat/κ)</span></span><span class="ln" data-ln="2"><span class="v">v_fwd</span>    = <span class="f">forward_pass</span>(<span class="v">track</span>, <span class="v">ggv</span>, <span class="v">v_corner</span>)   <span class="c"># ② accelerate</span></span><span class="ln" data-ln="3"><span class="v">v_bwd</span>    = <span class="f">backward_pass</span>(<span class="v">track</span>, <span class="v">ggv</span>, <span class="v">v_corner</span>)  <span class="c"># ③ brake</span></span></pre>
   </div>
 
   <div class="cell code" data-cell="5">
-    <pre class="src"><span class="v">v_corner</span> = <span class="f">corner_limits</span>(<span class="v">track</span>, <span class="v">ggv</span>)  <span class="c"># v = √(a_lat/κ)</span></pre>
-  </div>
-
-  <div class="cell code" data-cell="6">
-    <pre class="src"><span class="v">v_fwd</span> = <span class="f">forward_pass</span>(<span class="v">track</span>, <span class="v">ggv</span>, <span class="v">v_corner</span>)   <span class="c"># accelerate</span></pre>
-  </div>
-
-  <div class="cell code" data-cell="7">
-    <pre class="src"><span class="v">v_bwd</span> = <span class="f">backward_pass</span>(<span class="v">track</span>, <span class="v">ggv</span>, <span class="v">v_corner</span>)  <span class="c"># brake</span></pre>
-  </div>
-
-  <div class="cell code" data-cell="8">
     <pre class="src"><span class="v">lap</span> = <span class="v">np</span>.<span class="f">minimum</span>(<span class="v">v_fwd</span>, <span class="v">v_bwd</span>)
 <span class="v">lap_time</span> = <span class="v">np</span>.<span class="f">sum</span>(<span class="v">ds</span> / <span class="v">lap</span>)
 <span class="f">print</span>(<span class="k">f</span><span class="s">"Lap time: {</span><span class="v">lap_time</span><span class="s">:.2f} s"</span>)</pre>
@@ -240,14 +244,12 @@ svg text { font-family: var(--f-code); }
 
   <div class="cell text">
     <h2>Your turn: change the car</h2>
-    <p>Move a slider. The chain shows which parts of the simulation change, and the plots below show how.</p>
+    <p>Move a slider. The chain shows which parts of the simulation change; the plots show how. The grey tick under each slider is the baseline car.</p>
   </div>
 
-  <div class="cell code" data-cell="9">
-    <div class="form-cell">
-      <pre class="src" id="formSrc"></pre>
-      <div class="form" id="form"></div>
-    </div>
+  <div class="cell code" data-cell="6">
+    <pre class="src" id="formSrc"></pre>
+    <div class="form" id="form"></div>
   </div>
 
   <div class="cell text">
@@ -272,7 +274,7 @@ if (!D) {
     '<pre class="err"><b>FileNotFoundError</b>: data/sim.js did not load. Keep it next to index.html.</pre>');
   return;
 }
-const B = D.baseline, CAR = D.car;
+const B = D.baseline, CAR = D.car, FBD = D.fbd;
 const NS = "http://www.w3.org/2000/svg";
 const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const $ = (s, r = document) => r.querySelector(s);
@@ -292,6 +294,7 @@ const h = (tag, props = {}, ...kids) => {
   for (const c of kids) n.append(c);
   return n;
 };
+const G = 9.81;
 
 // ---------- data ----------
 const keyOf = s => `${s.mass_kg}|${s.cl}|${s.power_kW}|${s.mu}`;
@@ -312,7 +315,8 @@ const PCOL = {};
 const phaseColor = c => PCOL[c] || (PCOL[c] = css(PHASE[c][1]));
 const capShown = arr => arr.map(c => c != null && c <= 120 ? c : null);
 function idxAtTime(t, x) { let lo = 0, hi = t.length - 1; while (hi - lo > 1) { const m = (lo + hi) >> 1; if (t[m] <= x) lo = m; else hi = m; } return lo; }
-const G = 9.81;
+const V3 = baseRun.ggv3d.map(s => s.v_kph), VMIN3 = V3[0], VMAX3 = V3[V3.length - 1];
+const sliceAt = (run, v) => run.ggv3d.find(s => s.v_kph === v);
 
 // ---------- redraw hooks (zoom + resize) ----------
 let zoom = 300;  // metres shown in every speed chart, 0 = whole lap
@@ -334,6 +338,15 @@ function zoomControl(redraw, box) {
 const legend = items => h("div", { class: "legend" }, ...items.map(([label, color, kind]) => {
   const k = h("span", { class: "key" }, h("i", { class: kind || "" }), h("span", { text: label })); k.style.color = color; return k;
 }));
+function speedSlider(initial, onChange) {   // ipywidgets-style: label, slider, value
+  const id = "spd" + Math.random().toString(36).slice(2, 7);
+  const rng = h("input", { type: "range", min: String(VMIN3), max: String(VMAX3), step: "10", value: String(initial), id, "aria-label": "speed" });
+  const out = h("output", { for: id, text: `${initial} km/h` });
+  rng.addEventListener("input", () => { out.textContent = `${rng.value} km/h`; onChange(+rng.value); });
+  const el = h("div", { class: "widget" }, h("label", { for: id, text: "speed" }), rng, out);
+  el.set = v => { rng.value = String(v); out.textContent = `${v} km/h`; };
+  return el;
+}
 
 // ---------- track map ----------
 function drawMap(svg, { colors = null, width = 1 } = {}) {
@@ -343,7 +356,7 @@ function drawMap(svg, { colors = null, width = 1 } = {}) {
   const lw = Math.max(maxX - minX, maxY - minY) / 140 * width;
   let d = `M${TX[0]},${-TY[0]}`; for (let i = 2; i < NT; i += 2) d += `L${TX[i]},${-TY[i]}`;
   svgEl("path", { d: d + "Z", fill: "none", stroke: colors ? css("--grid") : css("--ink-2"), "stroke-width": colors ? lw * 2.2 : lw, "stroke-linejoin": "round" }, svg);
-  if (colors) {   // colors: one per metre
+  if (colors) {   // one colour per metre
     let start = 0;
     for (let i = 1; i <= NT; i++) {
       if (i === NT || colors[i] !== colors[start]) {
@@ -441,15 +454,15 @@ function ringPts(sl) {   // closed envelope: top edge left→right, bottom edge 
   for (let i = 1; i < sl.ay.length; i++) p.push([-sl.ay[i], sl.ax_min[i]]);
   return p;
 }
-function ggvSlice(box, layers, maxH = 320) {
+function ggvSlice(box, layers, maxH = 300) {
   box.replaceChildren();
-  const W = Math.max(240, box.clientWidth), gx = [-2.3, 2.3], gy = [-2.2, 1.3], m = { l: 36, r: 6, t: 14, b: 26 };
+  const W = Math.max(220, box.clientWidth), gx = [-2.3, 2.3], gy = [-2.2, 1.3], m = { l: 36, r: 6, t: 14, b: 24 };
   const k = Math.min((W - m.l - m.r) / (gx[1] - gx[0]), maxH / (gy[1] - gy[0]));
   const Hh = Math.round(k * (gy[1] - gy[0]) + m.t + m.b), ox = (W - m.l - m.r - k * (gx[1] - gx[0])) / 2;
   const svg = svgEl("svg", { viewBox: `0 0 ${W} ${Hh}`, height: Hh }, box);
   const sx = v => m.l + ox + (v - gx[0]) * k, sy = v => m.t + (gy[1] - v) * k;
   const ax = svgEl("g", { class: "ax" }, svg);
-  for (let v = -2; v <= 2; v++) { svgEl("line", { x1: sx(v), x2: sx(v), y1: sy(gy[0]), y2: sy(gy[1]), class: "gridline" }, ax); svgText(ax, sx(v), Hh - 8, v ? `${Math.abs(v)} g` : "0", { "text-anchor": "middle" }); }
+  for (let v = -2; v <= 2; v++) { svgEl("line", { x1: sx(v), x2: sx(v), y1: sy(gy[0]), y2: sy(gy[1]), class: "gridline" }, ax); svgText(ax, sx(v), Hh - 7, v ? `${Math.abs(v)} g` : "0", { "text-anchor": "middle" }); }
   for (let v = -2; v <= 1; v++) { svgEl("line", { x1: sx(gx[0]), x2: sx(gx[1]), y1: sy(v), y2: sy(v), class: "gridline" }, ax); svgText(ax, sx(gx[0]) - 4, sy(v) + 4, v ? `${Math.abs(v)} g` : "0", { "text-anchor": "end" }); }
   const lab = (x, y, t, a) => svgText(svg, x, y, t, { "text-anchor": a, fill: css("--ink-2"), "font-size": 11 });
   lab(sx(0), sy(gy[1]) + 2, "accelerate ↑", "middle"); lab(sx(0), sy(gy[0]) - 4, "brake ↓", "middle");
@@ -460,11 +473,11 @@ function ggvSlice(box, layers, maxH = 320) {
   }
   return { svg, sx, sy, W, H: Hh, inv: (px, py) => [(px - m.l - ox) / k + gx[0], gy[1] - (py - m.t) / k] };
 }
-const sliceAt = (run, v) => run.ggv3d.find(s => s.v_kph === v);
+const sliceReadout = (sl, v) => `at ${v} km/h:  accelerate ${sl.ax_max[0].toFixed(2)} g   brake ${(-sl.ax_min[0]).toFixed(2)} g   turn ${sl.ay[sl.ay.length - 1].toFixed(2)} g`;
 
 // ---------- 3D GGV (canvas, orthographic, drag to rotate) ----------
-const V3 = baseRun.ggv3d.map(s => s.v_kph), VMIN3 = V3[0], VMAX3 = V3[V3.length - 1], HEIGHT = 2.6;
-function make3d(cv, getRun, getSel) {
+const HEIGHT = 2.6;
+function make3d(cv, getRun, getSel, getPoint) {
   const st = { yaw: -0.6, pitch: 0.55, auto: !reduceMotion, cache: null, rings: null };
   const rings = () => { const r = getRun(); if (st.cache !== r) { st.cache = r; st.rings = r.ggv3d.map(ringPts); } return st.rings; };
   function draw() {
@@ -496,6 +509,10 @@ function make3d(cv, getRun, getSel) {
     g.beginPath(); rp.forEach((p, i) => i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]));
     g.fillStyle = css("--hi"); g.globalAlpha = 0.16; g.fill(); g.globalAlpha = 1;
     line(rp, css("--hi"), 3);
+    if (getPoint) {   // the operating point picked on the slice
+      const pt = getPoint(), q = P(pt.ay, pt.ax, hs);
+      g.beginPath(); g.arc(q[0], q[1], 5, 0, Math.PI * 2); g.fillStyle = css("--hi"); g.fill(); g.lineWidth = 2; g.strokeStyle = "#fff"; g.stroke();
+    }
     g.fillStyle = css("--ink"); txt(`${sel} km/h`, P(R[si][0][0] - 0.2, R[si][0][1], hs), "right");
     g.fillStyle = css("--muted");
     [VMIN3, VMAX3].filter(v => v !== sel).forEach(v => { const i = V3.indexOf(v); txt(`${v} km/h`, P(R[i][0][0] - 0.2, R[i][0][1], hOf(v)), "right"); });
@@ -514,39 +531,9 @@ function make3d(cv, getRun, getSel) {
   requestAnimationFrame(loop);
   return { draw };
 }
-function ggvBlock(getRun, opts = {}) {   // speed slider + 3D + slice (with optional baseline ghost)
-  const st = { sel: 60 };
-  const cv = h("canvas", { class: "ggv3d", role: "img", "aria-label": "3D GGV diagram: grip envelope rings stacked by speed" });
-  const slice = h("div", { class: "chart" });
-  const read = h("pre", { class: "stdout" });
-  const id = "spd" + Math.random().toString(36).slice(2, 7);
-  const rng = h("input", { type: "range", min: String(VMIN3), max: String(VMAX3), step: "10", value: String(st.sel), id, "aria-label": "speed" });
-  const outv = h("output", { for: id, text: `${st.sel} km/h` });
-  const g3 = make3d(cv, getRun, () => st.sel);
-  const upd = () => {
-    const run = getRun(), sl = sliceAt(run, st.sel), layers = [];
-    if (opts.ghost) layers.push({ slice: sliceAt(baseRun, st.sel), color: css("--base"), width: 1.5, dash: "4 3" });
-    else layers.push({ slice: sliceAt(run, VMIN3), color: css("--muted"), width: 1.25, dash: "4 3" });
-    layers.push({ slice: sl, color: css("--hi"), width: 2.5, fill: css("--hi"), fillOpacity: 0.12 });
-    ggvSlice(slice, layers, opts.maxH || 320);
-    read.textContent = `at ${st.sel} km/h:  accelerate ${sl.ax_max[0].toFixed(2)} g   brake ${(-sl.ax_min[0]).toFixed(2)} g   turn ${sl.ay[sl.ay.length - 1].toFixed(2)} g`;
-    outv.textContent = `${st.sel} km/h`;
-    g3.draw();
-  };
-  rng.addEventListener("input", () => { st.sel = +rng.value; upd(); });
-  const el = h("div", { class: "stack" },
-    h("div", { class: "widget" }, h("label", { for: id, text: "speed" }), rng, outv),
-    h("div", { class: "row halves" },
-      h("div", { class: "stack" }, cv, h("span", { class: "hint", text: "Drag to rotate. Each ring is one speed." })),
-      h("div", { class: "stack" }, slice, legend(opts.ghost ? [["baseline", css("--base"), "dash"], ["your car", css("--hi")]] : [[`${VMIN3} km/h`, css("--muted"), "dash"], ["selected speed", css("--hi")]]))),
-    read);
-  onRedraw(slice, upd);
-  return { el, upd };
-}
 
 // ---------- car drawings: side view + top view ----------
-// Units are metres. Forces are drawn at kF metres per newton.
-// Text in the drawings scales up when the drawing is shown small (phones).
+// Units are metres. Text grows when a drawing is shown small (phones).
 let FZ = 1;
 const fontZoom = (svg, designWidth, max) => { const w = svg.getBoundingClientRect().width || designWidth; FZ = Math.max(1, Math.min(max, designWidth / w)); };
 const DIM = { L: CAR.wheelbase_m, lf: CAR.lf_m, tf: CAR.front_track_m, tr: CAR.rear_track_m, h: CAR.cog_z_m, r: CAR.tyre_radius_m, cop: CAR.cop_x_m };
@@ -561,7 +548,7 @@ function dimLine(parent, x1, y1, x2, y2, label, off, vertical = false) {
   if (vertical) {
     svgEl("line", { x1: x1 + off, y1, x2: x2 + off, y2, stroke: c, "stroke-width": 0.006 }, parent);
     [y1, y2].forEach(y => svgEl("line", { x1: x1 + off - 0.03, y1: y, x2: x1 + off + 0.03, y2: y, stroke: c, "stroke-width": 0.006 }, parent));
-    svgText(parent, x1 + off + 0.05, (y1 + y2) / 2 + fs / 3, label, { "font-size": fs, fill: css("--ink-2"), "text-anchor": off < 0 ? "end" : "start", dx: off < 0 ? -0.1 : 0 });
+    svgText(parent, x1 + off + 0.05, (y1 + y2) / 2 + fs / 3, label, { "font-size": fs, fill: css("--ink-2") });
   } else {
     svgEl("line", { x1, y1: y1 + off, x2, y2: y2 + off, stroke: c, "stroke-width": 0.006 }, parent);
     [x1, x2].forEach(x => svgEl("line", { x1: x, y1: y1 + off - 0.03, x2: x, y2: y1 + off + 0.03, stroke: c, "stroke-width": 0.006 }, parent));
@@ -572,13 +559,12 @@ function dimLine(parent, x1, y1, x2, y2, label, off, vertical = false) {
 // Side view: car faces left. x = metres behind the front axle, y = -height.
 function sideView(svg, F) {
   svg.replaceChildren();
-  svg.setAttribute("viewBox", "-1.05 -1.0 3.7 1.62");
-  fontZoom(svg, 620, 1.5);
+  svg.setAttribute("viewBox", F ? "-1.05 -1.0 3.7 1.42" : "-1.05 -1.0 3.7 1.62");
+  fontZoom(svg, F ? 620 : 440, 1.5);
   const { L, lf, h: hc, r, cop } = DIM, ink = css("--ink-2"), fs = 0.08 * FZ;
   svgEl("line", { x1: -1.0, y1: 0, x2: 2.1, y2: 0, stroke: css("--line"), "stroke-width": 0.01 }, svg);
   svgEl("path", { d: `M-0.95,${-0.12}L-0.2,${-0.12}L0.35,${-0.42}L0.9,${-0.42}L1.05,${-0.62}L1.25,${-0.62}L1.3,${-0.42}L${L + 0.35},${-0.4}L${L + 0.35},${-0.14}L-0.95,${-0.12}Z`, fill: "#f1f3f4", stroke: css("--line"), "stroke-width": 0.01, "stroke-linejoin": "round" }, svg);
   [0, L].forEach(x => { svgEl("circle", { cx: x, cy: -r, r, fill: "#fff", stroke: ink, "stroke-width": 0.02 }, svg); svgEl("circle", { cx: x, cy: -r, r: 0.02, fill: ink }, svg); });
-  // CoG and CoP markers
   const cog = svgEl("g", { transform: `translate(${lf},${-hc})` }, svg);
   svgEl("circle", { r: 0.035, fill: "#fff", stroke: css("--ink"), "stroke-width": 0.008 }, cog);
   svgEl("path", { d: "M0,-0.035A0.035,0.035 0 0 1 0.035,0L0,0Z M0,0.035A0.035,0.035 0 0 1 -0.035,0L0,0Z", fill: css("--ink") }, cog);
@@ -586,33 +572,34 @@ function sideView(svg, F) {
   svgEl("path", { d: `M${cop - 0.03},${-0.3}l0.03,-0.05l0.03,0.05z`, fill: css("--accent") }, svg);
   svgText(svg, cop, -0.37, "CoP", { "font-size": fs, fill: css("--accent"), "text-anchor": "middle" });
   if (!F) {
-    dimLine(svg, 0, 0, lf, 0, `CoG ${lf.toFixed(2)} m behind front axle`, 0.08);
+    dimLine(svg, 0, 0, lf, 0, `${lf.toFixed(2)} m`, 0.08);
     dimLine(svg, 0, 0, L, 0, `wheelbase ${L.toFixed(2)} m`, 0.3);
     dimLine(svg, lf, 0, lf, -hc, `${hc.toFixed(2)} m`, 0.22, true);
     dimLine(svg, cop, 0, 0, 0, `CoP ${cop.toFixed(2)} m`, -0.86);
     return;
   }
-  // Forces (F: {mg, dfF, dfR, drag, NzF, NzR, FxF, FxR, ax})
   const kF = 0.00009, c = { mg: css("--ink"), aero: css("--accent"), N: css("--f-ground"), tyre: css("--f-tyre") };
   const lab = (x, y, t, col, anchor = "middle") => svgText(svg, x, y, t, { "font-size": fs, fill: col, "text-anchor": anchor });
   arrow(svg, lf, -hc, lf, -hc + F.mg * kF, c.mg); lab(lf + 0.04, -hc + F.mg * kF * 0.6, `mg ${Math.round(F.mg)} N`, c.mg, "start");
   [[0, F.dfF], [L, F.dfR]].forEach(([x, df]) => {
     if (Math.abs(df) < 5) return;
-    const y0 = -0.62; arrow(svg, x, y0 - df * kF * 1.6 * (df > 0 ? 1 : 0), x, y0 - (df > 0 ? 0 : -df * kF * 1.6) , c.aero);
-    lab(x, y0 - Math.abs(df) * kF * 1.6 - 0.03, `${df > 0 ? "down" : "LIFT"} ${Math.abs(Math.round(df))} N`, c.aero);
+    const y0 = -0.62, len = Math.abs(df) * kF * 1.6;
+    if (df > 0) arrow(svg, x, y0 - len, x, y0, c.aero); else arrow(svg, x, y0, x, y0 - len, c.aero);
+    lab(x, y0 - len - 0.03, `${df > 0 ? "down" : "LIFT"} ${Math.abs(Math.round(df))} N`, c.aero);
   });
-  if (F.drag > 5) { const x2 = L + 0.42 + F.drag * kF * 1.6; arrow(svg, L + 0.42, -0.27, x2, -0.27, c.aero); lab(Math.min(x2 + 0.05, 2.6), -0.33, `drag ${Math.round(F.drag)} N`, c.aero, "end"); }
+  // drag: behind the tail, clear of the rear wheel, label above the arrow
+  if (F.drag > 5) { const x0 = L + 0.38; arrow(svg, x0, -0.27, x0 + F.drag * kF * 1.6, -0.27, c.aero); lab(x0, -0.35, `drag ${Math.round(F.drag)} N`, c.aero, "start"); }
   [[0, F.NzF, F.FxF], [L, F.NzR, F.FxR]].forEach(([x, Nz, Fx]) => {
     arrow(svg, x + 0.07, 0, x + 0.07, -Nz * kF, c.N); lab(x + 0.24, -Math.max(Nz * kF * 0.5, 0.06), `${Math.round(Nz)} N`, c.N, "start");
-    if (Math.abs(Fx) > 20) { arrow(svg, x, 0.04, x - Fx * kF, 0.04, c.tyre); lab(x - Fx * kF / 2, 0.12, `${Math.abs(Math.round(Fx))} N`, c.tyre); }
+    if (Math.abs(Fx) > 20) { arrow(svg, x, 0.04, x - Fx * kF, 0.04, c.tyre); lab(x - Fx * kF / 2, 0.14, `${Math.abs(Math.round(Fx))} N`, c.tyre); }
   });
 }
 // Top view: front at the top. x = metres to the right, y = metres behind the front axle.
 function topView(svg, W) {
   svg.replaceChildren();
-  svg.setAttribute("viewBox", "-1.75 -1.05 3.5 3.3");
-  fontZoom(svg, 340, 1.3);
-  const { L, lf, tf, tr } = DIM, ink = css("--ink-2"), fs = 0.095 * FZ;
+  svg.setAttribute("viewBox", W ? "-1.75 -1.05 3.5 3.3" : "-1.2 -1.05 2.4 3.3");
+  fontZoom(svg, W ? 300 : 220, 1.3);
+  const { L, lf, tf, tr } = DIM, ink = css("--ink-2"), fs = (W ? 0.1 : 0.085) * FZ;
   svgEl("path", { d: `M-0.12,-0.85L0.12,-0.85L0.2,-0.2L0.38,0.45L0.38,${L + 0.15}L0.3,${L + 0.35}L-0.3,${L + 0.35}L-0.38,${L + 0.15}L-0.38,0.45L-0.2,-0.2Z`, fill: "#f1f3f4", stroke: css("--line"), "stroke-width": 0.012, "stroke-linejoin": "round" }, svg);
   svgEl("rect", { x: -0.62, y: -0.95, width: 1.24, height: 0.12, rx: 0.02, fill: "#e8eaed", stroke: css("--line"), "stroke-width": 0.01 }, svg);
   svgEl("rect", { x: -0.5, y: L + 0.3, width: 1.0, height: 0.1, rx: 0.02, fill: "#e8eaed", stroke: css("--line"), "stroke-width": 0.01 }, svg);
@@ -621,12 +608,11 @@ function topView(svg, W) {
   if (!W) {
     wheels.forEach(([x, y]) => svgEl("rect", { x: x - 0.1, y: y - 0.2, width: 0.2, height: 0.4, rx: 0.04, fill: ink }, svg));
     dimLine(svg, -tf / 2, 0, tf / 2, 0, `track ${tf.toFixed(2)} m`, -0.32);
-    dimLine(svg, tf / 2, 0, tf / 2, L, `${L.toFixed(2)} m`, 0.2, true);
+    dimLine(svg, tf / 2, 0, tf / 2, L, `${L.toFixed(2)} m`, 0.18, true);
     svgEl("circle", { cx: 0, cy: lf, r: 0.04, fill: css("--ink") }, svg);
     svgText(svg, 0.07, lf + 0.03, "CoG", { "font-size": fs, fill: css("--ink") });
     return;
   }
-  // W: per wheel {Fz, Fx, Fy, Fxmax, Fymax}, plus W.ax, W.ay in g
   const kF = 0.00015;
   wheels.forEach(([x, y], i) => {
     const w = W.w[i], u = Math.min(1, Math.hypot(w.Fx / Math.max(w.Fxmax, 1), w.Fy / Math.max(w.Fymax, 1)));
@@ -637,17 +623,15 @@ function topView(svg, W) {
     arrow(svg, x, y, x - w.Fy * kF, y - w.Fx * kF, css("--f-tyre"), 0.024);
     const lx = x < 0 ? -1.72 : 1.72, anchor = x < 0 ? "start" : "end";
     svgText(svg, lx, y - 0.02, `${names[i]} ${Math.round(w.Fz)} N`, { "font-size": fs, fill: css("--ink-2"), "text-anchor": anchor });
-    svgText(svg, lx, y + 0.09, `${Math.round(u * 100)}% grip`, { "font-size": fs, fill: atLimit ? css("--brk") : css("--ink-2"), "text-anchor": anchor });
+    svgText(svg, lx, y + 0.1, `${Math.round(u * 100)}% grip`, { "font-size": fs, fill: atLimit ? css("--brk") : css("--ink-2"), "text-anchor": anchor });
   });
   svgEl("circle", { cx: 0, cy: lf, r: 0.035, fill: css("--hi") }, svg);
   arrow(svg, 0, lf, -W.ay * 0.3, lf - W.ax * 0.3, css("--hi"), 0.024);
-  svgText(svg, 0.06, lf + 0.12, "acceleration", { "font-size": fs, fill: css("--hi") });
 }
 
 // ---------- free body diagram data ----------
-const FBD = D.fbd;
-function fbdPoint(si, ax10, ay10) {
-  const pts = FBD.pts[si], mirror = ay10 < 0, a = Math.abs(ay10);
+function fbdPoint(v, ax10, ay10) {
+  const pts = FBD.pts[FBD.speeds_kph.indexOf(v)], mirror = ay10 < 0, a = Math.abs(ay10);
   let best = null, bd = 1e9;
   for (const p of pts) { const d = (p[0] - ax10) ** 2 + (p[1] - a) ** 2; if (d < bd) { bd = d; best = p; } }
   const q = best.slice(2), w = [0, 1, 2, 3].map(i => ({ Fz: q[i], Fx: q[4 + i], Fy: q[8 + i], Fxmax: q[12 + i], Fymax: q[16 + i] }));
@@ -677,21 +661,21 @@ function replay(svg, lw, runs) {  // runs: [{t:[], step (metres per sample), col
 // ---------- cells ----------
 const why = text => h("details", { class: "why" }, h("summary", { text: "Why?" }), h("p", { text }));
 const stdout = (text, big) => h("pre", { class: "stdout" + (big ? " big" : ""), text });
-const NEEDS = { 1: [], 2: [], 3: [2], 4: [3], 5: [1, 3], 6: [5], 7: [5], 8: [6, 7], 9: [1, 2] };
-const DEFINES = { 1: "track", 2: "car", 3: "ggv", 4: "forces", 5: "v_corner", 6: "v_fwd", 7: "v_bwd", 8: "lap", 9: "my_car" };
+const NEEDS = { 1: [], 2: [], 3: [2], 4: [1, 3], 5: [4], 6: [1, 2] };
+const DEFINES = { 1: "track", 2: "car", 3: "ggv", 4: "v_corner", 5: "lap", 6: "my_car" };
 const ran = new Set();
 let execCount = 0;
 
-// cell 4 state, shown in its source line
-const fbdState = { si: 1, ax10: -12, ay10: 8 };
-function renderFbdSrc() {
-  const p = fbdPoint(fbdState.si, fbdState.ax10, fbdState.ay10);
-  const n = t => h("span", { class: "n", text: t });
-  const src = $("#fbdSrc"); src.replaceChildren(
-    h("span", { class: "v", text: "forces" }), " = ", h("span", { class: "v", text: "ggv" }), ".", h("span", { class: "f", text: "forces_at" }),
-    "(speed=", n(String(FBD.speeds_kph[fbdState.si])), ", ax=", n(p.ax.toFixed(1)), ", ay=", n(p.ay.toFixed(1)), ")   ", h("span", { class: "c", text: "# look inside the GGV" }));
+// cell 3 state, mirrored in its source line
+const gf = { v: 60, ax10: -12, ay10: 8 };
+function renderGgvSrc() {
+  const p = fbdPoint(gf.v, gf.ax10, gf.ay10), n = t => h("span", { class: "n", text: t });
+  $("#ggvSrc").replaceChildren(
+    h("span", { class: "v", text: "ggv" }), " = ", h("span", { class: "f", text: "build_ggv" }), "(", h("span", { class: "v", text: "car" }), ")   ", h("span", { class: "c", text: "# the car's limits" }), "\n",
+    h("span", { class: "v", text: "ggv" }), ".", h("span", { class: "f", text: "forces_at" }), "(speed=", n(String(gf.v)), ", ax=", n(p.ax.toFixed(1)), ", ay=", n(p.ay.toFixed(1)), ")   ",
+    h("span", { class: "c", text: "# pick a point, see the forces" }));
 }
-renderFbdSrc();
+renderGgvSrc();
 
 const CELLS = {
   1(out) {
@@ -710,86 +694,88 @@ const CELLS = {
       h("tbody", {}, ...rows.map(r => h("tr", {}, ...r.map(v => h("td", { text: String(v) }))))));
     const side = svgEl("svg", { class: "drawing", role: "img", "aria-label": "Side view with wheelbase, centre of gravity height and centre of pressure" });
     const top = svgEl("svg", { class: "drawing", role: "img", "aria-label": "Top view with track width and wheelbase" });
-    out.append(h("div", { class: "row halves" }, h("div", { class: "scroll-x" }, t), h("div", { class: "top-wrap" }, top)), h("div", { class: "side-wrap" }, side),
+    const topBox = h("div", { style: "max-width:220px;width:100%;justify-self:center" }, top);
+    out.append(h("div", { class: "row car3" }, h("div", { class: "scroll-x" }, t), topBox, h("div", {}, side)),
       why("The model treats the car as one rigid body on four tyres. These few numbers are all it needs: the mass and where its centre of gravity (CoG) sits, the wheelbase and track width, where the wings push down (centre of pressure, CoP), the tyres' grip and the motor. They come from the other subteams."));
-    sideView(side, null); topView(top, null);
+    const draw = () => { sideView(side, null); topView(top, null); };
+    onRedraw(side, draw); draw();
   },
   3(out) {
-    const blk = ggvBlock(() => baseRun);
-    out.append(blk.el, why("Inside the shape is possible; outside it the tyres slide. The tyres share their grip between braking, accelerating and turning, so the car cannot do all three at full strength: that is why it is round. The top is flat because only the rear wheels drive. At higher speed the wings press the car down harder, so the sides and the bottom grow."));
-    blk.upd();
-  },
-  4(out) {
+    const cv = h("canvas", { class: "ggv3d", role: "img", "aria-label": "3D GGV diagram: grip envelope rings stacked by speed" });
     const padBox = h("div", { class: "chart" });
+    const read = stdout("");
     const side = svgEl("svg", { class: "drawing", role: "img", "aria-label": "Side view free body diagram" });
     const top = svgEl("svg", { class: "drawing", role: "img", "aria-label": "Top view: load and grip used at each tyre" });
-    const speedSeg = h("div", { class: "seg", role: "group", "aria-label": "speed" });
-    FBD.speeds_kph.forEach((v, i) => { const b = h("button", { type: "button", text: `${v} km/h`, "aria-pressed": String(i === fbdState.si) }); b.addEventListener("click", () => { fbdState.si = i; draw(); }); speedSeg.append(b); });
-    const PRE = [["Hard braking", 3, s => [Math.round(Math.min(...s.ax_min) * 10), 0]], ["Fast corner", 2, s => [0, Math.floor(s.ay[s.ay.length - 1] * 10)]],
-      ["Corner exit", 1, s => { const i = Math.round(s.ay.length * 0.6); return [Math.floor(s.ax_max[i] * 10), Math.floor(s.ay[i] * 10)]; }], ["Full throttle", 0, s => [Math.floor(s.ax_max[0] * 10), 0]]];
-    const preBox = h("div", { class: "ctl" });
-    PRE.forEach(([name, si, f]) => { const b = h("button", { class: "tb", type: "button", text: name }); b.addEventListener("click", () => { fbdState.si = si; [fbdState.ax10, fbdState.ay10] = f(sliceAt(baseRun, FBD.speeds_kph[si])); draw(); }); preBox.append(b); });
-    let pad = null, dot = null;
-    // Forces only: cheap enough to run on every pointer move.
-    function drawForces() {
-      const p = fbdPoint(fbdState.si, fbdState.ax10, fbdState.ay10), aero = FBD.aero[fbdState.si];
-      fbdState.ax10 = Math.round(p.ax * 10); fbdState.ay10 = Math.round(p.ay * 10);   // snap to the grid point shown
-      dot.setAttribute("cx", pad.sx(p.ay)); dot.setAttribute("cy", pad.sy(p.ax));
-      const w = p.w;
+    let pad = null, dot = null, pt = fbdPoint(gf.v, gf.ax10, gf.ay10);
+    const g3 = make3d(cv, () => baseRun, () => gf.v, () => pt);
+    const slider = speedSlider(gf.v, v => { gf.v = v; drawPad(); });
+    function drawForces() {   // cheap: runs on every pointer move
+      pt = fbdPoint(gf.v, gf.ax10, gf.ay10);
+      gf.ax10 = Math.round(pt.ax * 10); gf.ay10 = Math.round(pt.ay * 10);   // snap to the grid point shown
+      dot.setAttribute("cx", pad.sx(pt.ay)); dot.setAttribute("cy", pad.sy(pt.ax));
+      const aero = FBD.aero[FBD.speeds_kph.indexOf(gf.v)], w = pt.w;
       sideView(side, { mg: CAR.mass_kg * G, dfF: aero.df_front, dfR: aero.df_rear, drag: aero.drag, NzF: w[0].Fz + w[1].Fz, NzR: w[2].Fz + w[3].Fz, FxF: w[0].Fx + w[1].Fx, FxR: w[2].Fx + w[3].Fx });
-      topView(top, p);
-      renderFbdSrc();
+      topView(top, pt);
+      renderGgvSrc(); g3.draw();
     }
-    // Pad and forces: on speed change, presets and resize.
-    function draw() {
-      speedSeg.querySelectorAll("button").forEach((b, i) => b.setAttribute("aria-pressed", String(i === fbdState.si)));
-      pad = ggvSlice(padBox, [{ slice: sliceAt(baseRun, FBD.speeds_kph[fbdState.si]), color: css("--hi"), width: 2, fill: css("--hi"), fillOpacity: 0.08 }], 280);
+    function drawPad() {      // slice, dot and forces: speed change, presets, resize
+      const sl = sliceAt(baseRun, gf.v);
+      pad = ggvSlice(padBox, [{ slice: sliceAt(baseRun, VMIN3), color: css("--muted"), width: 1.25, dash: "4 3" }, { slice: sl, color: css("--hi"), width: 2.5, fill: css("--hi"), fillOpacity: 0.1 }], 250);
       pad.svg.classList.add("pad");
       dot = svgEl("circle", { r: 7, fill: css("--hi"), stroke: "#fff", "stroke-width": 2.5 }, pad.svg);
       const svgP = pad.svg, P = pad;
-      const move = e => { const r = svgP.getBoundingClientRect(); const [ay, ax] = P.inv((e.clientX - r.left) * P.W / r.width, (e.clientY - r.top) * P.H / r.height); fbdState.ax10 = Math.round(ax * 10); fbdState.ay10 = Math.round(ay * 10); drawForces(); };
+      const move = e => { const r = svgP.getBoundingClientRect(); const [ay, ax] = P.inv((e.clientX - r.left) * P.W / r.width, (e.clientY - r.top) * P.H / r.height); gf.ax10 = Math.round(ax * 10); gf.ay10 = Math.round(ay * 10); drawForces(); };
       svgP.addEventListener("pointerdown", e => { svgP.setPointerCapture(e.pointerId); move(e); svgP.onpointermove = move; });
       const stop = () => { svgP.onpointermove = null; };
       svgP.addEventListener("pointerup", stop); svgP.addEventListener("pointercancel", stop);
+      read.textContent = sliceReadout(sl, gf.v);
       drawForces();
     }
-    out.append(h("div", { class: "ctl" }, speedSeg, preBox),
+    const PRE = [["Hard braking", 90, s => [Math.round(Math.min(...s.ax_min) * 10), 0]], ["Fast corner", 90, s => [0, Math.floor(s.ay[s.ay.length - 1] * 10)]],
+      ["Corner exit", 50, s => { const i = Math.round(s.ay.length * 0.6); return [Math.floor(s.ax_max[i] * 10), Math.floor(s.ay[i] * 10)]; }], ["Full throttle", 30, s => [Math.floor(s.ax_max[0] * 10), 0]]];
+    const preBox = h("div", { class: "ctl" });
+    PRE.forEach(([name, v, f]) => { const b = h("button", { class: "tb sm", type: "button", text: name }); b.addEventListener("click", () => { gf.v = v; slider.set(v); [gf.ax10, gf.ay10] = f(sliceAt(baseRun, v)); drawPad(); }); preBox.append(b); });
+    out.append(h("div", { class: "ctl" }, slider, preBox),
       h("div", { class: "row halves" },
-        h("div", { class: "stack" }, padBox, h("span", { class: "hint", text: "Drag the dot inside the shape: braking, turning, accelerating." })),
-        h("div", { class: "top-wrap" }, top)),
-      h("div", { class: "side-wrap" }, side),
-      legend([["weight", css("--ink")], ["wing force", css("--accent")], ["ground support", css("--f-ground")], ["tyre force", css("--f-tyre")], ["grip ellipse (red at 100%)", css("--brk"), "area"]]),
-      why("This is how the GGV is built. For each point the model shifts weight between the tyres: forwards when braking, outwards in a corner, and it adds the wings' force. Each tyre can give force up to its ellipse, which grows with the load on it. The edge of the GGV is where the tyres can give no more: they reach 100%."));
-    onRedraw(padBox, draw);
+        h("div", { class: "stack" }, cv, h("span", { class: "hint", text: "All speeds stacked. Drag to rotate." })),
+        h("div", { class: "stack" }, padBox, h("span", { class: "hint", text: "One speed. Drag the dot: brake, turn, accelerate." }))),
+      read,
+      h("div", { class: "row fbd" }, h("div", { style: "max-width:300px;width:100%;justify-self:center" }, top), h("div", {}, side)),
+      legend([["weight", css("--ink")], ["wing force", css("--accent")], ["ground support", css("--f-ground")], ["tyre force", css("--f-tyre")], ["acceleration", css("--hi")], ["grip ellipse (red at 100%)", css("--brk"), "area"]]),
+      why("The GGV is everything the car can do: inside the shape is possible, outside the tyres slide. Each ring is one speed; faster rings are wider because the wings press the car down harder. To build it, the model shifts weight between the tyres (forwards when braking, outwards in a corner), adds the wing forces, and asks how much force each tyre can still give: up to its ellipse, which grows with the load on it. The edge of the shape is where the tyres reach 100%. The top is flat because only the rear wheels drive."));
+    onRedraw(padBox, drawPad);
+    drawPad();
+  },
+  4(out) {
+    const box = h("div", { class: "chart" });
+    const caption = h("p", { class: "caption" });
+    const STEPS = [
+      ["① corner limits", "The grey area is too fast: the tyres would slide. The tighter the bend, the lower the limit."],
+      ["② + accelerate", "Flat out from the start. At each bend the speed drops straight down: that would be impossible, instant braking."],
+      ["③ + brake", "Worked backwards from the finish with the braking limit. Read it right to left: this is where braking must start."],
+    ];
+    let step = 1;
+    const btns = h("div", { class: "steps", role: "group", "aria-label": "Step" });
+    STEPS.forEach(([label], i) => { const b = h("button", { type: "button", text: label }); b.addEventListener("click", () => { step = i + 1; draw(); }); btns.append(b); });
+    const keys = h("div");
+    function draw() {
+      btns.querySelectorAll("button").forEach((b, i) => b.setAttribute("aria-pressed", String(i + 1 === step)));
+      document.querySelectorAll("#passSrc .ln").forEach(l => l.classList.toggle("on", +l.dataset.ln === step));
+      const s = [{ label: "corner limit", color: css("--cap"), width: 1.5, shade: true, x: B.s, y: capShown(B.v_cap), noTip: step > 1 }];
+      if (step >= 2) s.push({ label: "forward pass", color: css("--acc"), width: step === 2 ? 2.25 : 1.5, opacity: step === 2 ? 1 : 0.5, x: B.s, y: B.v_fwd });
+      if (step >= 3) s.push({ label: "backward pass", color: css("--brk"), width: 2.25, x: B.s, y: B.v_bwd });
+      speedChart(box, s);
+      const items = [["corner limit (too fast above)", css("--cap"), "area"]];
+      if (step >= 2) items.push(["forward pass: accelerating", css("--acc")]);
+      if (step >= 3) items.push(["backward pass: braking", css("--brk")]);
+      keys.replaceChildren(legend(items));
+      caption.textContent = STEPS[step - 1][1];
+    }
+    out.append(h("div", { class: "ctl" }, btns, zoomControl(draw, box)), keys, box, caption,
+      why("Corner limits: in a bend the tyres must provide the sideways force, so v = √(a_lat ÷ curvature), with a_lat read from the GGV. Forward pass: starting from rest, each slice the speed grows by v² + 2·a·Δs, with a the most the GGV and the 80 kW limit allow, and it is cut down to the corner limit. Backward pass: the same from the finish backwards, using the braking limit. The next cell takes the lower of the two."));
     draw();
   },
   5(out) {
-    const box = h("div", { class: "chart" });
-    const draw = () => speedChart(box, [{ label: "corner limit", color: css("--cap"), width: 1.5, shade: true, x: B.s, y: capShown(B.v_cap) }]);
-    out.append(h("div", { class: "ctl" }, legend([["too fast: the tyres would slide", css("--cap"), "area"]]), zoomControl(draw, box)), box,
-      why("In a bend the tyres must provide the sideways force. The tighter the bend, the lower the speed limit. Where the line stops, the bend is so gentle it sets no limit."));
-    draw();
-  },
-  6(out) {
-    const box = h("div", { class: "chart" });
-    const draw = () => speedChart(box, [
-      { label: "corner limit", color: css("--cap"), width: 1, shade: true, x: B.s, y: capShown(B.v_cap), noTip: true },
-      { label: "forward pass", color: css("--acc"), width: 2, x: B.s, y: B.v_fwd }]);
-    out.append(h("div", { class: "ctl" }, legend([["forward pass (accelerating)", css("--acc")], ["corner limit", css("--cap"), "area"]]), zoomControl(draw, box)), box,
-      why("Accelerate as hard as the GGV allows, from a standing start. When the speed reaches a bend's limit it drops straight down. That would mean stopping instantly, which no car can do. The next cell fixes that."));
-    draw();
-  },
-  7(out) {
-    const box = h("div", { class: "chart" });
-    const draw = () => speedChart(box, [
-      { label: "corner limit", color: css("--cap"), width: 1, shade: true, x: B.s, y: capShown(B.v_cap), noTip: true },
-      { label: "forward pass", color: css("--acc"), width: 1.5, opacity: 0.45, x: B.s, y: B.v_fwd },
-      { label: "backward pass", color: css("--brk"), width: 2, x: B.s, y: B.v_bwd }]);
-    out.append(h("div", { class: "ctl" }, legend([["backward pass (braking)", css("--brk")], ["forward pass", css("--acc"), "thin"]]), zoomControl(draw, box)), box,
-      why("The same idea, run from the finish back to the start using the braking limit. Read it right to left: the red line shows where the driver must start braking for each bend."));
-    draw();
-  },
-  8(out) {
     const colors = [...B.phase].map(phaseColor), labels = [...B.phase].map(c => PHASE[c][0]);
     const svg = svgEl("svg", { class: "map", role: "img", "aria-label": "Track coloured by accelerating, braking and cornering" });
     const box = h("div", { class: "chart" });
@@ -815,15 +801,15 @@ const CELLS = {
     draw();
     rp.play(); btn.textContent = "❚❚ Pause";
   },
-  9(out) { renderWorkbench(out); },
+  6(out) { renderWorkbench(out); },
 };
 
-// ---------- cell 9: Colab form with sliders + workbench ----------
+// ---------- cell 6: Colab form with sliders + workbench ----------
 const PARAMS = [
-  { key: "mass_kg", name: "mass_kg", fmt: v => String(v), unit: "kg" },
-  { key: "cl", name: "downforce", fmt: v => v.toFixed(1), unit: "C_L" },
-  { key: "power_kW", name: "power_kW", fmt: v => String(v), unit: "kW" },
-  { key: "mu", name: "tyre_mu", fmt: v => v.toFixed(2), unit: "μ" },
+  { key: "mass_kg", name: "mass_kg", fmt: v => String(v) },
+  { key: "cl", name: "downforce", fmt: v => v.toFixed(1) },
+  { key: "power_kW", name: "power_kW", fmt: v => String(v) },
+  { key: "mu", name: "tyre_mu", fmt: v => v.toFixed(2) },
 ];
 const setup = { ...D.baseline_setup };
 function renderFormSrc() {
@@ -839,19 +825,22 @@ function renderFormSrc() {
 }
 const form = $("#form");
 for (const p of PARAMS) {
-  const vals = D.grid[p.key], id = `p-${p.key}`;
+  const vals = D.grid[p.key], id = `p-${p.key}`, bi = vals.indexOf(D.baseline_setup[p.key]);
   const rng = h("input", { type: "range", id, min: "0", max: String(vals.length - 1), step: "1", value: String(vals.indexOf(setup[p.key])) });
+  // Grey tick under the slider at the baseline value. 16 px is the thumb width.
+  const tick = h("span", { class: "bt", title: `baseline ${p.fmt(vals[bi])}`, "aria-hidden": "true" });
+  tick.style.left = `calc(8px + (100% - 16px) * ${bi / (vals.length - 1)})`;
   const out = h("output", { for: id, text: p.fmt(setup[p.key]) });
   rng.addEventListener("input", () => {
     setup[p.key] = vals[+rng.value]; out.textContent = p.fmt(setup[p.key]); renderFormSrc();
-    if (ran.has(9)) wb.update(); else runCell(9, { quick: true });
+    if (ran.has(6)) wb.update(); else runCell(6, { quick: true });
   });
-  form.append(h("label", { for: id }, h("span", { text: p.name }), rng, out));
+  form.append(h("label", { for: id }, h("span", { text: p.name }), h("span", { class: "rng" }, rng, tick), out));
 }
 renderFormSrc();
-const syncForm = () => PARAMS.forEach(p => { const vals = D.grid[p.key]; $(`#p-${p.key}`).value = String(vals.indexOf(setup[p.key])); $(`#p-${p.key}`).nextElementSibling.textContent = p.fmt(setup[p.key]); });
+const syncForm = () => PARAMS.forEach(p => { const vals = D.grid[p.key], r = $(`#p-${p.key}`); r.value = String(vals.indexOf(setup[p.key])); $(`output[for="p-${p.key}"]`).textContent = p.fmt(setup[p.key]); });
 
-const wb = { run: baseRun, update: () => {}, race: null };
+const wb = { run: baseRun, update: () => {}, race: null, v: 90 };
 const meanDiff = (a, b) => { let s = 0, n = 0; for (let i = 0; i < a.length; i++) if (a[i] != null && b[i] != null && a[i] <= 120 && b[i] <= 120) { s += a[i] - b[i]; n++; } return n ? s / n : 0; };
 const sgn = (x, d = 1, u = "") => `${x > 0 ? "+" : x < 0 ? "−" : "±"}${Math.abs(x).toFixed(d)}${u}`;
 function renderWorkbench(out) {
@@ -860,24 +849,18 @@ function renderWorkbench(out) {
   const chain = h("div", { class: "chain", "aria-live": "polite" });
   [["car", "car"], ["ggv", "GGV"], ["cap", "corner limits"], ["fwd", "forward pass"], ["bwd", "backward pass"], ["lap", "lap time"]].forEach(([k, label], i) => {
     if (i) chain.append(h("span", { class: "arr", text: "→", "aria-hidden": "true" }));
-    nodes[k] = { el: h("div", { class: "node" }, h("b", { text: label }), h("span", { text: "" })) };
-    chain.append(nodes[k].el);
+    nodes[k] = h("div", { class: "node" }, h("b", { text: label }), h("span", { text: "" }));
+    chain.append(nodes[k]);
   });
-  const setNode = (k, on, text) => { nodes[k].el.classList.toggle("on", on); nodes[k].el.lastChild.textContent = text; };
-  // results table
-  const tbody = h("tbody");
-  const df = h("table", { class: "df" }, h("thead", {}, h("tr", {}, h("th", { text: "event" }), h("th", { text: "baseline" }), h("th", { text: "your car" }), h("th", { text: "difference" }))), tbody);
-  // GGV block for your car, with the baseline as a dashed ghost
-  const g = ggvBlock(() => wb.run, { ghost: true, maxH: 280 });
+  const setNode = (k, on, text) => { nodes[k].classList.toggle("on", on); nodes[k].lastChild.textContent = text; };
   // speed chart with layer toggles
   const layers = { cap: true, fwd: false, bwd: false, lap: true, base: true };
   const toggles = h("div", { class: "ctl" });
-  [["cap", "corner limit", "--cap"], ["fwd", "forward", "--acc"], ["bwd", "backward", "--brk"], ["lap", "lap", "--ink"], ["base", "baseline lap", "--base"]].forEach(([k, label, col]) => {
+  [["cap", "corner limit", "--cap"], ["fwd", "forward", "--acc"], ["bwd", "backward", "--brk"], ["lap", "your lap", "--ink"], ["base", "baseline", "--base"]].forEach(([k, label, col]) => {
     const cb = h("input", { type: "checkbox" }); cb.checked = layers[k];
     const ic = h("i"); ic.style.color = css(col);
-    const t = h("label", { class: "toggle" }, cb, ic, h("span", { text: label }));
     cb.addEventListener("change", () => { layers[k] = cb.checked; drawSpeed(); });
-    toggles.append(t);
+    toggles.append(h("label", { class: "toggle" }, cb, ic, h("span", { text: label })));
   });
   const box = h("div", { class: "chart" });
   const drawSpeed = () => {
@@ -886,59 +869,68 @@ function renderWorkbench(out) {
     if (layers.base) s.push({ label: "baseline lap", color: css("--base"), width: 1.5, dash: "4 3", x: XS2, y: baseRun.v });
     if (layers.fwd) s.push({ label: "forward pass", color: css("--acc"), width: 1.5, opacity: 0.7, x: XS2, y: r.v_fwd });
     if (layers.bwd) s.push({ label: "backward pass", color: css("--brk"), width: 1.5, opacity: 0.7, x: XS2, y: r.v_bwd });
-    if (layers.lap) s.push({ label: "your lap", colors: [...r.phase].map(phaseColor), labels: [...r.phase].map(c => PHASE[c][0]), width: 2.5, x: XS2, y: r.v });
-    speedChart(box, s, { y: [0, 120], yTicks: [0, 30, 60, 90, 120] });
+    if (layers.lap) s.push({ label: "your lap", colors: [...r.phase].map(phaseColor), labels: [...r.phase].map(c => PHASE[c][0]), width: 2.25, x: XS2, y: r.v });
+    speedChart(box, s, { y: [0, 120], yTicks: [0, 30, 60, 90, 120], height: 210 });
   };
   const zc = zoomControl(drawSpeed, box);
-  // map + race
-  const svg = svgEl("svg", { class: "map", role: "img", "aria-label": "Your car racing the baseline" });
-  const gap = stdout("");
-  const btn = h("button", { class: "tb", type: "button", text: "▶ Race the baseline" });
+  // GGV slice with the baseline ghost
+  const sliceBox = h("div", { class: "chart" });
+  const sliceRead = h("pre", { class: "stdout", style: "font-size:12px" });
+  const drawSlice = () => {
+    const sl = sliceAt(wb.run, wb.v);
+    ggvSlice(sliceBox, [{ slice: sliceAt(baseRun, wb.v), color: css("--base"), width: 1.5, dash: "4 3" }, { slice: sl, color: css("--hi"), width: 2.25, fill: css("--hi"), fillOpacity: 0.1 }], 220);
+    sliceRead.textContent = `accel ${sl.ax_max[0].toFixed(2)} g  brake ${(-sl.ax_min[0]).toFixed(2)} g  turn ${sl.ay[sl.ay.length - 1].toFixed(2)} g`;
+  };
+  const ss = speedSlider(wb.v, v => { wb.v = v; drawSlice(); });
+  // map + race + results
+  const svg = svgEl("svg", { class: "map sm", role: "img", "aria-label": "Your car racing the baseline" });
+  const gap = h("pre", { class: "stdout", style: "font-size:12px" });
+  const btn = h("button", { class: "tb sm", type: "button", text: "▶ Race the baseline" });
   btn.addEventListener("click", () => { const rc = wb.race; if (!rc) return; if (rc.on) { rc.pause(); btn.textContent = "▶ Race the baseline"; } else { rc.play(); btn.textContent = "❚❚ Pause"; } });
+  const tbody = h("tbody");
+  const df = h("table", { class: "df" }, h("thead", {}, h("tr", {}, h("th", { text: "event" }), h("th", { text: "base" }), h("th", { text: "yours" }), h("th", { text: "Δ" }))), tbody);
 
-  out.append(chain, h("div", { class: "scroll-x" }, df),
-    h("div", { class: "stack" }, h("b", { text: "GGV: your car against the baseline", style: "font-weight:500" }), g.el),
-    h("div", { class: "stack" }, h("b", { text: "Speed along the lap", style: "font-weight:500" }), h("div", { class: "ctl" }, toggles, zc), box),
-    h("div", { class: "row map-chart" }, h("div", { class: "stack" }, svg, h("div", { class: "ctl" }, btn), gap),
-      h("div", { class: "stack" }, legend([["accelerating", css("--acc")], ["braking", css("--brk")], ["at the cornering limit", css("--crn")]]),
-        h("p", { class: "hint", text: "Track coloured by what your car is doing. Grey dot: baseline. Blue dot: your car." }))),
+  out.append(chain,
+    h("div", { class: "stack" }, h("div", { class: "ctl" }, h("span", { class: "panel-t", text: "Speed along the lap" }), toggles, zc), box),
+    h("div", { class: "row wb3" },
+      h("div", { class: "stack" }, h("span", { class: "panel-t", text: "GGV: yours (orange) vs baseline (dashed)" }), ss, sliceBox, sliceRead),
+      h("div", { class: "stack" }, svg, legend([["accel", css("--acc")], ["brake", css("--brk")], ["corner", css("--crn")]])),
+      h("div", { class: "stack" }, h("span", { class: "panel-t", text: "Event times (s)" }), h("div", { class: "scroll-x" }, df), h("div", { class: "ctl" }, btn), gap,
+        h("span", { class: "hint", text: "Grey dot: baseline. Blue dot: your car." }))),
     why("Every combination here was run in our real sim: 225 cars. Watch which boxes in the chain light up. Power only changes the top of the GGV and the straights. Grip changes everything. Mass changes surprisingly little, because grip grows with the weight on the tyres. The sim is best at differences like these; the absolute lap time depends on what the model leaves out."));
 
   wb.update = () => {
     const r = RUNS.get(keyOf(setup)); if (!r) return;
     wb.run = r;
     if (wb.race) wb.race.pause();
-    // chain
     const changed = PARAMS.filter(p => setup[p.key] !== D.baseline_setup[p.key]).map(p => `${p.name} ${p.fmt(setup[p.key])}`);
     setNode("car", changed.length > 0, changed.length ? changed.join(", ") : "baseline");
     const s90 = sliceAt(r, 90), b90 = sliceAt(baseRun, 90), s30 = sliceAt(r, 30), b30 = sliceAt(baseRun, 30);
     const dTurn = s90.ay[s90.ay.length - 1] - b90.ay[b90.ay.length - 1], dAcc = s30.ax_max[0] - b30.ax_max[0], dBrk = -(s90.ax_min[0] - b90.ax_min[0]);
     const ggvOn = Math.max(Math.abs(dTurn), Math.abs(dAcc), Math.abs(dBrk)) > 0.005;
-    setNode("ggv", ggvOn, ggvOn ? `turn@90 ${sgn(dTurn, 2, " g")}, accel@30 ${sgn(dAcc, 2, " g")}` : "unchanged");
+    setNode("ggv", ggvOn, ggvOn ? `turn ${sgn(dTurn, 2, " g")}, accel ${sgn(dAcc, 2, " g")}` : "unchanged");
     const dc = meanDiff(r.v_cap, baseRun.v_cap), df_ = meanDiff(r.v_fwd, baseRun.v_fwd), db = meanDiff(r.v_bwd, baseRun.v_bwd);
     setNode("cap", Math.abs(dc) > 0.05, Math.abs(dc) > 0.05 ? `${sgn(dc)} km/h avg` : "unchanged");
     setNode("fwd", Math.abs(df_) > 0.05, Math.abs(df_) > 0.05 ? `${sgn(df_)} km/h avg` : "unchanged");
     setNode("bwd", Math.abs(db) > 0.05, Math.abs(db) > 0.05 ? `${sgn(db)} km/h avg` : "unchanged");
     const dl = r.sprint_s - baseRun.sprint_s;
     setNode("lap", Math.abs(dl) > 0.005, Math.abs(dl) > 0.005 ? `${r.sprint_s.toFixed(2)} s (${sgn(dl, 2, " s")})` : `${r.sprint_s.toFixed(2)} s`);
-    // table
     tbody.replaceChildren();
-    for (const [name, k] of [["sprint", "sprint_s"], ["acceleration (75 m)", "accel_s"], ["skidpad", "skidpad_s"]]) {
+    for (const [name, k] of [["sprint", "sprint_s"], ["accel", "accel_s"], ["skidpad", "skidpad_s"]]) {
       const d = r[k] - baseRun[k], cls = Math.abs(d) < 0.005 ? "" : d < 0 ? "good" : "bad";
-      const txt = Math.abs(d) < 0.005 ? "same" : `${d < 0 ? "▼" : "▲"} ${Math.abs(d).toFixed(2)} s ${d < 0 ? "faster" : "slower"}`;
-      tbody.append(h("tr", {}, h("td", { text: name }), h("td", { text: `${baseRun[k].toFixed(2)} s` }), h("td", { text: `${r[k].toFixed(2)} s` }), h("td", { class: cls, text: txt })));
+      tbody.append(h("tr", {}, h("td", { text: name }), h("td", { text: baseRun[k].toFixed(2) }), h("td", { text: r[k].toFixed(2) }), h("td", { class: cls, text: Math.abs(d) < 0.005 ? "–" : sgn(d, 2) })));
     }
-    g.upd(); drawSpeed();
-    // map + race
+    drawSlice(); drawSpeed();
     const lw = drawMap(svg, { colors: colorsPerMetre(r.phase), width: 0.9 });
     wb.race = replay(svg, lw, [{ t: baseRun.t, step: RUN_DS, color: css("--base") }, { t: r.t, step: RUN_DS, color: css("--accent") }]);
     wb.race.onTick = t => {
       const a = Math.min(idxAtTime(baseRun.t, t) * RUN_DS, NT - 1), b = Math.min(idxAtTime(r.t, t) * RUN_DS, NT - 1);
-      gap.textContent = `${t.toFixed(1)} s   your car is ${Math.abs(b - a)} m ${b >= a ? "ahead" : "behind"}`;
+      gap.textContent = `${t.toFixed(1)} s  you are ${Math.abs(b - a)} m ${b >= a ? "ahead" : "behind"}`;
     };
     wb.race.onEnd = () => { gap.textContent = Math.abs(dl) < 0.005 ? "Dead heat." : `Finished ${Math.abs(dl).toFixed(2)} s ${dl < 0 ? "ahead" : "behind"}.`; btn.textContent = "▶ Race again"; };
     gap.textContent = ""; btn.textContent = "▶ Race the baseline";
   };
+  onRedraw(sliceBox, drawSlice);
   wb.update();
 }
 
@@ -947,7 +939,7 @@ const PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12
 const SPIN = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="16 50"/></svg>';
 document.querySelectorAll(".cell.code").forEach(cell => {
   const n = +cell.dataset.cell;
-  const body = h("div", { style: "min-width:0" });
+  const body = h("div", { class: n === 6 ? "body6" : "", style: "min-width:0" });
   while (cell.firstChild) body.append(cell.firstChild);
   const run = h("button", { class: "run", type: "button", "aria-label": `Run cell ${n}` }); run.innerHTML = PLAY;
   const gut = h("div", { class: "gutter" }, run, h("span", { class: "count", text: "[ ]" }));
@@ -978,11 +970,12 @@ function runCell(n, { quick = false } = {}) {
 }
 
 $("#runAll").addEventListener("click", async () => {
-  for (let n = 1; n <= 9; n++) { runCell(n, { quick: true }); await new Promise(r => setTimeout(r, reduceMotion ? 0 : 120)); }
+  for (let n = 1; n <= 6; n++) { runCell(n, { quick: true }); await new Promise(r => setTimeout(r, reduceMotion ? 0 : 120)); }
 });
 $("#resetAll").addEventListener("click", () => {
   ran.clear(); execCount = 0; if (wb.race) wb.race.pause();
   Object.assign(setup, D.baseline_setup); syncForm(); renderFormSrc();
+  document.querySelectorAll("#passSrc .ln").forEach(l => l.classList.remove("on"));
   document.querySelectorAll(".cell.code").forEach(c => { $(".out", c).replaceChildren(); $(".out", c).hidden = true; $(".count", c).textContent = "[ ]"; c.classList.add("fresh"); });
   window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
 });
