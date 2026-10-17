@@ -12,7 +12,6 @@
 :root {
   color-scheme: light;
   --page: #ffffff;
-  --header: #ffffff;
   --code-bg: #f7f7f7;
   --ink: #202124;
   --ink-2: #5f6368;
@@ -30,6 +29,9 @@
   --cap: #9aa0a6;
   --base: #9aa0a6;
   --hi: #e8710a;
+  /* free body diagram */
+  --f-ground: #129eaf;
+  --f-tyre: #9334e6;
   /* VS Code Light+ syntax */
   --syn-k: #0000ff;
   --syn-f: #795e26;
@@ -48,8 +50,8 @@ button { font: inherit; color: inherit; }
 a { color: var(--accent); }
 
 /* header */
-.bar { position: sticky; top: 0; z-index: 10; background: var(--header); border-bottom: 1px solid var(--line); }
-.bar-in { max-width: 1000px; margin: 0 auto; padding: 10px max(16px, env(safe-area-inset-right)) 10px max(16px, env(safe-area-inset-left)); display: flex; align-items: center; gap: 12px; }
+.bar { position: sticky; top: 0; z-index: 10; background: var(--page); border-bottom: 1px solid var(--line); }
+.bar-in { max-width: 1040px; margin: 0 auto; padding: 10px max(16px, env(safe-area-inset-right)) 10px max(16px, env(safe-area-inset-left)); display: flex; align-items: center; gap: 12px; }
 .logo { width: 32px; height: 32px; border-radius: 6px; background: var(--ink); color: #fff; display: grid; place-items: center; font: 500 11px/1 var(--f-code); letter-spacing: 0.04em; flex: none; }
 .fname { font-size: 17px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .fname small { display: block; font-size: 12px; color: var(--ink-2); }
@@ -63,7 +65,7 @@ a { color: var(--accent); }
 @media (max-width: 620px) { .chip, .fname small { display: none; } .tb { padding: 6px 10px; } }
 
 /* notebook */
-.nb { max-width: 1000px; margin: 0 auto; padding: 18px max(16px, env(safe-area-inset-right)) 64px max(16px, env(safe-area-inset-left)); display: grid; gap: 14px; }
+.nb { max-width: 1040px; margin: 0 auto; padding: 18px max(16px, env(safe-area-inset-right)) 64px max(16px, env(safe-area-inset-left)); display: grid; gap: 14px; }
 .cell { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 0 8px; border-radius: 8px; padding: 6px 8px 6px 0; border: 1px solid transparent; }
 .cell:hover, .cell:focus-within { border-color: var(--line); }
 .gutter { display: flex; flex-direction: column; align-items: center; gap: 4px; padding-top: 6px; }
@@ -86,31 +88,39 @@ a { color: var(--accent); }
 
 details.why { border-top: 1px solid var(--grid); padding-top: 6px; }
 details.why summary { cursor: pointer; color: var(--accent); font-size: 14px; width: max-content; }
-details.why p { margin: 6px 0 0; color: var(--ink-2); max-width: 70ch; }
+details.why p { margin: 6px 0 0; color: var(--ink-2); max-width: 72ch; }
 
 /* text cells */
 .text { display: block; padding: 4px 8px 4px 52px; }
 .text h1 { font: 400 30px/1.2 var(--f-ui); margin: 6px 0 6px; }
 .text h2 { font: 400 22px/1.3 var(--f-ui); margin: 14px 0 4px; }
-.text p { margin: 4px 0; color: var(--ink-2); max-width: 70ch; }
-.text ul { margin: 6px 0; padding-left: 20px; color: var(--ink-2); max-width: 70ch; }
+.text p { margin: 4px 0; color: var(--ink-2); max-width: 72ch; }
+.text ul { margin: 6px 0; padding-left: 20px; color: var(--ink-2); max-width: 72ch; }
 @media (max-width: 620px) { .text { padding-left: 8px; } .cell { grid-template-columns: 36px minmax(0, 1fr); } }
 
 /* outputs */
 .row { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); align-items: start; }
-@media (min-width: 760px) { .row.map-chart { grid-template-columns: minmax(0, 0.42fr) minmax(0, 1fr); } .row.halves { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.stack { display: grid; gap: 8px; align-content: start; min-width: 0; }
+@media (min-width: 760px) {
+  .row.map-chart { grid-template-columns: minmax(0, 0.42fr) minmax(0, 1fr); }
+  .row.halves { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+}
 .map { width: 100%; height: auto; display: block; max-height: 440px; }
 .legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 13px; color: var(--ink-2); align-items: center; }
 .key { display: inline-flex; align-items: center; gap: 6px; }
 .key i { width: 16px; border-top: 3px solid currentColor; display: inline-block; border-radius: 2px; }
 .key i.thin { border-top-width: 2px; }
+.key i.dash { border-top: 2px dashed currentColor; }
 .key i.area { height: 10px; border: 0; background: currentColor; opacity: 0.35; }
-.key i.dot { width: 10px; height: 10px; border: 0; border-radius: 50%; background: currentColor; }
+.key span { color: var(--ink-2); }
 .ctl { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
 .seg button { border: 0; background: var(--page); padding: 4px 10px; font-size: 13px; cursor: pointer; }
 .seg button + button { border-left: 1px solid var(--line); }
 .seg button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); }
+.toggle { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 14px; padding: 3px 10px 3px 8px; font-size: 13px; cursor: pointer; user-select: none; }
+.toggle input { margin: 0; accent-color: var(--accent); }
+.toggle i { width: 14px; border-top: 3px solid currentColor; }
 .chart { position: relative; min-width: 0; }
 .chart svg { display: block; width: 100%; overflow: visible; }
 svg text { font-family: var(--f-code); }
@@ -126,13 +136,20 @@ svg text { font-family: var(--f-code); }
 
 /* ipywidgets-like slider */
 .widget { display: flex; align-items: center; gap: 10px; font: 400 13px/1 var(--f-code); color: var(--ink-2); flex-wrap: wrap; }
-.widget input[type="range"] { width: min(320px, 60vw); accent-color: var(--accent); }
-.widget output { color: var(--ink); min-width: 6ch; }
+.widget input[type="range"] { width: min(300px, 55vw); accent-color: var(--accent); }
+.widget output { color: var(--ink); min-width: 7ch; }
 
 /* 3D GGV */
-.ggv3d { width: 100%; aspect-ratio: 1 / 0.9; max-height: 420px; display: block; touch-action: pan-y; cursor: grab; background: #fff; border: 1px solid var(--grid); border-radius: 4px; }
+.ggv3d { width: 100%; aspect-ratio: 1 / 0.9; max-height: 400px; display: block; touch-action: pan-y; cursor: grab; background: #fff; border: 1px solid var(--grid); border-radius: 4px; }
 .ggv3d:active { cursor: grabbing; }
 .hint { font-size: 12px; color: var(--muted); }
+
+/* car drawings */
+.drawing { width: 100%; height: auto; display: block; }
+.drawing text { font-family: var(--f-code); }
+.pad { touch-action: none; cursor: crosshair; }
+.side-wrap { max-width: 760px; width: 100%; justify-self: center; }
+.top-wrap { max-width: 340px; width: 100%; justify-self: center; }
 
 /* dataframe */
 .df { border-collapse: collapse; font: 400 13px/1.4 var(--f-code); }
@@ -142,21 +159,28 @@ svg text { font-family: var(--f-code); }
 .df td.good { color: var(--acc); }
 .df td.bad { color: var(--brk); }
 .scroll-x { overflow-x: auto; }
-.stats { display: flex; flex-wrap: wrap; gap: 6px 18px; font: 400 13px/1.4 var(--f-code); color: var(--ink-2); }
-.stats b { font-weight: 500; }
 
 /* Colab form cell */
 .form-cell { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); }
-@media (min-width: 760px) { .form-cell { grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr); } }
-.form { display: grid; gap: 10px; align-content: start; padding: 6px 2px; }
-.form label { display: grid; grid-template-columns: 9ch minmax(0, 1fr); gap: 10px; align-items: center; font: 400 13px/1.2 var(--f-code); color: var(--ink-2); }
-.form select { font: 400 13px/1.2 var(--f-code); padding: 5px 8px; border: 1px solid var(--line); border-radius: 4px; background: #fff; color: var(--ink); width: 100%; max-width: 220px; }
-.guess { display: grid; gap: 8px; margin: 8px 0; max-width: 70ch; }
-.guess div { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; align-items: center; color: var(--ink); }
-.guess .ans { grid-column: 1 / -1; color: var(--ink-2); font-size: 14px; border-left: 3px solid var(--accent); padding-left: 10px; }
+@media (min-width: 860px) { .form-cell { grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); } }
+.form { display: grid; gap: 12px; align-content: start; padding: 4px 2px; }
+.form label { display: grid; grid-template-columns: 10ch minmax(0, 1fr) 6ch; gap: 10px; align-items: center; font: 400 13px/1.2 var(--f-code); color: var(--ink-2); }
+.form input[type="range"] { width: 100%; accent-color: var(--accent); }
+.form output { color: var(--ink); text-align: right; }
+
+/* cause chain */
+.chain { display: flex; flex-wrap: wrap; align-items: stretch; gap: 6px; }
+.chain .node { border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; min-width: 120px; flex: 1 1 120px; display: grid; gap: 2px; background: #fff; transition: background-color 0.2s, border-color 0.2s; }
+.chain .node b { font-weight: 500; font-size: 13px; }
+.chain .node span { font: 400 12px/1.35 var(--f-code); color: var(--muted); }
+.chain .node.on { border-color: var(--hi); background: #fef3e8; }
+.chain .node.on span { color: var(--ink); }
+.chain .arr { align-self: center; color: var(--muted); font-size: 14px; }
+@media (max-width: 620px) { .chain .arr { display: none; } .chain .node { flex-basis: 45%; } }
+
 .foot { font-size: 12px; color: var(--muted); padding-left: 52px; }
 @media (max-width: 620px) { .foot { padding-left: 8px; } }
-@media (prefers-reduced-motion: reduce) { .busy .run svg { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .busy .run svg { animation: none; } .chain .node { transition: none; } }
 </style>
 </head>
 <body>
@@ -193,18 +217,22 @@ svg text { font-family: var(--f-code); }
   </div>
 
   <div class="cell code" data-cell="4">
-    <pre class="src"><span class="v">v_corner</span> = <span class="f">corner_limits</span>(<span class="v">track</span>, <span class="v">ggv</span>)  <span class="c"># v = √(a_lat/κ)</span></pre>
+    <pre class="src" id="fbdSrc"></pre>
   </div>
 
   <div class="cell code" data-cell="5">
-    <pre class="src"><span class="v">v_fwd</span> = <span class="f">forward_pass</span>(<span class="v">track</span>, <span class="v">ggv</span>, <span class="v">v_corner</span>)   <span class="c"># accelerate</span></pre>
+    <pre class="src"><span class="v">v_corner</span> = <span class="f">corner_limits</span>(<span class="v">track</span>, <span class="v">ggv</span>)  <span class="c"># v = √(a_lat/κ)</span></pre>
   </div>
 
   <div class="cell code" data-cell="6">
-    <pre class="src"><span class="v">v_bwd</span> = <span class="f">backward_pass</span>(<span class="v">track</span>, <span class="v">ggv</span>, <span class="v">v_corner</span>)  <span class="c"># brake</span></pre>
+    <pre class="src"><span class="v">v_fwd</span> = <span class="f">forward_pass</span>(<span class="v">track</span>, <span class="v">ggv</span>, <span class="v">v_corner</span>)   <span class="c"># accelerate</span></pre>
   </div>
 
   <div class="cell code" data-cell="7">
+    <pre class="src"><span class="v">v_bwd</span> = <span class="f">backward_pass</span>(<span class="v">track</span>, <span class="v">ggv</span>, <span class="v">v_corner</span>)  <span class="c"># brake</span></pre>
+  </div>
+
+  <div class="cell code" data-cell="8">
     <pre class="src"><span class="v">lap</span> = <span class="v">np</span>.<span class="f">minimum</span>(<span class="v">v_fwd</span>, <span class="v">v_bwd</span>)
 <span class="v">lap_time</span> = <span class="v">np</span>.<span class="f">sum</span>(<span class="v">ds</span> / <span class="v">lap</span>)
 <span class="f">print</span>(<span class="k">f</span><span class="s">"Lap time: {</span><span class="v">lap_time</span><span class="s">:.2f} s"</span>)</pre>
@@ -212,11 +240,10 @@ svg text { font-family: var(--f-code); }
 
   <div class="cell text">
     <h2>Your turn: change the car</h2>
-    <p>Other subteams ask us questions like these. Guess first, then try it.</p>
-    <div class="guess" id="guess"></div>
+    <p>Move a slider. The chain shows which parts of the simulation change, and the plots below show how.</p>
   </div>
 
-  <div class="cell code" data-cell="8">
+  <div class="cell code" data-cell="9">
     <div class="form-cell">
       <pre class="src" id="formSrc"></pre>
       <div class="form" id="form"></div>
@@ -245,7 +272,7 @@ if (!D) {
     '<pre class="err"><b>FileNotFoundError</b>: data/sim.js did not load. Keep it next to index.html.</pre>');
   return;
 }
-const B = D.baseline;
+const B = D.baseline, CAR = D.car;
 const NS = "http://www.w3.org/2000/svg";
 const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const $ = (s, r = document) => r.querySelector(s);
@@ -256,6 +283,7 @@ const svgEl = (tag, attrs = {}, parent) => {
   if (parent) parent.appendChild(n);
   return n;
 };
+const svgText = (parent, x, y, text, attrs = {}) => { const t = svgEl("text", { x, y, ...attrs }, parent); t.textContent = text; return t; };
 const h = (tag, props = {}, ...kids) => {
   const n = document.createElement(tag);
   for (const [k, v] of Object.entries(props)) {
@@ -265,56 +293,29 @@ const h = (tag, props = {}, ...kids) => {
   return n;
 };
 
-// ---------- data helpers ----------
+// ---------- data ----------
 const keyOf = s => `${s.mass_kg}|${s.cl}|${s.power_kW}|${s.mu}`;
 const RUNS = new Map(D.runs.map(r => [keyOf(r.setup), r]));
 const baseRun = RUNS.get(keyOf(D.baseline_setup));
 const RUN_DS = 2;
-for (const r of D.runs) {             // elapsed time along each 2 m trace, scaled to the sim's lap time
+const XS2 = baseRun.v.map((_, i) => i * RUN_DS);
+for (const r of D.runs) {   // elapsed time along each 2 m trace, scaled to the sim's own lap time
   const t = [0];
-  for (let i = 1; i < r.sprint_v.length; i++) t.push(t[i - 1] + 2 * RUN_DS / Math.max((r.sprint_v[i - 1] + r.sprint_v[i]) / 3.6, 0.2));
+  for (let i = 1; i < r.v.length; i++) t.push(t[i - 1] + 2 * RUN_DS / Math.max((r.v[i - 1] + r.v[i]) / 3.6, 0.2));
   const k = r.sprint_s / t[t.length - 1];
   r.t = t.map(v => v * k);
 }
 const LAP_T = baseRun.sprint_s;
 const TX = B.x, TY = B.y, NT = TX.length;
 const PHASE = { A: ["Accelerating", "--acc"], B: ["Braking", "--brk"], C: ["At the cornering limit", "--crn"] };
-const phaseColor = c => css(PHASE[c][1]);
-const capShown = B.v_cap.map(c => c != null && c <= 120 ? c : null);
+const PCOL = {};
+const phaseColor = c => PCOL[c] || (PCOL[c] = css(PHASE[c][1]));
+const capShown = arr => arr.map(c => c != null && c <= 120 ? c : null);
 function idxAtTime(t, x) { let lo = 0, hi = t.length - 1; while (hi - lo > 1) { const m = (lo + hi) >> 1; if (t[m] <= x) lo = m; else hi = m; } return lo; }
+const G = 9.81;
 
-// ---------- track map ----------
-function drawMap(svg, { colors = null, width = 1 } = {}) {
-  svg.replaceChildren();
-  const minX = Math.min(...TX), maxX = Math.max(...TX), minY = Math.min(...TY), maxY = Math.max(...TY), pad = 12;
-  svg.setAttribute("viewBox", `${minX - pad} ${-maxY - pad} ${maxX - minX + 2 * pad} ${maxY - minY + 2 * pad}`);
-  const lw = Math.max(maxX - minX, maxY - minY) / 140 * width;
-  let d = `M${TX[0]},${-TY[0]}`; for (let i = 2; i < NT; i += 2) d += `L${TX[i]},${-TY[i]}`;
-  svgEl("path", { d: d + "Z", fill: "none", stroke: colors ? css("--grid") : css("--ink-2"), "stroke-width": colors ? lw * 2.2 : lw, "stroke-linejoin": "round" }, svg);
-  if (colors) {
-    let start = 0;
-    for (let i = 1; i <= NT; i++) {
-      if (i === NT || colors[i] !== colors[start]) {
-        let p = `M${TX[start]},${-TY[start]}`;
-        for (let j = start + 1; j <= Math.min(i, NT - 1); j++) p += `L${TX[j]},${-TY[j]}`;
-        svgEl("path", { d: p, fill: "none", stroke: colors[start], "stroke-width": lw * 1.4, "stroke-linecap": "round", "stroke-linejoin": "round" }, svg);
-        start = i;
-      }
-    }
-  }
-  // start line and direction arrow
-  const a = Math.atan2(TY[6] - TY[0], TX[6] - TX[0]), nx = -Math.sin(a) * lw * 3, ny = Math.cos(a) * lw * 3;
-  svgEl("line", { x1: TX[0] + nx, y1: -(TY[0] + ny), x2: TX[0] - nx, y2: -(TY[0] - ny), stroke: css("--ink"), "stroke-width": lw * 0.8 }, svg);
-  const i2 = 30, ang = Math.atan2(-(TY[i2 + 3] - TY[i2]), TX[i2 + 3] - TX[i2]) * 180 / Math.PI, aw = lw * 2.2;
-  svgEl("path", { d: `M${-aw},${-aw}L${aw * 1.3},0L${-aw},${aw}Z`, fill: css("--ink"), stroke: "#fff", "stroke-width": lw * 0.4, transform: `translate(${TX[i2]},${-TY[i2]}) rotate(${ang})` }, svg);
-  const st = svgEl("text", { x: TX[0] - lw * 4.5, y: -TY[0] + lw * 1.6, "font-size": lw * 4.5, "text-anchor": "end", fill: css("--ink-2") }, svg);
-  st.textContent = "start";
-  return lw;
-}
-
-// ---------- line chart (speed vs distance) ----------
-let zoom = 300;  // shared by every speed chart: metres shown, 0 = whole lap
-// Redraw hooks for charts on screen. Each is tied to an element and dropped once that element is gone.
+// ---------- redraw hooks (zoom + resize) ----------
+let zoom = 300;  // metres shown in every speed chart, 0 = whole lap
 let hooks = [];
 const onRedraw = (el, fn) => hooks.push({ el, fn });
 const redrawAll = () => { hooks = hooks.filter(x => x.el.isConnected); hooks.forEach(x => x.fn()); };
@@ -326,10 +327,43 @@ function zoomControl(redraw, box) {
     b.addEventListener("click", () => { zoom = v; redrawAll(); });
     seg.append(b);
   }
-  const upd = () => seg.querySelectorAll("button").forEach((b, i) => b.setAttribute("aria-pressed", String(opts[i][0] === zoom)));
-  onRedraw(seg, upd); onRedraw(box, redraw);
+  onRedraw(seg, () => seg.querySelectorAll("button").forEach((b, i) => b.setAttribute("aria-pressed", String(opts[i][0] === zoom))));
+  onRedraw(box, redraw);
   return seg;
 }
+const legend = items => h("div", { class: "legend" }, ...items.map(([label, color, kind]) => {
+  const k = h("span", { class: "key" }, h("i", { class: kind || "" }), h("span", { text: label })); k.style.color = color; return k;
+}));
+
+// ---------- track map ----------
+function drawMap(svg, { colors = null, width = 1 } = {}) {
+  svg.replaceChildren();
+  const minX = Math.min(...TX), maxX = Math.max(...TX), minY = Math.min(...TY), maxY = Math.max(...TY), pad = 12;
+  svg.setAttribute("viewBox", `${minX - pad} ${-maxY - pad} ${maxX - minX + 2 * pad} ${maxY - minY + 2 * pad}`);
+  const lw = Math.max(maxX - minX, maxY - minY) / 140 * width;
+  let d = `M${TX[0]},${-TY[0]}`; for (let i = 2; i < NT; i += 2) d += `L${TX[i]},${-TY[i]}`;
+  svgEl("path", { d: d + "Z", fill: "none", stroke: colors ? css("--grid") : css("--ink-2"), "stroke-width": colors ? lw * 2.2 : lw, "stroke-linejoin": "round" }, svg);
+  if (colors) {   // colors: one per metre
+    let start = 0;
+    for (let i = 1; i <= NT; i++) {
+      if (i === NT || colors[i] !== colors[start]) {
+        let p = `M${TX[start]},${-TY[start]}`;
+        for (let j = start + 1; j <= Math.min(i, NT - 1); j++) p += `L${TX[j]},${-TY[j]}`;
+        svgEl("path", { d: p, fill: "none", stroke: colors[start], "stroke-width": lw * 1.4, "stroke-linecap": "round", "stroke-linejoin": "round" }, svg);
+        start = i;
+      }
+    }
+  }
+  const a = Math.atan2(TY[6] - TY[0], TX[6] - TX[0]), nx = -Math.sin(a) * lw * 3, ny = Math.cos(a) * lw * 3;
+  svgEl("line", { x1: TX[0] + nx, y1: -(TY[0] + ny), x2: TX[0] - nx, y2: -(TY[0] - ny), stroke: css("--ink"), "stroke-width": lw * 0.8 }, svg);
+  const i2 = 30, ang = Math.atan2(-(TY[i2 + 3] - TY[i2]), TX[i2 + 3] - TX[i2]) * 180 / Math.PI, aw = lw * 2.2;
+  svgEl("path", { d: `M${-aw},${-aw}L${aw * 1.3},0L${-aw},${aw}Z`, fill: css("--ink"), stroke: "#fff", "stroke-width": lw * 0.4, transform: `translate(${TX[i2]},${-TY[i2]}) rotate(${ang})` }, svg);
+  svgText(svg, TX[0] - lw * 4.5, -TY[0] + lw * 1.6, "start", { "font-size": lw * 4.5, "text-anchor": "end", fill: css("--ink-2") });
+  return lw;
+}
+const colorsPerMetre = phase2m => { const c = []; for (let i = 0; i < NT; i++) c.push(phaseColor(phase2m[Math.min(Math.round(i / RUN_DS), phase2m.length - 1)])); return c; };
+
+// ---------- line chart (speed vs distance) ----------
 function lineChart(box, opt) {
   box.replaceChildren();
   const W = Math.max(280, box.clientWidth);
@@ -340,12 +374,12 @@ function lineChart(box, opt) {
   const sx = v => m.l + (v - x0) / (x1 - x0) * (W - m.l - m.r);
   const sy = v => H - m.b - (v - y0) / (y1 - y0) * (H - m.t - m.b);
   const ax = svgEl("g", { class: "ax" }, svg);
-  for (const v of opt.yTicks) { svgEl("line", { x1: m.l, x2: W - m.r, y1: sy(v), y2: sy(v), class: "gridline" }, ax); svgEl("text", { x: m.l - 6, y: sy(v) + 4, "text-anchor": "end" }, ax).textContent = v; }
+  for (const v of opt.yTicks) { svgEl("line", { x1: m.l, x2: W - m.r, y1: sy(v), y2: sy(v), class: "gridline" }, ax); svgText(ax, m.l - 6, sy(v) + 4, v, { "text-anchor": "end" }); }
   const step = (x1 - x0) > 400 ? 100 : 50;
-  for (let v = Math.ceil(x0 / step) * step; v <= x1; v += step) svgEl("text", { x: sx(v), y: H - m.b + 16, "text-anchor": "middle" }, ax).textContent = v;
+  for (let v = Math.ceil(x0 / step) * step; v <= x1; v += step) svgText(ax, sx(v), H - m.b + 16, v, { "text-anchor": "middle" });
   svgEl("line", { x1: m.l, x2: W - m.r, y1: sy(y0), y2: sy(y0), class: "baseline" }, ax);
-  svgEl("text", { x: m.l - 6, y: 11, "text-anchor": "end" }, ax).textContent = "km/h";
-  svgEl("text", { x: W - m.r, y: H - 2, "text-anchor": "end" }, ax).textContent = "distance (m)";
+  svgText(ax, m.l - 6, 11, "km/h", { "text-anchor": "end" });
+  svgText(ax, W - m.r, H - 2, "distance (m)", { "text-anchor": "end" });
   const cid = "c" + Math.random().toString(36).slice(2);
   svgEl("rect", { x: m.l, y: m.t - 2, width: W - m.l - m.r, height: H - m.t - m.b + 2 }, svgEl("clipPath", { id: cid }, svgEl("defs", {}, svg)));
   const plot = svgEl("g", { "clip-path": `url(#${cid})` }, svg);
@@ -358,11 +392,9 @@ function lineChart(box, opt) {
       flush();
       svgEl("path", { d, fill: s.color, "fill-opacity": 0.18 }, plot);
     }
-    // stroke, split where the per-point colour changes
     const col = i => s.colors ? s.colors[i] : s.color;
-    let d = "", pen = false, cur = null;
+    let d = "", pen = false, cur = null, px = null;
     const flushPath = () => { if (d) svgEl("path", { d, fill: "none", stroke: cur, "stroke-width": s.width || 2, "stroke-dasharray": s.dash || "", "stroke-opacity": s.opacity || 1, "stroke-linejoin": "round", "stroke-linecap": "round" }, plot); d = ""; };
-    let px = null;
     for (let i = 0; i < s.x.length; i++) {
       const xv = s.x[i], yv = s.y[i];
       if (yv == null || !inX(xv)) { pen = false; continue; }
@@ -372,7 +404,6 @@ function lineChart(box, opt) {
     }
     flushPath();
   }
-  // crosshair + tooltip
   const cross = svgEl("line", { y1: m.t, y2: H - m.b, stroke: css("--muted"), visibility: "hidden" }, svg);
   const tipS = opt.series.filter(s => !s.noTip);
   const dots = tipS.map(() => svgEl("circle", { r: 4, stroke: "#fff", "stroke-width": 2, visibility: "hidden" }, svg));
@@ -384,8 +415,7 @@ function lineChart(box, opt) {
     tip.replaceChildren(h("div", { class: "h", text: `${Math.round(xv)} m` }));
     tipS.forEach((s, k) => {
       const i = Math.max(0, Math.min(s.y.length - 1, Math.round((xv - s.x[0]) / (s.x[1] - s.x[0])))), yv = s.y[i];
-      const c = s.colors ? s.colors[i] : s.color;
-      const label = s.labels ? s.labels[i] : s.label;
+      const c = s.colors ? s.colors[i] : s.color, label = s.labels ? s.labels[i] : s.label;
       const ic = h("i"); ic.style.color = c;
       tip.append(h("div", { class: "r" }, ic, h("b", { text: yv == null ? "no limit" : `${Math.round(yv)} km/h` }), h("span", { text: label })));
       if (yv == null) dots[k].setAttribute("visibility", "hidden");
@@ -400,8 +430,7 @@ function lineChart(box, opt) {
   hit.addEventListener("pointerleave", () => { cross.setAttribute("visibility", "hidden"); dots.forEach(d => d.setAttribute("visibility", "hidden")); tip.hidden = true; });
 }
 const lapEnd = Math.ceil(B.s[B.s.length - 1] / 100) * 100;
-const speedChart = (box, series) => lineChart(box, { x: [0, zoom || lapEnd], y: [0, 110], yTicks: [0, 25, 50, 75, 100], series });
-const legend = items => h("div", { class: "legend" }, ...items.map(([label, color, kind]) => { const i = h("i", { class: kind || "" }); const k = h("span", { class: "key" }, i, h("span", { text: label })); k.style.color = color; k.lastChild.style.color = css("--ink-2"); return k; }));
+const speedChart = (box, series, extra = {}) => lineChart(box, { x: [0, zoom || lapEnd], y: [0, 110], yTicks: [0, 25, 50, 75, 100], series, ...extra });
 
 // ---------- 2D GGV slice ----------
 function ringPts(sl) {   // closed envelope: top edge left→right, bottom edge right→left
@@ -420,80 +449,215 @@ function ggvSlice(box, layers, maxH = 320) {
   const svg = svgEl("svg", { viewBox: `0 0 ${W} ${Hh}`, height: Hh }, box);
   const sx = v => m.l + ox + (v - gx[0]) * k, sy = v => m.t + (gy[1] - v) * k;
   const ax = svgEl("g", { class: "ax" }, svg);
-  for (let v = -2; v <= 2; v++) { svgEl("line", { x1: sx(v), x2: sx(v), y1: sy(gy[0]), y2: sy(gy[1]), class: "gridline" }, ax); svgEl("text", { x: sx(v), y: Hh - 8, "text-anchor": "middle" }, ax).textContent = v ? `${Math.abs(v)} g` : "0"; }
-  for (let v = -2; v <= 1; v++) { svgEl("line", { x1: sx(gx[0]), x2: sx(gx[1]), y1: sy(v), y2: sy(v), class: "gridline" }, ax); svgEl("text", { x: sx(gx[0]) - 4, y: sy(v) + 4, "text-anchor": "end" }, ax).textContent = v ? `${Math.abs(v)} g` : "0"; }
-  const lab = (x, y, t, a) => { const n = svgEl("text", { x, y, "text-anchor": a, fill: css("--ink-2"), "font-size": 11 }, svg); n.textContent = t; };
+  for (let v = -2; v <= 2; v++) { svgEl("line", { x1: sx(v), x2: sx(v), y1: sy(gy[0]), y2: sy(gy[1]), class: "gridline" }, ax); svgText(ax, sx(v), Hh - 8, v ? `${Math.abs(v)} g` : "0", { "text-anchor": "middle" }); }
+  for (let v = -2; v <= 1; v++) { svgEl("line", { x1: sx(gx[0]), x2: sx(gx[1]), y1: sy(v), y2: sy(v), class: "gridline" }, ax); svgText(ax, sx(gx[0]) - 4, sy(v) + 4, v ? `${Math.abs(v)} g` : "0", { "text-anchor": "end" }); }
+  const lab = (x, y, t, a) => svgText(svg, x, y, t, { "text-anchor": a, fill: css("--ink-2"), "font-size": 11 });
   lab(sx(0), sy(gy[1]) + 2, "accelerate ↑", "middle"); lab(sx(0), sy(gy[0]) - 4, "brake ↓", "middle");
   lab(sx(gx[1]), sy(gy[1]) + 2, "turn →", "end"); lab(sx(gx[0]), sy(gy[1]) + 2, "← turn", "start");
   for (const L of layers) {
     const d = ringPts(L.slice).map((p, i) => (i ? "L" : "M") + sx(p[0]).toFixed(1) + "," + sy(p[1]).toFixed(1)).join("") + "Z";
     svgEl("path", { d, fill: L.fill || "none", "fill-opacity": L.fillOpacity || 0, stroke: L.color, "stroke-width": L.width || 2, "stroke-dasharray": L.dash || "", "stroke-linejoin": "round" }, svg);
   }
+  return { svg, sx, sy, W, H: Hh, inv: (px, py) => [(px - m.l - ox) / k + gx[0], gy[1] - (py - m.t) / k] };
 }
+const sliceAt = (run, v) => run.ggv3d.find(s => s.v_kph === v);
 
 // ---------- 3D GGV (canvas, orthographic, drag to rotate) ----------
-const G3 = B.ggv3d, RINGS = G3.map(ringPts);
-const SHOW_RING = i => G3[i].v_kph % 10 === 0;
-const V3 = G3.map(s => s.v_kph), VMIN3 = V3[0], VMAX3 = V3[V3.length - 1], HEIGHT = 2.6;
-const ggv3 = { yaw: -0.6, pitch: 0.55, auto: !reduceMotion, sel: 60, canvas: null, raf: 0 };
-function draw3d() {
-  const cv = ggv3.canvas; if (!cv || !cv.isConnected) return;
-  const dpr = window.devicePixelRatio || 1, W = cv.clientWidth, Hc = cv.clientHeight;
-  if (cv.width !== Math.round(W * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(Hc * dpr); }
-  const g = cv.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, Hc);
-  const cy = Math.cos(ggv3.yaw), sy_ = Math.sin(ggv3.yaw), cp = Math.cos(ggv3.pitch), sp = Math.sin(ggv3.pitch);
-  const k = Math.min(W / 5.6, Hc / (HEIGHT * cp + 4.6 * sp + 0.9));
-  const ox = W / 2, oy = Hc / 2 + k * (HEIGHT * cp) / 2;
-  const hOf = v => (v - VMIN3) / (VMAX3 - VMIN3) * HEIGHT;
-  const P = (lat, lon, hgt) => { const x = lat * cy - lon * sy_, d = lat * sy_ + lon * cy; return [ox + k * x, oy - k * (hgt * cp + d * sp)]; };
-  const line = (pts, color, w, alpha = 1) => { g.beginPath(); pts.forEach((p, i) => i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1])); g.strokeStyle = color; g.globalAlpha = alpha; g.lineWidth = w; g.stroke(); g.globalAlpha = 1; };
-  // floor axes
-  g.font = `11px ${css("--f-code")}`; g.fillStyle = css("--muted");
-  line([P(-2.2, 0, 0), P(2.2, 0, 0)], css("--line"), 1); line([P(0, -2.2, 0), P(0, 1.4, 0)], css("--line"), 1);
-  line([P(0, 0, 0), P(0, 0, HEIGHT * 1.06)], css("--line"), 1);
-  const txt = (s, p, align = "left") => { g.textAlign = align; g.fillText(s, p[0], p[1]); };
-  txt("turn", P(2.35, 0, 0)); txt("accelerate", P(0, 1.55, 0)); txt("brake", P(0, -2.35, 0));
-  // meridians
-  const n = RINGS[0].length;
-  for (let j = 0; j < n; j += Math.round(n / 12)) line(RINGS.map((r, i) => P(r[j][0], r[j][1], hOf(V3[i]))), css("--line"), 1, 0.8);
-  // rings, light (slow) to dark (fast)
-  const lo = [183, 211, 246], hi = [13, 54, 107];
-  RINGS.forEach((r, i) => {
-    if (!SHOW_RING(i)) return;
-    const t = i / (RINGS.length - 1), c = `rgb(${lo.map((v, q) => Math.round(v + (hi[q] - v) * t)).join(",")})`;
-    line([...r, r[0]].map(p => P(p[0], p[1], hOf(V3[i]))), c, 1.2);
-  });
-  // selected speed: filled ring + label
-  const si = V3.indexOf(ggv3.sel), hs = hOf(ggv3.sel), rp = [...RINGS[si], RINGS[si][0]].map(p => P(p[0], p[1], hs));
-  g.beginPath(); rp.forEach((p, i) => i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]));
-  g.fillStyle = css("--hi"); g.globalAlpha = 0.16; g.fill(); g.globalAlpha = 1;
-  line(rp, css("--hi"), 3);
-  g.fillStyle = css("--ink"); txt(`${ggv3.sel} km/h`, P(RINGS[si][0][0] - 0.15, RINGS[si][0][1], hs), "right");
-  g.fillStyle = css("--muted");
-  [VMIN3, VMAX3].forEach(v => { const i = V3.indexOf(v); txt(`${v} km/h`, P(RINGS[i][0][0] - 0.15, RINGS[i][0][1], hOf(v)), "right"); });
-}
-function loop3d() {
-  if (ggv3.auto) ggv3.yaw += 0.004;
-  draw3d();
-  ggv3.raf = ggv3.canvas && ggv3.canvas.isConnected ? requestAnimationFrame(loop3d) : 0;
-}
-function attach3d(cv) {
-  ggv3.canvas = cv;
+const V3 = baseRun.ggv3d.map(s => s.v_kph), VMIN3 = V3[0], VMAX3 = V3[V3.length - 1], HEIGHT = 2.6;
+function make3d(cv, getRun, getSel) {
+  const st = { yaw: -0.6, pitch: 0.55, auto: !reduceMotion, cache: null, rings: null };
+  const rings = () => { const r = getRun(); if (st.cache !== r) { st.cache = r; st.rings = r.ggv3d.map(ringPts); } return st.rings; };
+  function draw() {
+    if (!cv.isConnected) return;
+    const R = rings(), sel = getSel();
+    const dpr = window.devicePixelRatio || 1, W = cv.clientWidth, Hc = cv.clientHeight;
+    if (!W || !Hc) return;
+    if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(Hc * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(Hc * dpr); }
+    const g = cv.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, Hc);
+    const cy = Math.cos(st.yaw), sy_ = Math.sin(st.yaw), cp = Math.cos(st.pitch), sp = Math.sin(st.pitch);
+    const k = Math.min(W / 5.6, Hc / (HEIGHT * cp + 4.6 * sp + 0.9));
+    const ox = W / 2, oy = Hc / 2 + k * (HEIGHT * cp) / 2;
+    const hOf = v => (v - VMIN3) / (VMAX3 - VMIN3) * HEIGHT;
+    const P = (lat, lon, hgt) => { const x = lat * cy - lon * sy_, d = lat * sy_ + lon * cy; return [ox + k * x, oy - k * (hgt * cp + d * sp)]; };
+    const line = (pts, color, w, alpha = 1) => { g.beginPath(); pts.forEach((p, i) => i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1])); g.strokeStyle = color; g.globalAlpha = alpha; g.lineWidth = w; g.stroke(); g.globalAlpha = 1; };
+    const txt = (s, p, align = "left") => { g.textAlign = align; g.fillText(s, p[0], p[1]); };
+    g.font = `11px ${css("--f-code")}`; g.fillStyle = css("--muted");
+    line([P(-2.2, 0, 0), P(2.2, 0, 0)], css("--line"), 1); line([P(0, -2.2, 0), P(0, 1.4, 0)], css("--line"), 1);
+    line([P(0, 0, 0), P(0, 0, HEIGHT * 1.06)], css("--line"), 1);
+    txt("turn", P(2.35, 0, 0)); txt("accelerate", P(0, 1.55, 0)); txt("brake", P(0, -2.35, 0));
+    const n = R[0].length;
+    for (let j = 0; j < n; j += Math.round(n / 12)) line(R.map((r, i) => P(r[j][0], r[j][1], hOf(V3[i]))), css("--line"), 1, 0.8);
+    const lo = [183, 211, 246], hi = [13, 54, 107];
+    R.forEach((r, i) => {
+      const t = i / (R.length - 1), c = `rgb(${lo.map((v, q) => Math.round(v + (hi[q] - v) * t)).join(",")})`;
+      line([...r, r[0]].map(p => P(p[0], p[1], hOf(V3[i]))), c, 1.2);
+    });
+    const si = V3.indexOf(sel), hs = hOf(sel), rp = [...R[si], R[si][0]].map(p => P(p[0], p[1], hs));
+    g.beginPath(); rp.forEach((p, i) => i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]));
+    g.fillStyle = css("--hi"); g.globalAlpha = 0.16; g.fill(); g.globalAlpha = 1;
+    line(rp, css("--hi"), 3);
+    g.fillStyle = css("--ink"); txt(`${sel} km/h`, P(R[si][0][0] - 0.2, R[si][0][1], hs), "right");
+    g.fillStyle = css("--muted");
+    [VMIN3, VMAX3].filter(v => v !== sel).forEach(v => { const i = V3.indexOf(v); txt(`${v} km/h`, P(R[i][0][0] - 0.2, R[i][0][1], hOf(v)), "right"); });
+  }
+  const loop = () => { if (!cv.isConnected) return; if (st.auto) st.yaw += 0.004; draw(); requestAnimationFrame(loop); };
   let drag = null;
-  cv.addEventListener("pointerdown", e => { drag = [e.clientX, e.clientY, e.pointerType]; ggv3.auto = false; cv.setPointerCapture(e.pointerId); });
+  cv.addEventListener("pointerdown", e => { drag = [e.clientX, e.clientY, e.pointerType]; st.auto = false; cv.setPointerCapture(e.pointerId); });
   cv.addEventListener("pointermove", e => {
     if (!drag) return;
-    ggv3.yaw += (e.clientX - drag[0]) * 0.012;
-    if (drag[2] === "mouse") ggv3.pitch = Math.max(0.05, Math.min(1.45, ggv3.pitch + (e.clientY - drag[1]) * 0.008));
-    drag[0] = e.clientX; drag[1] = e.clientY; if (reduceMotion) draw3d();
+    st.yaw += (e.clientX - drag[0]) * 0.012;
+    if (drag[2] === "mouse") st.pitch = Math.max(0.05, Math.min(1.45, st.pitch + (e.clientY - drag[1]) * 0.008));
+    drag[0] = e.clientX; drag[1] = e.clientY; draw();
   });
   const end = () => { drag = null; };
   cv.addEventListener("pointerup", end); cv.addEventListener("pointercancel", end);
-  if (!ggv3.raf) ggv3.raf = requestAnimationFrame(loop3d);
+  requestAnimationFrame(loop);
+  return { draw };
+}
+function ggvBlock(getRun, opts = {}) {   // speed slider + 3D + slice (with optional baseline ghost)
+  const st = { sel: 60 };
+  const cv = h("canvas", { class: "ggv3d", role: "img", "aria-label": "3D GGV diagram: grip envelope rings stacked by speed" });
+  const slice = h("div", { class: "chart" });
+  const read = h("pre", { class: "stdout" });
+  const id = "spd" + Math.random().toString(36).slice(2, 7);
+  const rng = h("input", { type: "range", min: String(VMIN3), max: String(VMAX3), step: "10", value: String(st.sel), id, "aria-label": "speed" });
+  const outv = h("output", { for: id, text: `${st.sel} km/h` });
+  const g3 = make3d(cv, getRun, () => st.sel);
+  const upd = () => {
+    const run = getRun(), sl = sliceAt(run, st.sel), layers = [];
+    if (opts.ghost) layers.push({ slice: sliceAt(baseRun, st.sel), color: css("--base"), width: 1.5, dash: "4 3" });
+    else layers.push({ slice: sliceAt(run, VMIN3), color: css("--muted"), width: 1.25, dash: "4 3" });
+    layers.push({ slice: sl, color: css("--hi"), width: 2.5, fill: css("--hi"), fillOpacity: 0.12 });
+    ggvSlice(slice, layers, opts.maxH || 320);
+    read.textContent = `at ${st.sel} km/h:  accelerate ${sl.ax_max[0].toFixed(2)} g   brake ${(-sl.ax_min[0]).toFixed(2)} g   turn ${sl.ay[sl.ay.length - 1].toFixed(2)} g`;
+    outv.textContent = `${st.sel} km/h`;
+    g3.draw();
+  };
+  rng.addEventListener("input", () => { st.sel = +rng.value; upd(); });
+  const el = h("div", { class: "stack" },
+    h("div", { class: "widget" }, h("label", { for: id, text: "speed" }), rng, outv),
+    h("div", { class: "row halves" },
+      h("div", { class: "stack" }, cv, h("span", { class: "hint", text: "Drag to rotate. Each ring is one speed." })),
+      h("div", { class: "stack" }, slice, legend(opts.ghost ? [["baseline", css("--base"), "dash"], ["your car", css("--hi")]] : [[`${VMIN3} km/h`, css("--muted"), "dash"], ["selected speed", css("--hi")]]))),
+    read);
+  onRedraw(slice, upd);
+  return { el, upd };
 }
 
-// ---------- replay (map dot) ----------
-function replay(svg, lw, runs) {  // runs: [{t:[], color}] where index i of t is at 2 m * i (or 1 m for baseline)
+// ---------- car drawings: side view + top view ----------
+// Units are metres. Forces are drawn at kF metres per newton.
+// Text in the drawings scales up when the drawing is shown small (phones).
+let FZ = 1;
+const fontZoom = (svg, designWidth, max) => { const w = svg.getBoundingClientRect().width || designWidth; FZ = Math.max(1, Math.min(max, designWidth / w)); };
+const DIM = { L: CAR.wheelbase_m, lf: CAR.lf_m, tf: CAR.front_track_m, tr: CAR.rear_track_m, h: CAR.cog_z_m, r: CAR.tyre_radius_m, cop: CAR.cop_x_m };
+function arrow(parent, x1, y1, x2, y2, color, w = 0.018) {
+  const len = Math.hypot(x2 - x1, y2 - y1); if (len < 0.004) return;
+  const ux = (x2 - x1) / len, uy = (y2 - y1) / len, hl = Math.min(0.06, len * 0.45), hw = hl * 0.55;
+  svgEl("line", { x1, y1, x2: x2 - ux * hl * 0.9, y2: y2 - uy * hl * 0.9, stroke: color, "stroke-width": w, "stroke-linecap": "round" }, parent);
+  svgEl("path", { d: `M${x2},${y2}L${x2 - ux * hl - uy * hw},${y2 - uy * hl + ux * hw}L${x2 - ux * hl + uy * hw},${y2 - uy * hl - ux * hw}Z`, fill: color }, parent);
+}
+function dimLine(parent, x1, y1, x2, y2, label, off, vertical = false) {
+  const c = css("--muted"), fs = 0.08 * FZ;
+  if (vertical) {
+    svgEl("line", { x1: x1 + off, y1, x2: x2 + off, y2, stroke: c, "stroke-width": 0.006 }, parent);
+    [y1, y2].forEach(y => svgEl("line", { x1: x1 + off - 0.03, y1: y, x2: x1 + off + 0.03, y2: y, stroke: c, "stroke-width": 0.006 }, parent));
+    svgText(parent, x1 + off + 0.05, (y1 + y2) / 2 + fs / 3, label, { "font-size": fs, fill: css("--ink-2"), "text-anchor": off < 0 ? "end" : "start", dx: off < 0 ? -0.1 : 0 });
+  } else {
+    svgEl("line", { x1, y1: y1 + off, x2, y2: y2 + off, stroke: c, "stroke-width": 0.006 }, parent);
+    [x1, x2].forEach(x => svgEl("line", { x1: x, y1: y1 + off - 0.03, x2: x, y2: y1 + off + 0.03, stroke: c, "stroke-width": 0.006 }, parent));
+    // labels go above a line drawn above the car, below a line drawn under it
+    svgText(parent, (x1 + x2) / 2, y1 + off + (off > 0 ? 0.1 : -0.03), label, { "font-size": fs, fill: css("--ink-2"), "text-anchor": "middle" });
+  }
+}
+// Side view: car faces left. x = metres behind the front axle, y = -height.
+function sideView(svg, F) {
+  svg.replaceChildren();
+  svg.setAttribute("viewBox", "-1.05 -1.0 3.7 1.62");
+  fontZoom(svg, 620, 1.5);
+  const { L, lf, h: hc, r, cop } = DIM, ink = css("--ink-2"), fs = 0.08 * FZ;
+  svgEl("line", { x1: -1.0, y1: 0, x2: 2.1, y2: 0, stroke: css("--line"), "stroke-width": 0.01 }, svg);
+  svgEl("path", { d: `M-0.95,${-0.12}L-0.2,${-0.12}L0.35,${-0.42}L0.9,${-0.42}L1.05,${-0.62}L1.25,${-0.62}L1.3,${-0.42}L${L + 0.35},${-0.4}L${L + 0.35},${-0.14}L-0.95,${-0.12}Z`, fill: "#f1f3f4", stroke: css("--line"), "stroke-width": 0.01, "stroke-linejoin": "round" }, svg);
+  [0, L].forEach(x => { svgEl("circle", { cx: x, cy: -r, r, fill: "#fff", stroke: ink, "stroke-width": 0.02 }, svg); svgEl("circle", { cx: x, cy: -r, r: 0.02, fill: ink }, svg); });
+  // CoG and CoP markers
+  const cog = svgEl("g", { transform: `translate(${lf},${-hc})` }, svg);
+  svgEl("circle", { r: 0.035, fill: "#fff", stroke: css("--ink"), "stroke-width": 0.008 }, cog);
+  svgEl("path", { d: "M0,-0.035A0.035,0.035 0 0 1 0.035,0L0,0Z M0,0.035A0.035,0.035 0 0 1 -0.035,0L0,0Z", fill: css("--ink") }, cog);
+  svgText(svg, lf + 0.05, -hc - 0.05, "CoG", { "font-size": fs, fill: css("--ink") });
+  svgEl("path", { d: `M${cop - 0.03},${-0.3}l0.03,-0.05l0.03,0.05z`, fill: css("--accent") }, svg);
+  svgText(svg, cop, -0.37, "CoP", { "font-size": fs, fill: css("--accent"), "text-anchor": "middle" });
+  if (!F) {
+    dimLine(svg, 0, 0, lf, 0, `CoG ${lf.toFixed(2)} m behind front axle`, 0.08);
+    dimLine(svg, 0, 0, L, 0, `wheelbase ${L.toFixed(2)} m`, 0.3);
+    dimLine(svg, lf, 0, lf, -hc, `${hc.toFixed(2)} m`, 0.22, true);
+    dimLine(svg, cop, 0, 0, 0, `CoP ${cop.toFixed(2)} m`, -0.86);
+    return;
+  }
+  // Forces (F: {mg, dfF, dfR, drag, NzF, NzR, FxF, FxR, ax})
+  const kF = 0.00009, c = { mg: css("--ink"), aero: css("--accent"), N: css("--f-ground"), tyre: css("--f-tyre") };
+  const lab = (x, y, t, col, anchor = "middle") => svgText(svg, x, y, t, { "font-size": fs, fill: col, "text-anchor": anchor });
+  arrow(svg, lf, -hc, lf, -hc + F.mg * kF, c.mg); lab(lf + 0.04, -hc + F.mg * kF * 0.6, `mg ${Math.round(F.mg)} N`, c.mg, "start");
+  [[0, F.dfF], [L, F.dfR]].forEach(([x, df]) => {
+    if (Math.abs(df) < 5) return;
+    const y0 = -0.62; arrow(svg, x, y0 - df * kF * 1.6 * (df > 0 ? 1 : 0), x, y0 - (df > 0 ? 0 : -df * kF * 1.6) , c.aero);
+    lab(x, y0 - Math.abs(df) * kF * 1.6 - 0.03, `${df > 0 ? "down" : "LIFT"} ${Math.abs(Math.round(df))} N`, c.aero);
+  });
+  if (F.drag > 5) { const x2 = L + 0.42 + F.drag * kF * 1.6; arrow(svg, L + 0.42, -0.27, x2, -0.27, c.aero); lab(Math.min(x2 + 0.05, 2.6), -0.33, `drag ${Math.round(F.drag)} N`, c.aero, "end"); }
+  [[0, F.NzF, F.FxF], [L, F.NzR, F.FxR]].forEach(([x, Nz, Fx]) => {
+    arrow(svg, x + 0.07, 0, x + 0.07, -Nz * kF, c.N); lab(x + 0.24, -Math.max(Nz * kF * 0.5, 0.06), `${Math.round(Nz)} N`, c.N, "start");
+    if (Math.abs(Fx) > 20) { arrow(svg, x, 0.04, x - Fx * kF, 0.04, c.tyre); lab(x - Fx * kF / 2, 0.12, `${Math.abs(Math.round(Fx))} N`, c.tyre); }
+  });
+}
+// Top view: front at the top. x = metres to the right, y = metres behind the front axle.
+function topView(svg, W) {
+  svg.replaceChildren();
+  svg.setAttribute("viewBox", "-1.75 -1.05 3.5 3.3");
+  fontZoom(svg, 340, 1.3);
+  const { L, lf, tf, tr } = DIM, ink = css("--ink-2"), fs = 0.095 * FZ;
+  svgEl("path", { d: `M-0.12,-0.85L0.12,-0.85L0.2,-0.2L0.38,0.45L0.38,${L + 0.15}L0.3,${L + 0.35}L-0.3,${L + 0.35}L-0.38,${L + 0.15}L-0.38,0.45L-0.2,-0.2Z`, fill: "#f1f3f4", stroke: css("--line"), "stroke-width": 0.012, "stroke-linejoin": "round" }, svg);
+  svgEl("rect", { x: -0.62, y: -0.95, width: 1.24, height: 0.12, rx: 0.02, fill: "#e8eaed", stroke: css("--line"), "stroke-width": 0.01 }, svg);
+  svgEl("rect", { x: -0.5, y: L + 0.3, width: 1.0, height: 0.1, rx: 0.02, fill: "#e8eaed", stroke: css("--line"), "stroke-width": 0.01 }, svg);
+  const wheels = [[-tf / 2, 0], [tf / 2, 0], [-tr / 2, L], [tr / 2, L]];
+  const names = ["FL", "FR", "RL", "RR"];
+  if (!W) {
+    wheels.forEach(([x, y]) => svgEl("rect", { x: x - 0.1, y: y - 0.2, width: 0.2, height: 0.4, rx: 0.04, fill: ink }, svg));
+    dimLine(svg, -tf / 2, 0, tf / 2, 0, `track ${tf.toFixed(2)} m`, -0.32);
+    dimLine(svg, tf / 2, 0, tf / 2, L, `${L.toFixed(2)} m`, 0.2, true);
+    svgEl("circle", { cx: 0, cy: lf, r: 0.04, fill: css("--ink") }, svg);
+    svgText(svg, 0.07, lf + 0.03, "CoG", { "font-size": fs, fill: css("--ink") });
+    return;
+  }
+  // W: per wheel {Fz, Fx, Fy, Fxmax, Fymax}, plus W.ax, W.ay in g
+  const kF = 0.00015;
+  wheels.forEach(([x, y], i) => {
+    const w = W.w[i], u = Math.min(1, Math.hypot(w.Fx / Math.max(w.Fxmax, 1), w.Fy / Math.max(w.Fymax, 1)));
+    const atLimit = u > 0.97;
+    svgEl("ellipse", { cx: x, cy: y, rx: Math.max(w.Fymax * kF, 0.01), ry: Math.max(w.Fxmax * kF, 0.01), fill: atLimit ? css("--brk") : css("--accent"), "fill-opacity": 0.08 + 0.17 * u, stroke: atLimit ? css("--brk") : css("--accent"), "stroke-width": 0.012 }, svg);
+    svgEl("rect", { x: x - 0.07, y: y - 0.14, width: 0.14, height: 0.28, rx: 0.03, fill: ink }, svg);
+    // ay > 0 is a left turn, so lateral force points left (negative x). Forward is up (negative y).
+    arrow(svg, x, y, x - w.Fy * kF, y - w.Fx * kF, css("--f-tyre"), 0.024);
+    const lx = x < 0 ? -1.72 : 1.72, anchor = x < 0 ? "start" : "end";
+    svgText(svg, lx, y - 0.02, `${names[i]} ${Math.round(w.Fz)} N`, { "font-size": fs, fill: css("--ink-2"), "text-anchor": anchor });
+    svgText(svg, lx, y + 0.09, `${Math.round(u * 100)}% grip`, { "font-size": fs, fill: atLimit ? css("--brk") : css("--ink-2"), "text-anchor": anchor });
+  });
+  svgEl("circle", { cx: 0, cy: lf, r: 0.035, fill: css("--hi") }, svg);
+  arrow(svg, 0, lf, -W.ay * 0.3, lf - W.ax * 0.3, css("--hi"), 0.024);
+  svgText(svg, 0.06, lf + 0.12, "acceleration", { "font-size": fs, fill: css("--hi") });
+}
+
+// ---------- free body diagram data ----------
+const FBD = D.fbd;
+function fbdPoint(si, ax10, ay10) {
+  const pts = FBD.pts[si], mirror = ay10 < 0, a = Math.abs(ay10);
+  let best = null, bd = 1e9;
+  for (const p of pts) { const d = (p[0] - ax10) ** 2 + (p[1] - a) ** 2; if (d < bd) { bd = d; best = p; } }
+  const q = best.slice(2), w = [0, 1, 2, 3].map(i => ({ Fz: q[i], Fx: q[4 + i], Fy: q[8 + i], Fxmax: q[12 + i], Fymax: q[16 + i] }));
+  // Data holds left turns only; a right turn is the mirror image: swap left/right, flip lateral force.
+  const ws = mirror ? [w[1], w[0], w[3], w[2]].map(x => ({ ...x, Fy: -x.Fy })) : w;
+  return { ax: best[0] / 10, ay: (mirror ? -best[1] : best[1]) / 10, w: ws };
+}
+
+// ---------- replay (map dots) ----------
+function replay(svg, lw, runs) {  // runs: [{t:[], step (metres per sample), color}]
   const dots = runs.map(r => svgEl("circle", { r: lw * 2.6, fill: r.color, stroke: "#fff", "stroke-width": lw * 0.7 }, svg));
   const st = { t: 0, on: false, last: null, rate: 4 };
   const end = Math.max(...runs.map(r => r.t[r.t.length - 1]));
@@ -507,205 +671,275 @@ function replay(svg, lw, runs) {  // runs: [{t:[], color}] where index i of t is
   place(); requestAnimationFrame(tick);
   st.play = () => { if (st.t >= end) st.t = 0; if (reduceMotion) { st.t = end; place(); st.onTick && st.onTick(st.t); st.onEnd && st.onEnd(); return; } st.on = true; };
   st.pause = () => { st.on = false; };
-  st.end = end;
   return st;
 }
 
 // ---------- cells ----------
-const why = text => h("details", { class: "why" }, h("summary", { text: "Why?" }), h("p", { text: text }));
+const why = text => h("details", { class: "why" }, h("summary", { text: "Why?" }), h("p", { text }));
 const stdout = (text, big) => h("pre", { class: "stdout" + (big ? " big" : ""), text });
-const NEEDS = { 1: [], 2: [], 3: [2], 4: [1, 3], 5: [4], 6: [4], 7: [5, 6], 8: [1, 2] };
-const DEFINES = { 1: "track", 2: "car", 3: "ggv", 4: "v_corner", 5: "v_fwd", 6: "v_bwd", 7: "lap", 8: "result" };
+const NEEDS = { 1: [], 2: [], 3: [2], 4: [3], 5: [1, 3], 6: [5], 7: [5], 8: [6, 7], 9: [1, 2] };
+const DEFINES = { 1: "track", 2: "car", 3: "ggv", 4: "forces", 5: "v_corner", 6: "v_fwd", 7: "v_bwd", 8: "lap", 9: "my_car" };
 const ran = new Set();
 let execCount = 0;
+
+// cell 4 state, shown in its source line
+const fbdState = { si: 1, ax10: -12, ay10: 8 };
+function renderFbdSrc() {
+  const p = fbdPoint(fbdState.si, fbdState.ax10, fbdState.ay10);
+  const n = t => h("span", { class: "n", text: t });
+  const src = $("#fbdSrc"); src.replaceChildren(
+    h("span", { class: "v", text: "forces" }), " = ", h("span", { class: "v", text: "ggv" }), ".", h("span", { class: "f", text: "forces_at" }),
+    "(speed=", n(String(FBD.speeds_kph[fbdState.si])), ", ax=", n(p.ax.toFixed(1)), ", ay=", n(p.ay.toFixed(1)), ")   ", h("span", { class: "c", text: "# look inside the GGV" }));
+}
+renderFbdSrc();
 
 const CELLS = {
   1(out) {
     const svg = svgEl("svg", { class: "map", role: "img", "aria-label": "FSUK 2026 sprint course" });
     out.append(h("div", { class: "row map-chart" }, h("div", {}, svg),
-      h("div", { style: "display:grid;gap:8px;align-content:start" },
+      h("div", { class: "stack" },
         stdout(`length   ${Math.round(B.s[B.s.length - 1])} m\nslices   ${Math.round(B.s[B.s.length - 1] / D.meta.ds_m).toLocaleString("en-GB")} × 10 cm\ntightest bend radius   ${(1 / Math.max(...B.kappa.map(Math.abs))).toFixed(1)} m`))),
       why("A team member walked the racing line at Silverstone with a phone in July 2026. The sim smooths the GPS trace and cuts it into 10 cm slices. For each slice it only needs to know how tight the bend is."));
     drawMap(svg);
   },
   2(out) {
-    const c = D.car;
+    const c = CAR;
     const rows = [["mass (with driver)", c.mass_kg, "kg"], ["peak motor torque", c.peak_torque_Nm, "Nm"], ["power limit (FS rules)", c.power_limit_kW, "kW"],
       ["driven wheels", c.drivetrain === "RWD" ? "rear" : c.drivetrain, ""], ["downforce coeff. C_L", c.cl.toFixed(1), ""], ["drag coeff. C_D", Number(c.cd).toFixed(1), ""], ["tyre grip μ", c.mu.toFixed(2), ""]];
     const t = h("table", { class: "df" }, h("thead", {}, h("tr", {}, h("th", { text: "" }), h("th", { text: "value" }), h("th", { text: "unit" }))),
       h("tbody", {}, ...rows.map(r => h("tr", {}, ...r.map(v => h("td", { text: String(v) }))))));
-    out.append(h("div", { class: "scroll-x" }, t), why("These numbers come from the other subteams: chassis, aero, powertrain. Change one and every lap time changes. That is how the sim helps them decide."));
+    const side = svgEl("svg", { class: "drawing", role: "img", "aria-label": "Side view with wheelbase, centre of gravity height and centre of pressure" });
+    const top = svgEl("svg", { class: "drawing", role: "img", "aria-label": "Top view with track width and wheelbase" });
+    out.append(h("div", { class: "row halves" }, h("div", { class: "scroll-x" }, t), h("div", { class: "top-wrap" }, top)), h("div", { class: "side-wrap" }, side),
+      why("The model treats the car as one rigid body on four tyres. These few numbers are all it needs: the mass and where its centre of gravity (CoG) sits, the wheelbase and track width, where the wings push down (centre of pressure, CoP), the tyres' grip and the motor. They come from the other subteams."));
+    sideView(side, null); topView(top, null);
   },
   3(out) {
-    const cv = h("canvas", { class: "ggv3d", role: "img", "aria-label": "3D GGV diagram: grip envelope rings stacked by speed" });
-    const slice = h("div", { class: "chart" });
-    const read = stdout("");
-    const rng = h("input", { type: "range", min: String(VMIN3), max: String(VMAX3), step: "5", value: String(ggv3.sel), id: "ggvSpeed", "aria-label": "speed" });
-    const outv = h("output", { for: "ggvSpeed", text: `${ggv3.sel} km/h` });
-    const upd = () => {
-      const sl = G3[V3.indexOf(ggv3.sel)];
-      ggvSlice(slice, [
-        { slice: G3[0], color: css("--muted"), width: 1.25, dash: "4 3" },
-        { slice: sl, color: css("--hi"), width: 2.5, fill: css("--hi"), fillOpacity: 0.12 },
-      ]);
-      read.textContent = `at ${ggv3.sel} km/h:  accelerate ${sl.ax_max[0].toFixed(2)} g   brake ${(-sl.ax_min[0]).toFixed(2)} g   turn ${sl.ay[sl.ay.length - 1].toFixed(2)} g`;
-      outv.textContent = `${ggv3.sel} km/h`;
-      if (reduceMotion) draw3d();
-    };
-    rng.addEventListener("input", () => { ggv3.sel = +rng.value; upd(); });
-    out.append(
-      h("div", { class: "widget" }, h("label", { for: "ggvSpeed", text: "speed" }), rng, outv),
-      h("div", { class: "row halves" },
-        h("div", { style: "display:grid;gap:4px" }, cv, h("span", { class: "hint", text: "Drag to rotate. Each ring is one speed." })),
-        h("div", { style: "display:grid;gap:6px" }, slice, legend([["10 km/h", css("--muted"), "thin"], [`selected speed`, css("--hi")]]))),
-      read,
-      why("Inside the shape is possible; outside it the tyres slide. The tyres share their grip between braking, accelerating and turning, so the car cannot do all three at full strength: that is why it is round. The top is flat because only the rear wheels drive. Speed it up and the shape widens, because the wings push the car down harder."));
-    attach3d(cv); upd(); onRedraw(slice, upd);
+    const blk = ggvBlock(() => baseRun);
+    out.append(blk.el, why("Inside the shape is possible; outside it the tyres slide. The tyres share their grip between braking, accelerating and turning, so the car cannot do all three at full strength: that is why it is round. The top is flat because only the rear wheels drive. At higher speed the wings press the car down harder, so the sides and the bottom grow."));
+    blk.upd();
   },
   4(out) {
-    const box = h("div", { class: "chart" });
-    const draw = () => speedChart(box, [{ label: "corner limit", color: css("--cap"), width: 1.5, shade: true, x: B.s, y: capShown }]);
-    out.append(h("div", { class: "ctl" }, legend([["too fast: the tyres would slide", css("--cap"), "area"]]), zoomControl(draw, box)), box,
-      why("In a bend the tyres must provide the sideways force. The tighter the bend, the lower the speed limit. Where the line stops, the bend is so gentle it sets no limit."));
+    const padBox = h("div", { class: "chart" });
+    const side = svgEl("svg", { class: "drawing", role: "img", "aria-label": "Side view free body diagram" });
+    const top = svgEl("svg", { class: "drawing", role: "img", "aria-label": "Top view: load and grip used at each tyre" });
+    const speedSeg = h("div", { class: "seg", role: "group", "aria-label": "speed" });
+    FBD.speeds_kph.forEach((v, i) => { const b = h("button", { type: "button", text: `${v} km/h`, "aria-pressed": String(i === fbdState.si) }); b.addEventListener("click", () => { fbdState.si = i; draw(); }); speedSeg.append(b); });
+    const PRE = [["Hard braking", 3, s => [Math.round(Math.min(...s.ax_min) * 10), 0]], ["Fast corner", 2, s => [0, Math.floor(s.ay[s.ay.length - 1] * 10)]],
+      ["Corner exit", 1, s => { const i = Math.round(s.ay.length * 0.6); return [Math.floor(s.ax_max[i] * 10), Math.floor(s.ay[i] * 10)]; }], ["Full throttle", 0, s => [Math.floor(s.ax_max[0] * 10), 0]]];
+    const preBox = h("div", { class: "ctl" });
+    PRE.forEach(([name, si, f]) => { const b = h("button", { class: "tb", type: "button", text: name }); b.addEventListener("click", () => { fbdState.si = si; [fbdState.ax10, fbdState.ay10] = f(sliceAt(baseRun, FBD.speeds_kph[si])); draw(); }); preBox.append(b); });
+    let pad = null, dot = null;
+    // Forces only: cheap enough to run on every pointer move.
+    function drawForces() {
+      const p = fbdPoint(fbdState.si, fbdState.ax10, fbdState.ay10), aero = FBD.aero[fbdState.si];
+      fbdState.ax10 = Math.round(p.ax * 10); fbdState.ay10 = Math.round(p.ay * 10);   // snap to the grid point shown
+      dot.setAttribute("cx", pad.sx(p.ay)); dot.setAttribute("cy", pad.sy(p.ax));
+      const w = p.w;
+      sideView(side, { mg: CAR.mass_kg * G, dfF: aero.df_front, dfR: aero.df_rear, drag: aero.drag, NzF: w[0].Fz + w[1].Fz, NzR: w[2].Fz + w[3].Fz, FxF: w[0].Fx + w[1].Fx, FxR: w[2].Fx + w[3].Fx });
+      topView(top, p);
+      renderFbdSrc();
+    }
+    // Pad and forces: on speed change, presets and resize.
+    function draw() {
+      speedSeg.querySelectorAll("button").forEach((b, i) => b.setAttribute("aria-pressed", String(i === fbdState.si)));
+      pad = ggvSlice(padBox, [{ slice: sliceAt(baseRun, FBD.speeds_kph[fbdState.si]), color: css("--hi"), width: 2, fill: css("--hi"), fillOpacity: 0.08 }], 280);
+      pad.svg.classList.add("pad");
+      dot = svgEl("circle", { r: 7, fill: css("--hi"), stroke: "#fff", "stroke-width": 2.5 }, pad.svg);
+      const svgP = pad.svg, P = pad;
+      const move = e => { const r = svgP.getBoundingClientRect(); const [ay, ax] = P.inv((e.clientX - r.left) * P.W / r.width, (e.clientY - r.top) * P.H / r.height); fbdState.ax10 = Math.round(ax * 10); fbdState.ay10 = Math.round(ay * 10); drawForces(); };
+      svgP.addEventListener("pointerdown", e => { svgP.setPointerCapture(e.pointerId); move(e); svgP.onpointermove = move; });
+      const stop = () => { svgP.onpointermove = null; };
+      svgP.addEventListener("pointerup", stop); svgP.addEventListener("pointercancel", stop);
+      drawForces();
+    }
+    out.append(h("div", { class: "ctl" }, speedSeg, preBox),
+      h("div", { class: "row halves" },
+        h("div", { class: "stack" }, padBox, h("span", { class: "hint", text: "Drag the dot inside the shape: braking, turning, accelerating." })),
+        h("div", { class: "top-wrap" }, top)),
+      h("div", { class: "side-wrap" }, side),
+      legend([["weight", css("--ink")], ["wing force", css("--accent")], ["ground support", css("--f-ground")], ["tyre force", css("--f-tyre")], ["grip ellipse (red at 100%)", css("--brk"), "area"]]),
+      why("This is how the GGV is built. For each point the model shifts weight between the tyres: forwards when braking, outwards in a corner, and it adds the wings' force. Each tyre can give force up to its ellipse, which grows with the load on it. The edge of the GGV is where the tyres can give no more: they reach 100%."));
+    onRedraw(padBox, draw);
     draw();
   },
   5(out) {
     const box = h("div", { class: "chart" });
-    const draw = () => speedChart(box, [
-      { label: "corner limit", color: css("--cap"), width: 1, shade: true, x: B.s, y: capShown, noTip: true },
-      { label: "forward pass", color: css("--acc"), width: 2, x: B.s, y: B.v_fwd }]);
-    out.append(h("div", { class: "ctl" }, legend([["forward pass (accelerating)", css("--acc")], ["corner limit", css("--cap"), "area"]]), zoomControl(draw, box)), box,
-      why("Accelerate as hard as the GGV allows, from a standing start. When the speed reaches a bend's limit it drops straight down. That would mean stopping instantly, which no car can do. The next cell fixes that."));
+    const draw = () => speedChart(box, [{ label: "corner limit", color: css("--cap"), width: 1.5, shade: true, x: B.s, y: capShown(B.v_cap) }]);
+    out.append(h("div", { class: "ctl" }, legend([["too fast: the tyres would slide", css("--cap"), "area"]]), zoomControl(draw, box)), box,
+      why("In a bend the tyres must provide the sideways force. The tighter the bend, the lower the speed limit. Where the line stops, the bend is so gentle it sets no limit."));
     draw();
   },
   6(out) {
     const box = h("div", { class: "chart" });
     const draw = () => speedChart(box, [
-      { label: "corner limit", color: css("--cap"), width: 1, shade: true, x: B.s, y: capShown, noTip: true },
+      { label: "corner limit", color: css("--cap"), width: 1, shade: true, x: B.s, y: capShown(B.v_cap), noTip: true },
+      { label: "forward pass", color: css("--acc"), width: 2, x: B.s, y: B.v_fwd }]);
+    out.append(h("div", { class: "ctl" }, legend([["forward pass (accelerating)", css("--acc")], ["corner limit", css("--cap"), "area"]]), zoomControl(draw, box)), box,
+      why("Accelerate as hard as the GGV allows, from a standing start. When the speed reaches a bend's limit it drops straight down. That would mean stopping instantly, which no car can do. The next cell fixes that."));
+    draw();
+  },
+  7(out) {
+    const box = h("div", { class: "chart" });
+    const draw = () => speedChart(box, [
+      { label: "corner limit", color: css("--cap"), width: 1, shade: true, x: B.s, y: capShown(B.v_cap), noTip: true },
       { label: "forward pass", color: css("--acc"), width: 1.5, opacity: 0.45, x: B.s, y: B.v_fwd },
       { label: "backward pass", color: css("--brk"), width: 2, x: B.s, y: B.v_bwd }]);
     out.append(h("div", { class: "ctl" }, legend([["backward pass (braking)", css("--brk")], ["forward pass", css("--acc"), "thin"]]), zoomControl(draw, box)), box,
       why("The same idea, run from the finish back to the start using the braking limit. Read it right to left: the red line shows where the driver must start braking for each bend."));
     draw();
   },
-  7(out) {
+  8(out) {
     const colors = [...B.phase].map(phaseColor), labels = [...B.phase].map(c => PHASE[c][0]);
     const svg = svgEl("svg", { class: "map", role: "img", "aria-label": "Track coloured by accelerating, braking and cornering" });
     const box = h("div", { class: "chart" });
     const draw = () => speedChart(box, [
-      { label: "corner limit", color: css("--cap"), width: 1, shade: true, x: B.s, y: capShown, noTip: true },
+      { label: "corner limit", color: css("--cap"), width: 1, shade: true, x: B.s, y: capShown(B.v_cap), noTip: true },
       { label: "lap", colors, labels, width: 2.5, x: B.s, y: B.v }]);
     const share = { A: 0, B: 0, C: 0 };
     for (let i = 0; i < B.t.length - 1; i++) share[B.phase[i]] += B.t[i + 1] - B.t[i];
     const tot = share.A + share.B + share.C, pct = c => `${Math.round(share[c] / tot * 100)}%`;
-    const clock = stdout("", true);
+    const clock = stdout(""); clock.style.fontSize = "16px";
     const btn = h("button", { class: "tb", type: "button", text: "▶ Replay" });
     out.append(stdout(`Lap time: ${LAP_T.toFixed(2)} s`, true),
       legend([["accelerating " + pct("A"), css("--acc")], ["braking " + pct("B"), css("--brk")], ["at the cornering limit " + pct("C"), css("--crn")]]),
       h("div", { class: "row map-chart" },
-        h("div", { style: "display:grid;gap:8px" }, svg, h("div", { class: "ctl" }, btn, clock)),
-        h("div", { style: "display:grid;gap:8px;align-content:start" }, h("div", { class: "ctl" }, zoomControl(draw, box)), box)),
+        h("div", { class: "stack" }, svg, h("div", { class: "ctl" }, btn, clock)),
+        h("div", { class: "stack" }, h("div", { class: "ctl" }, zoomControl(draw, box)), box)),
       why("At every slice the car can go no faster than either curve, so the lap is the lower one. Add up slice length ÷ speed over every slice to get the lap time. Look how little time is spent just cornering: an FS car is almost always on the throttle or the brakes."));
     const lw = drawMap(svg, { colors });
     const rp = replay(svg, lw, [{ t: B.t.slice(0, -1).concat([LAP_T]), step: 1, color: css("--ink") }]);
-    clock.style.fontSize = "16px";
     rp.onTick = t => { clock.textContent = `${t.toFixed(2)} s  ${Math.round(B.v[idxAtTime(B.t, t)])} km/h`; };
     rp.onEnd = () => { btn.textContent = "▶ Replay"; };
     btn.addEventListener("click", () => { if (rp.on) { rp.pause(); btn.textContent = "▶ Replay"; } else { rp.play(); btn.textContent = "❚❚ Pause"; } });
     draw();
     rp.play(); btn.textContent = "❚❚ Pause";
   },
-  8(out) { renderResult(out); },
+  9(out) { renderWorkbench(out); },
 };
 
-// ---------- cell 8: Colab form ----------
+// ---------- cell 9: Colab form with sliders + workbench ----------
 const PARAMS = [
-  { key: "mass_kg", name: "mass_kg", fmt: v => String(v) },
-  { key: "cl", name: "downforce", fmt: v => v.toFixed(1) },
-  { key: "power_kW", name: "power_kW", fmt: v => String(v) },
-  { key: "mu", name: "tyre_mu", fmt: v => v.toFixed(2) },
+  { key: "mass_kg", name: "mass_kg", fmt: v => String(v), unit: "kg" },
+  { key: "cl", name: "downforce", fmt: v => v.toFixed(1), unit: "C_L" },
+  { key: "power_kW", name: "power_kW", fmt: v => String(v), unit: "kW" },
+  { key: "mu", name: "tyre_mu", fmt: v => v.toFixed(2), unit: "μ" },
 ];
 const setup = { ...D.baseline_setup };
 function renderFormSrc() {
   const src = $("#formSrc"); src.replaceChildren();
-  const pad = s => s.padEnd(10);
-  for (const p of PARAMS) {
-    const opts = D.grid[p.key].map(p.fmt).join(", ");
-    src.append(h("span", { class: "v", text: pad(p.name) }), " = ", h("span", { class: "n", text: p.fmt(setup[p.key]).padEnd(5) }), "  ", h("span", { class: "c", text: `#@param [${opts}]` }), "\n");
-  }
   const v = t => h("span", { class: "v", text: t }), f = t => h("span", { class: "f", text: t });
+  for (const p of PARAMS) {
+    const vals = D.grid[p.key];
+    src.append(v(p.name.padEnd(9)), " = ", h("span", { class: "n", text: p.fmt(setup[p.key]).padEnd(5) }), " ",
+      h("span", { class: "c", text: `#@param {type:"slider", min:${p.fmt(vals[0])}, max:${p.fmt(vals[vals.length - 1])}}` }), "\n");
+  }
   src.append("\n", v("my_car"), " = ", v("car"), ".", f("copy"), "(", PARAMS.map(p => p.name).join(", "), ")\n",
     f("compare"), "(", f("simulate"), "(", v("my_car"), ", ", v("track"), "), ", v("baseline"), ")");
 }
 const form = $("#form");
 for (const p of PARAMS) {
-  const sel = h("select", { id: `p-${p.key}` });
-  D.grid[p.key].forEach(v => { const o = h("option", { value: String(v), text: p.fmt(v) + (v === D.baseline_setup[p.key] ? "  (baseline)" : "") }); sel.append(o); });
-  sel.value = String(setup[p.key]);
-  sel.addEventListener("change", () => { setup[p.key] = +sel.value; renderFormSrc(); runCell(8, { quick: true }); });
-  form.append(h("label", { for: sel.id }, h("span", { text: p.name }), sel));
+  const vals = D.grid[p.key], id = `p-${p.key}`;
+  const rng = h("input", { type: "range", id, min: "0", max: String(vals.length - 1), step: "1", value: String(vals.indexOf(setup[p.key])) });
+  const out = h("output", { for: id, text: p.fmt(setup[p.key]) });
+  rng.addEventListener("input", () => {
+    setup[p.key] = vals[+rng.value]; out.textContent = p.fmt(setup[p.key]); renderFormSrc();
+    if (ran.has(9)) wb.update(); else runCell(9, { quick: true });
+  });
+  form.append(h("label", { for: id }, h("span", { text: p.name }), rng, out));
 }
 renderFormSrc();
-const syncForm = () => PARAMS.forEach(p => { $(`#p-${p.key}`).value = String(setup[p.key]); });
+const syncForm = () => PARAMS.forEach(p => { const vals = D.grid[p.key]; $(`#p-${p.key}`).value = String(vals.indexOf(setup[p.key])); $(`#p-${p.key}`).nextElementSibling.textContent = p.fmt(setup[p.key]); });
 
-let race = null;
-function renderResult(out) {
-  const run = RUNS.get(keyOf(setup));
-  const ev = [["sprint", "sprint_s"], ["acceleration (75 m)", "accel_s"], ["skidpad", "skidpad_s"]];
-  const tb = h("tbody");
-  for (const [name, k] of ev) {
-    const dl = run[k] - baseRun[k];
-    const cls = Math.abs(dl) < 0.005 ? "" : dl < 0 ? "good" : "bad";
-    const txt = Math.abs(dl) < 0.005 ? "same" : `${dl < 0 ? "▼" : "▲"} ${Math.abs(dl).toFixed(2)} s ${dl < 0 ? "faster" : "slower"}`;
-    tb.append(h("tr", {}, h("td", { text: name }), h("td", { text: `${baseRun[k].toFixed(2)} s` }), h("td", { text: `${run[k].toFixed(2)} s` }), h("td", { class: cls, text: txt })));
-  }
-  const df = h("table", { class: "df" }, h("thead", {}, h("tr", {}, h("th", { text: "event" }), h("th", { text: "baseline" }), h("th", { text: "your car" }), h("th", { text: "difference" }))), tb);
+const wb = { run: baseRun, update: () => {}, race: null };
+const meanDiff = (a, b) => { let s = 0, n = 0; for (let i = 0; i < a.length; i++) if (a[i] != null && b[i] != null && a[i] <= 120 && b[i] <= 120) { s += a[i] - b[i]; n++; } return n ? s / n : 0; };
+const sgn = (x, d = 1, u = "") => `${x > 0 ? "+" : x < 0 ? "−" : "±"}${Math.abs(x).toFixed(d)}${u}`;
+function renderWorkbench(out) {
+  // cause chain
+  const nodes = {};
+  const chain = h("div", { class: "chain", "aria-live": "polite" });
+  [["car", "car"], ["ggv", "GGV"], ["cap", "corner limits"], ["fwd", "forward pass"], ["bwd", "backward pass"], ["lap", "lap time"]].forEach(([k, label], i) => {
+    if (i) chain.append(h("span", { class: "arr", text: "→", "aria-hidden": "true" }));
+    nodes[k] = { el: h("div", { class: "node" }, h("b", { text: label }), h("span", { text: "" })) };
+    chain.append(nodes[k].el);
+  });
+  const setNode = (k, on, text) => { nodes[k].el.classList.toggle("on", on); nodes[k].el.lastChild.textContent = text; };
+  // results table
+  const tbody = h("tbody");
+  const df = h("table", { class: "df" }, h("thead", {}, h("tr", {}, h("th", { text: "event" }), h("th", { text: "baseline" }), h("th", { text: "your car" }), h("th", { text: "difference" }))), tbody);
+  // GGV block for your car, with the baseline as a dashed ghost
+  const g = ggvBlock(() => wb.run, { ghost: true, maxH: 280 });
+  // speed chart with layer toggles
+  const layers = { cap: true, fwd: false, bwd: false, lap: true, base: true };
+  const toggles = h("div", { class: "ctl" });
+  [["cap", "corner limit", "--cap"], ["fwd", "forward", "--acc"], ["bwd", "backward", "--brk"], ["lap", "lap", "--ink"], ["base", "baseline lap", "--base"]].forEach(([k, label, col]) => {
+    const cb = h("input", { type: "checkbox" }); cb.checked = layers[k];
+    const ic = h("i"); ic.style.color = css(col);
+    const t = h("label", { class: "toggle" }, cb, ic, h("span", { text: label }));
+    cb.addEventListener("change", () => { layers[k] = cb.checked; drawSpeed(); });
+    toggles.append(t);
+  });
   const box = h("div", { class: "chart" });
-  const xs = run.sprint_v.map((_, i) => i * RUN_DS);
-  const draw = () => lineChart(box, { x: [0, zoom || lapEnd], y: [0, 120], yTicks: [0, 30, 60, 90, 120], height: 220, series: [
-    { label: "baseline", color: css("--base"), width: 1.5, x: xs, y: baseRun.sprint_v },
-    { label: "your car", color: css("--accent"), width: 2.25, x: xs, y: run.sprint_v }] });
+  const drawSpeed = () => {
+    const r = wb.run, s = [];
+    if (layers.cap) s.push({ label: "corner limit", color: css("--cap"), width: 1, shade: true, x: XS2, y: capShown(r.v_cap), noTip: true });
+    if (layers.base) s.push({ label: "baseline lap", color: css("--base"), width: 1.5, dash: "4 3", x: XS2, y: baseRun.v });
+    if (layers.fwd) s.push({ label: "forward pass", color: css("--acc"), width: 1.5, opacity: 0.7, x: XS2, y: r.v_fwd });
+    if (layers.bwd) s.push({ label: "backward pass", color: css("--brk"), width: 1.5, opacity: 0.7, x: XS2, y: r.v_bwd });
+    if (layers.lap) s.push({ label: "your lap", colors: [...r.phase].map(phaseColor), labels: [...r.phase].map(c => PHASE[c][0]), width: 2.5, x: XS2, y: r.v });
+    speedChart(box, s, { y: [0, 120], yTicks: [0, 30, 60, 90, 120] });
+  };
+  const zc = zoomControl(drawSpeed, box);
+  // map + race
   const svg = svgEl("svg", { class: "map", role: "img", "aria-label": "Your car racing the baseline" });
   const gap = stdout("");
   const btn = h("button", { class: "tb", type: "button", text: "▶ Race the baseline" });
-  out.append(h("div", { class: "scroll-x" }, df),
-    h("div", { class: "row map-chart" },
-      h("div", { style: "display:grid;gap:8px" }, svg, h("div", { class: "ctl" }, btn), gap),
-      h("div", { style: "display:grid;gap:8px;align-content:start" }, h("div", { class: "ctl" }, legend([["baseline", css("--base"), "thin"], ["your car", css("--accent")]]), zoomControl(draw, box)), box)),
-    why("Every combination here was run in our real sim: 225 cars. The sim is best at differences between cars, like these few tenths. The absolute lap time depends on things the model leaves out."));
-  draw();
-  const lw = drawMap(svg, { width: 0.8 });
-  race = replay(svg, lw, [{ t: baseRun.t, step: RUN_DS, color: css("--base") }, { t: run.t, step: RUN_DS, color: css("--accent") }]);
-  race.onTick = t => {
-    const a = Math.min(idxAtTime(baseRun.t, t) * RUN_DS, NT - 1), b = Math.min(idxAtTime(run.t, t) * RUN_DS, NT - 1);
-    gap.textContent = `${t.toFixed(1)} s   your car is ${Math.abs(b - a)} m ${b >= a ? "ahead" : "behind"}`;
-  };
-  race.onEnd = () => {
-    const d = run.sprint_s - baseRun.sprint_s;
-    gap.textContent = Math.abs(d) < 0.005 ? "Dead heat." : `Finished ${Math.abs(d).toFixed(2)} s ${d < 0 ? "ahead" : "behind"}.`;
-    btn.textContent = "▶ Race again";
-  };
-  btn.addEventListener("click", () => { if (race.on) { race.pause(); btn.textContent = "▶ Race the baseline"; } else { race.play(); btn.textContent = "❚❚ Pause"; } });
-}
+  btn.addEventListener("click", () => { const rc = wb.race; if (!rc) return; if (rc.on) { rc.pause(); btn.textContent = "▶ Race the baseline"; } else { rc.play(); btn.textContent = "❚❚ Pause"; } });
 
-// guesses before cell 8
-const sec = (r, k) => { const d = r[k] - baseRun[k]; return `${Math.abs(d).toFixed(2)} s ${d < 0 ? "faster" : "slower"}`; };
-const GUESSES = [
-  { q: "Is a car 20 kg lighter a whole second faster per lap?", set: { mass_kg: D.baseline_setup.mass_kg - 20 },
-    a: r => `No: only ${sec(r, "sprint_s")}. Tyre grip grows with the weight on it, so a lighter car corners at almost the same speed.` },
-  { q: "Do bigger wings make the 75 m acceleration run faster?", set: { cl: 3 },
-    a: r => `No: ${sec(r, "accel_s")}. The sprint gets ${sec(r, "sprint_s")}, but on a short straight the car is too slow for the wings to help, and it still pays for the drag.` },
-  { q: "How much time do our wings buy us per lap?", set: { cl: 0 },
-    a: r => `Without them the sprint is ${sec(r, "sprint_s")}. In a straight line the car is ${sec(r, "accel_s")}, because there is no drag.` },
-];
-for (const G of GUESSES) {
-  const ans = h("div", { class: "ans" }); ans.hidden = true;
-  const b = h("button", { class: "tb", type: "button", text: "Try it" });
-  b.addEventListener("click", () => {
-    Object.assign(setup, D.baseline_setup, G.set); syncForm(); renderFormSrc();
-    if (runCell(8, { quick: true })) { ans.textContent = G.a(RUNS.get(keyOf(setup))); ans.hidden = false; }
-  });
-  $("#guess").append(h("div", {}, h("span", { text: G.q }), b, ans));
+  out.append(chain, h("div", { class: "scroll-x" }, df),
+    h("div", { class: "stack" }, h("b", { text: "GGV: your car against the baseline", style: "font-weight:500" }), g.el),
+    h("div", { class: "stack" }, h("b", { text: "Speed along the lap", style: "font-weight:500" }), h("div", { class: "ctl" }, toggles, zc), box),
+    h("div", { class: "row map-chart" }, h("div", { class: "stack" }, svg, h("div", { class: "ctl" }, btn), gap),
+      h("div", { class: "stack" }, legend([["accelerating", css("--acc")], ["braking", css("--brk")], ["at the cornering limit", css("--crn")]]),
+        h("p", { class: "hint", text: "Track coloured by what your car is doing. Grey dot: baseline. Blue dot: your car." }))),
+    why("Every combination here was run in our real sim: 225 cars. Watch which boxes in the chain light up. Power only changes the top of the GGV and the straights. Grip changes everything. Mass changes surprisingly little, because grip grows with the weight on the tyres. The sim is best at differences like these; the absolute lap time depends on what the model leaves out."));
+
+  wb.update = () => {
+    const r = RUNS.get(keyOf(setup)); if (!r) return;
+    wb.run = r;
+    if (wb.race) wb.race.pause();
+    // chain
+    const changed = PARAMS.filter(p => setup[p.key] !== D.baseline_setup[p.key]).map(p => `${p.name} ${p.fmt(setup[p.key])}`);
+    setNode("car", changed.length > 0, changed.length ? changed.join(", ") : "baseline");
+    const s90 = sliceAt(r, 90), b90 = sliceAt(baseRun, 90), s30 = sliceAt(r, 30), b30 = sliceAt(baseRun, 30);
+    const dTurn = s90.ay[s90.ay.length - 1] - b90.ay[b90.ay.length - 1], dAcc = s30.ax_max[0] - b30.ax_max[0], dBrk = -(s90.ax_min[0] - b90.ax_min[0]);
+    const ggvOn = Math.max(Math.abs(dTurn), Math.abs(dAcc), Math.abs(dBrk)) > 0.005;
+    setNode("ggv", ggvOn, ggvOn ? `turn@90 ${sgn(dTurn, 2, " g")}, accel@30 ${sgn(dAcc, 2, " g")}` : "unchanged");
+    const dc = meanDiff(r.v_cap, baseRun.v_cap), df_ = meanDiff(r.v_fwd, baseRun.v_fwd), db = meanDiff(r.v_bwd, baseRun.v_bwd);
+    setNode("cap", Math.abs(dc) > 0.05, Math.abs(dc) > 0.05 ? `${sgn(dc)} km/h avg` : "unchanged");
+    setNode("fwd", Math.abs(df_) > 0.05, Math.abs(df_) > 0.05 ? `${sgn(df_)} km/h avg` : "unchanged");
+    setNode("bwd", Math.abs(db) > 0.05, Math.abs(db) > 0.05 ? `${sgn(db)} km/h avg` : "unchanged");
+    const dl = r.sprint_s - baseRun.sprint_s;
+    setNode("lap", Math.abs(dl) > 0.005, Math.abs(dl) > 0.005 ? `${r.sprint_s.toFixed(2)} s (${sgn(dl, 2, " s")})` : `${r.sprint_s.toFixed(2)} s`);
+    // table
+    tbody.replaceChildren();
+    for (const [name, k] of [["sprint", "sprint_s"], ["acceleration (75 m)", "accel_s"], ["skidpad", "skidpad_s"]]) {
+      const d = r[k] - baseRun[k], cls = Math.abs(d) < 0.005 ? "" : d < 0 ? "good" : "bad";
+      const txt = Math.abs(d) < 0.005 ? "same" : `${d < 0 ? "▼" : "▲"} ${Math.abs(d).toFixed(2)} s ${d < 0 ? "faster" : "slower"}`;
+      tbody.append(h("tr", {}, h("td", { text: name }), h("td", { text: `${baseRun[k].toFixed(2)} s` }), h("td", { text: `${r[k].toFixed(2)} s` }), h("td", { class: cls, text: txt })));
+    }
+    g.upd(); drawSpeed();
+    // map + race
+    const lw = drawMap(svg, { colors: colorsPerMetre(r.phase), width: 0.9 });
+    wb.race = replay(svg, lw, [{ t: baseRun.t, step: RUN_DS, color: css("--base") }, { t: r.t, step: RUN_DS, color: css("--accent") }]);
+    wb.race.onTick = t => {
+      const a = Math.min(idxAtTime(baseRun.t, t) * RUN_DS, NT - 1), b = Math.min(idxAtTime(r.t, t) * RUN_DS, NT - 1);
+      gap.textContent = `${t.toFixed(1)} s   your car is ${Math.abs(b - a)} m ${b >= a ? "ahead" : "behind"}`;
+    };
+    wb.race.onEnd = () => { gap.textContent = Math.abs(dl) < 0.005 ? "Dead heat." : `Finished ${Math.abs(dl).toFixed(2)} s ${dl < 0 ? "ahead" : "behind"}.`; btn.textContent = "▶ Race again"; };
+    gap.textContent = ""; btn.textContent = "▶ Race the baseline";
+  };
+  wb.update();
 }
 
 // ---------- running cells ----------
@@ -721,11 +955,10 @@ document.querySelectorAll(".cell.code").forEach(cell => {
   body.append(out); cell.append(gut, body); cell.classList.add("fresh");
   run.addEventListener("click", () => runCell(n));
 });
-function cellEl(n) { return $(`.cell.code[data-cell="${n}"]`); }
+const cellEl = n => $(`.cell.code[data-cell="${n}"]`);
 function runCell(n, { quick = false } = {}) {
   const cell = cellEl(n), out = $(".out", cell), run = $(".run", cell), count = $(".count", cell);
   const missing = NEEDS[n].filter(d => !ran.has(d));
-  if (n === 8 && race) race.pause();
   const finish = () => {
     cell.classList.remove("busy", "fresh"); run.innerHTML = PLAY;
     count.textContent = `[${++execCount}]`;
@@ -743,22 +976,20 @@ function runCell(n, { quick = false } = {}) {
   setTimeout(finish, 450);
   return !missing.length;
 }
+
 $("#runAll").addEventListener("click", async () => {
-  for (let n = 1; n <= 8; n++) { runCell(n, { quick: true }); await new Promise(r => setTimeout(r, reduceMotion ? 0 : 120)); }
+  for (let n = 1; n <= 9; n++) { runCell(n, { quick: true }); await new Promise(r => setTimeout(r, reduceMotion ? 0 : 120)); }
 });
 $("#resetAll").addEventListener("click", () => {
-  ran.clear(); execCount = 0; if (race) race.pause();
+  ran.clear(); execCount = 0; if (wb.race) wb.race.pause();
   Object.assign(setup, D.baseline_setup); syncForm(); renderFormSrc();
   document.querySelectorAll(".cell.code").forEach(c => { $(".out", c).replaceChildren(); $(".out", c).hidden = true; $(".count", c).textContent = "[ ]"; c.classList.add("fresh"); });
-  document.querySelectorAll("#guess .ans").forEach(a => { a.hidden = true; });
   window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
 });
 
-// header chip + footer
 $("#chip span").textContent = `lapsim ${D.meta.lapsim_rev}`;
 $("#chip").title = `Results generated ${D.meta.generated.replace("T", " ")}`;
 $("#prov").textContent = `Every number on this page was computed by the OUR lap time simulation (lapsim ${D.meta.lapsim_rev}, ${D.meta.generated.slice(0, 10)}). Track: walked GPS trace of the FSUK 2026 course at Silverstone.`;
-
 let rz; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(redrawAll, 200); });
 })();
 </script>
