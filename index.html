@@ -103,6 +103,8 @@ details.why p { margin: 6px 0 0; color: var(--ink-2); max-width: 76ch; }
 .ideas details { border: 1px solid var(--line); border-radius: 6px; padding: 8px 12px; }
 .ideas summary { cursor: pointer; font-weight: 500; }
 .ideas details p { margin: 6px 0 2px; }
+.ideas details details { border: 0; padding: 0; margin-top: 6px; }
+.ideas details details summary { font-weight: 400; color: var(--accent); }
 @media (max-width: 620px) { .text { padding-left: 8px; } .cell { grid-template-columns: 36px minmax(0, 1fr); } }
 
 /* output layouts */
@@ -153,6 +155,8 @@ svg text { font-family: var(--f-code); }
 .widget { display: flex; align-items: center; gap: 10px; font: 400 13px/1 var(--f-code); color: var(--ink-2); flex-wrap: wrap; }
 .widget input[type="range"] { width: min(220px, 45vw); accent-color: var(--accent); }
 .widget output { color: var(--ink); min-width: 7ch; }
+.widget.dim { opacity: 0.5; }
+.scrub { flex: 1 1 180px; min-width: 120px; max-width: 420px; accent-color: var(--accent); margin: 0; }
 
 /* 3D GGV */
 .ggv3d { width: 100%; aspect-ratio: 1 / 0.82; max-height: 300px; display: block; touch-action: pan-y; cursor: grab; background: #fff; border: 1px solid var(--grid); border-radius: 4px; }
@@ -259,15 +263,15 @@ svg text { font-family: var(--f-code); }
 
   <div class="cell text">
     <h2>What would you improve?</h2>
-    <p>Before you open these, think: what is this model missing?</p>
+    <p>Before you open these, think: what is this model missing? Open one to see why it matters, then open it again to see how we could fix it.</p>
     <div class="ideas">
-      <details><summary>The car has no suspension</summary><p>It is one rigid body, so weight moves between the tyres instantly. A real car rolls and pitches, and how the springs and anti-roll bars share that load changes the grip. Modelling roll stiffness front and rear is a natural next step.</p></details>
-      <details><summary>The tyres are very simple</summary><p>One grip number and an ellipse. Real tyre grip depends on slip angle, temperature and pressure. Fitting a proper tyre model (for example Pacejka) to Tire Test Consortium (TTC) data is a classic project.</p></details>
-      <details><summary>The driver is perfect</summary><p>The car is always exactly at the limit, on one fixed line. Real drivers keep a margin and choose their own line. A driver model or a racing-line optimiser would capture that.</p></details>
-      <details><summary>Nothing takes time to happen</summary><p>Each 10 cm slice is treated as steady. When a real car turns in, it takes a moment to start rotating. A dynamic (transient) model would show that.</p></details>
-      <details><summary>The wings never change</summary><p>Downforce, drag and where the downforce acts are fixed numbers here. On track they change with ride height, pitch and yaw, and the front/rear balance is one of the values we are checking with the aero team right now.</p></details>
-      <details><summary>The track comes from a phone</summary><p>Phone GPS is only good to a few metres, and the line was walked, not driven. Data logged on the car would give a better track.</p></details>
-      <details><summary>Nothing gets hot</summary><p>One lap barely warms the battery. Over the 22 km endurance event it heats up and the car has to cut power. Our sim already models some of this; motor and inverter temperatures are not in yet.</p></details>
+      <details><summary>The car has no suspension</summary><p>The model treats the car as one rigid block, so weight shifts between the tyres instantly and nothing rolls or pitches. On the real car, springs and anti-roll bars decide how much load each tyre gets, and that changes the grip.</p><details><summary>How could we fix it?</summary><p>Add roll and pitch stiffness front and rear, so load transfer is split the way the real suspension splits it. Then use it to compare spring and anti-roll bar setups.</p></details></details>
+      <details><summary>The tyres are very simple</summary><p>Every tyre has one grip number and an ellipse. Real tyres change their grip with slip angle, load, temperature and pressure.</p><details><summary>How could we fix it?</summary><p>Fit a proper tyre model, for example Pacejka's Magic Formula, to Tire Test Consortium (TTC) test data, and use it in place of the ellipse.</p></details></details>
+      <details><summary>The driver is perfect</summary><p>The car is always exactly at the limit, on one fixed line. No real driver does that.</p><details><summary>How could we fix it?</summary><p>Add a driver model that keeps a margin, or optimise the racing line itself, and compare with lap data from our drivers.</p></details></details>
+      <details><summary>Nothing takes time to happen</summary><p>Each 10 cm slice is treated as steady, as if the car could switch from braking to cornering instantly.</p><details><summary>How could we fix it?</summary><p>Build a dynamic model that steps forward in time, with yaw and weight transfer, and use it for corner entry and slaloms.</p></details></details>
+      <details><summary>The wings never change</summary><p>Downforce, drag and where the downforce acts are fixed numbers. On track they change with ride height, pitch and yaw.</p><details><summary>How could we fix it?</summary><p>Use an aero map from CFD or testing (downforce and balance against ride height), and check the numbers with the aero team: the front/rear balance is one we are confirming right now.</p></details></details>
+      <details><summary>The track comes from a phone</summary><p>Phone GPS is only good to a few metres, and the line was walked, not driven.</p><details><summary>How could we fix it?</summary><p>Rebuild the track from GPS and speed data logged on the car, or optimise the line inside the track edges.</p></details></details>
+      <details><summary>Nothing gets hot</summary><p>One lap barely warms the battery. Over the 22 km endurance event it heats up and the car has to cut power; motors and inverters heat up too.</p><details><summary>How could we fix it?</summary><p>Our sim already tracks battery temperature. Adding motor and inverter temperatures, and cooling, would let us plan power limits for endurance.</p></details></details>
     </div>
     <p>Got an idea? That is what the simulation team works on. Come and talk to us.</p>
   </div>
@@ -405,7 +409,14 @@ function player(host, end, onFrame) {
   requestAnimationFrame(tick);
   st.play = () => { if (st.t >= st.end) st.t = 0; if (reduceMotion) { st.t = st.end; onFrame(st.t); st.onEnd && st.onEnd(); return; } st.on = true; };
   st.pause = () => { st.on = false; };
+  st.seek = t => { st.t = Math.max(0, Math.min(st.end, t)); st.last = null; onFrame(st.t); };
   return st;
+}
+function scrubber(end, onSeek) {   // draggable progress bar for a replay, in seconds
+  const rng = h("input", { type: "range", class: "scrub", min: "0", max: String(end), step: "0.05", value: "0", "aria-label": "replay position (s)" });
+  rng.addEventListener("input", () => onSeek(+rng.value));
+  rng.sync = t => { rng.value = String(t); };
+  return rng;
 }
 
 // ---------- track map ----------
@@ -564,7 +575,7 @@ const sliceReadout = sl => `accelerate ${sl.ax_max[0].toFixed(2)} g   brake ${(-
 // src() returns { rings: [{run, ghost}], hl: [{slice, v, color, ghost}], pts: [{ax, ay, v, color}] }.
 const HEIGHT = 2.6;
 function make3d(cv, src) {
-  const st = { yaw: -0.6, pitch: 0.55, auto: !reduceMotion };
+  const st = { yaw: -0.6, pitch: 0.55 };
   const cache = new Map();
   const ringsOf = run => { if (!cache.has(run)) cache.set(run, run.ggv3d.map(ringPts)); return cache.get(run); };
   function draw() {
@@ -614,9 +625,9 @@ function make3d(cv, src) {
     [VMIN3, VMAX3].forEach(v => { const r = R0[V3.indexOf(v)][0]; if (!first || Math.abs(first.v - v) > 12) txt(`${v} km/h`, P(r[0] - 0.2, r[1], hOf(v)), "right"); });
     if (first) { const r = ringPts(first.slice)[0]; g.fillStyle = css("--ink"); txt(`${Math.round(first.v)} km/h`, P(r[0] - 0.2, r[1], hOf(first.v)), "right"); }
   }
-  const loop = () => { if (!cv.isConnected) return; if (st.auto) st.yaw += 0.004; draw(); requestAnimationFrame(loop); };
+  // Drawn on demand: when its data changes, when dragged, on resize. It never spins by itself.
   let drag = null;
-  cv.addEventListener("pointerdown", e => { drag = [e.clientX, e.clientY, e.pointerType]; st.auto = false; cv.setPointerCapture(e.pointerId); });
+  cv.addEventListener("pointerdown", e => { drag = [e.clientX, e.clientY, e.pointerType]; cv.setPointerCapture(e.pointerId); });
   cv.addEventListener("pointermove", e => {
     if (!drag) return;
     st.yaw += (e.clientX - drag[0]) * 0.012;
@@ -625,7 +636,8 @@ function make3d(cv, src) {
   });
   const end = () => { drag = null; };
   cv.addEventListener("pointerup", end); cv.addEventListener("pointercancel", end);
-  requestAnimationFrame(loop);
+  requestAnimationFrame(draw);
+  onRedraw(cv, draw);
   return { draw };
 }
 const canvas3d = label => h("canvas", { class: "ggv3d", role: "img", "aria-label": label });
@@ -869,9 +881,11 @@ const CELLS = {
     const box = h("div", { class: "chart" });
     const clock = stdout("", "sm");
     const btn = h("button", { class: "tb sm", type: "button", text: "▶ Replay" });
-    const speed = { rate: 2 };   // the player is created below; the buttons only touch this
+    const speed = { rate: 2 };   // the player is created below; these controls only touch it when used
+    let rp = null;
+    const scrub = scrubber(LAP_T, t => rp.seek(t));
     out.append(stdout(`Lap time: ${LAP_T.toFixed(2)} s`, "big"),
-      h("div", { class: "ctl" }, btn, rateControl(() => speed.rate, r => { speed.rate = r; rp.rate = r; }), clock),
+      h("div", { class: "ctl" }, btn, scrub, rateControl(() => speed.rate, r => { speed.rate = r; rp.rate = r; }), clock),
       h("div", { class: "row tri" }, svg, cv, sliceBox),
       legend([["accelerating " + pct("A"), css("--acc")], ["braking " + pct("B"), css("--brk")], ["at the cornering limit " + pct("C"), css("--crn")]]),
       box,
@@ -881,24 +895,25 @@ const CELLS = {
     let now = carAt(BTRACE, 0), chart = null, cursor = null, cdot = null;
     const g3 = make3d(cv, () => ({ rings: [{ run: baseRun }], hl: [{ slice: sliceInterp(baseRun, now.v), v: now.v, color: css("--hi") }], pts: [{ ax: now.ax, ay: now.ay, v: now.v, color: phaseColor(now.phase) }] }));
     const sl = liveSlice(sliceBox, 230);
-    const drawChart = () => {
-      chart = lapChart(box, [{ label: "corner limit", color: css("--cap"), width: 1, shade: true, x: B.s, y: capShown(B.v_cap), noTip: true }, { label: "lap", colors: lapColors, labels: lapLabels, width: 2.25, x: B.s, y: B.v }]);
-      cursor = svgEl("line", { y1: chart.top, y2: chart.bottom, stroke: css("--ink"), "stroke-width": 1, "stroke-opacity": 0.5 }, chart.svg);
-      cdot = svgEl("circle", { r: 5, stroke: "#fff", "stroke-width": 2 }, chart.svg);
-      frame(rp ? rp.t : 0);
-    };
     function frame(t) {
       now = carAt(BTRACE, t);
       placeDot(dot, now.k);
       sl.set({ layers: [{ slice: sliceInterp(baseRun, now.v), color: css("--hi"), width: 2.5, fill: css("--hi"), fillOpacity: 0.1 }], points: [{ ax: now.ax, ay: now.ay, color: phaseColor(now.phase) }] });
       if (cursor) { const x = chart.sx(now.s); cursor.setAttribute("x1", x); cursor.setAttribute("x2", x); cdot.setAttribute("cx", x); cdot.setAttribute("cy", chart.sy(now.v)); cdot.setAttribute("fill", phaseColor(now.phase)); }
       clock.textContent = `${t.toFixed(2)} s   ${Math.round(now.v)} km/h   ${PHASE[now.phase][0].toLowerCase()}`;
-      if (reduceMotion) g3.draw();
+      scrub.sync(t);
+      g3.draw();
     }
-    const rp = player(svg, LAP_T, frame);
+    const drawChart = () => {
+      chart = lapChart(box, [{ label: "corner limit", color: css("--cap"), width: 1, shade: true, x: B.s, y: capShown(B.v_cap), noTip: true }, { label: "lap", colors: lapColors, labels: lapLabels, width: 2.25, x: B.s, y: B.v }]);
+      cursor = svgEl("line", { y1: chart.top, y2: chart.bottom, stroke: css("--ink"), "stroke-width": 1, "stroke-opacity": 0.5 }, chart.svg);
+      cdot = svgEl("circle", { r: 5, stroke: "#fff", "stroke-width": 2 }, chart.svg);
+      frame(rp ? rp.t : 0);
+    };
+    rp = player(svg, LAP_T, frame);
     rp.rate = speed.rate;
     rp.onEnd = () => { btn.textContent = "▶ Replay"; };
-    btn.addEventListener("click", () => { if (rp.on) { rp.pause(); btn.textContent = "▶ Replay"; } else { rp.play(); btn.textContent = "❚❚ Pause"; } });
+    btn.addEventListener("click", () => { if (rp.on) { rp.pause(); btn.textContent = "▶ Replay"; } else { rp.play(); btn.textContent = rp.on ? "❚❚ Pause" : "▶ Replay"; } });
     onRedraw(box, drawChart);
     drawChart();
     rp.play(); btn.textContent = rp.on ? "❚❚ Pause" : "▶ Replay";
@@ -944,7 +959,7 @@ renderFormSrc();
 const syncForm = () => PARAMS.forEach(p => { const vals = D.grid[p.key], r = $(`#p-${p.key}`); r.value = String(vals.indexOf(setup[p.key])); $(`output[for="p-${p.key}"]`).textContent = p.fmt(setup[p.key]); });
 
 // Your car is orange, the baseline grey, in every panel of this cell.
-const wb = { run: baseRun, update: () => {}, race: null, v: 90, live: null };
+const wb = { run: baseRun, update: () => {}, race: null, v: 90, live: null, rate: 2 };
 const meanDiff = (a, b) => { let s = 0, n = 0; for (let i = 0; i < a.length; i++) if (a[i] != null && b[i] != null && a[i] <= 120 && b[i] <= 120) { s += a[i] - b[i]; n++; } return n ? s / n : 0; };
 const sgn = (x, d = 1, u = "") => `${x > 0 ? "+" : x < 0 ? "−" : "±"}${Math.abs(x).toFixed(d)}${u}`;
 function renderWorkbench(out) {
@@ -958,7 +973,9 @@ function renderWorkbench(out) {
     chain.append(nodes[k]);
   });
   const setNode = (k, on, text) => { nodes[k].classList.toggle("on", on); nodes[k].lastChild.textContent = text; };
-  // 3D + slice: static at the slider speed, or live during a race
+  // Two views share the 3D GGV and the slice. Static: both cars compared at the slider's speed.
+  // Live (playing, paused or scrubbed race): each car at its own speed and operating point.
+  // Whatever was touched last wins: the speed slider switches to static, the race controls to live.
   const cv = canvas3d("3D GGV: your car against the baseline");
   const g3 = make3d(cv, () => {
     const rings = [{ run: wb.run }, { run: baseRun, ghost: true }];
@@ -972,26 +989,29 @@ function renderWorkbench(out) {
   const sliceBox = h("div", { class: "chart" });
   const sl = liveSlice(sliceBox, 220);
   const sliceRead = stdout("", "sm");
+  const ss = speedSlider(wb.v, v => { wb.v = v; toStatic(); });
   const drawSlice = () => {
     if (wb.live) {
       const { you, base } = wb.live;
       sl.set({ layers: [{ slice: sliceInterp(baseRun, base.v), color: BASE, width: 1.5, dash: "4 3" }, { slice: sliceInterp(wb.run, you.v), color: YOU, width: 2.25, fill: YOU, fillOpacity: 0.1 }],
         points: [{ ax: base.ax, ay: base.ay, color: BASE }, { ax: you.ax, ay: you.ay, color: YOU }] });
-      return;
+      sliceRead.textContent = `race: yours ${Math.round(you.v)} km/h, baseline ${Math.round(base.v)} km/h`;
+    } else {
+      const s = sliceAt(wb.run, wb.v);
+      sl.set({ layers: [{ slice: sliceAt(baseRun, wb.v), color: BASE, width: 1.5, dash: "4 3" }, { slice: s, color: YOU, width: 2.25, fill: YOU, fillOpacity: 0.1 }], points: [] });
+      sliceRead.textContent = `at ${wb.v} km/h: ${sliceReadout(s)}`;
     }
-    const s = sliceAt(wb.run, wb.v);
-    sl.set({ layers: [{ slice: sliceAt(baseRun, wb.v), color: BASE, width: 1.5, dash: "4 3" }, { slice: s, color: YOU, width: 2.25, fill: YOU, fillOpacity: 0.1 }], points: [] });
-    sliceRead.textContent = sliceReadout(s);
-    if (reduceMotion) g3.draw();
+    ss.classList.toggle("dim", !!wb.live);
+    g3.draw();
   };
-  const ss = speedSlider(wb.v, v => { wb.v = v; drawSlice(); });
-  // track + race
-  const svg = svgEl("svg", { class: "map sm", role: "img", "aria-label": "Your car racing the baseline" });
+  // track + race controls
+  const svg = svgEl("svg", { class: "map", role: "img", "aria-label": "Your car racing the baseline" });
   let dots = null;
   const gap = stdout("", "sm");
   const btn = h("button", { class: "tb sm", type: "button", text: "▶ Race" });
-  btn.addEventListener("click", () => { const rc = wb.race; if (!rc) return; if (rc.on) { rc.pause(); btn.textContent = "▶ Race"; } else { rc.play(); btn.textContent = "❚❚ Pause"; } });
-  // speed chart with layer toggles, plus a dot per car during a race
+  btn.addEventListener("click", () => { const rc = wb.race; if (!rc) return; if (rc.on) { rc.pause(); btn.textContent = "▶ Race"; } else { rc.play(); btn.textContent = rc.on ? "❚❚ Pause" : "▶ Race again"; } });
+  const scrub = scrubber(1, t => { if (wb.race) wb.race.seek(t); });
+  // speed chart with layer toggles, plus a dot per car in the live view
   const layers = { cap: true, fwd: false, bwd: false, lap: true, base: true };
   const toggles = h("div", { class: "ctl" });
   [["cap", "corner limit", "--cap"], ["fwd", "forward", "--acc"], ["bwd", "backward", "--brk"], ["lap", "your lap", "--ink"], ["base", "baseline", "--base"]].forEach(([k, label, col]) => {
@@ -1002,6 +1022,11 @@ function renderWorkbench(out) {
   });
   const box = h("div", { class: "chart" });
   let chart = null, cdots = null;
+  const placeChartDots = () => {
+    if (!chart) return;
+    if (!wb.live) { cdots.forEach(d => d.setAttribute("visibility", "hidden")); return; }
+    [wb.live.base, wb.live.you].forEach((c, i) => { cdots[i].setAttribute("cx", chart.sx(c.s)); cdots[i].setAttribute("cy", chart.sy(c.v)); cdots[i].setAttribute("visibility", "visible"); });
+  };
   const drawSpeed = () => {
     const r = wb.run, s = [];
     if (layers.cap) s.push({ label: "corner limit", color: css("--cap"), width: 1, shade: true, x: XS2, y: capShown(r.v_cap), noTip: true });
@@ -1011,23 +1036,22 @@ function renderWorkbench(out) {
     if (layers.lap) s.push({ label: "your lap", colors: [...r.phase].map(phaseColor), labels: [...r.phase].map(c => PHASE[c][0]), width: 2.25, x: XS2, y: r.v });
     chart = lapChart(box, s, 190);
     cdots = [BASE, YOU].map(c => svgEl("circle", { r: 5, fill: c, stroke: "#fff", "stroke-width": 2, visibility: "hidden" }, chart.svg));
-    if (wb.live) placeChartDots();
+    placeChartDots();
   };
-  const placeChartDots = () => {
-    if (!chart || !wb.live) return;
-    [wb.live.base, wb.live.you].forEach((c, i) => { cdots[i].setAttribute("cx", chart.sx(c.s)); cdots[i].setAttribute("cy", chart.sy(c.v)); cdots[i].setAttribute("visibility", "visible"); });
-  };
+  function toStatic() {
+    if (wb.race && wb.race.on) { wb.race.pause(); btn.textContent = "▶ Race"; }
+    wb.live = null; drawSlice(); placeChartDots();
+  }
   const tbody = h("tbody");
   const df = h("table", { class: "df" }, h("thead", {}, h("tr", {}, h("th", { text: "event (s)" }), h("th", { text: "base" }), h("th", { text: "yours" }), h("th", { text: "Δ" }))), tbody);
 
   out.append(chain,
-    h("div", { class: "row wb3" },
+    h("div", { class: "ctl" }, btn, scrub, rateControl(() => wb.rate, r => { wb.rate = r; if (wb.race) wb.race.rate = r; }), gap),
+    h("div", { class: "row tri" },
+      h("div", { class: "stack" }, svg, legend([["yours", YOU, "dot"], ["baseline", BASE, "dot"]])),
       cv,
-      h("div", { class: "stack" }, ss, sliceBox, sliceRead),
-      h("div", { class: "stack" }, svg, h("div", { class: "ctl" }, btn, legend([["yours", YOU, "dot"], ["baseline", BASE, "dot"]])), gap)),
-    h("div", { class: "row wb2" },
-      h("div", { class: "stack" }, toggles, box),
-      h("div", { class: "scroll-x" }, df)),
+      h("div", { class: "stack" }, ss, sliceBox, sliceRead)),
+    h("div", { class: "row wb2" }, h("div", { class: "stack" }, toggles, box), h("div", { class: "scroll-x" }, df)),
     why("Every combination here was run in our real sim: 225 cars. Watch which boxes in the chain light up. Power only changes the top of the GGV and the straights. Grip changes everything. Mass changes surprisingly little, because grip grows with the weight on the tyres. In the race, both dots ride the edge of their own GGV: a bigger shape lets your car carry more speed."));
 
   wb.update = () => {
@@ -1050,25 +1074,24 @@ function renderWorkbench(out) {
       const d = r[k] - baseRun[k], cls = Math.abs(d) < 0.005 ? "" : d < 0 ? "good" : "bad";
       tbody.append(h("tr", {}, h("td", { text: name }), h("td", { text: baseRun[k].toFixed(2) }), h("td", { text: r[k].toFixed(2) }), h("td", { class: cls, text: Math.abs(d) < 0.005 ? "–" : sgn(d, 2) })));
     }
-    drawSlice(); drawSpeed(); g3.draw();
+    drawSpeed(); drawSlice();
     // track and race
-    const lw = drawMap(svg, { colors: colorsPerMetre(r.phase), width: 0.9 });
+    const lw = drawMap(svg, { colors: colorsPerMetre(r.phase) });
     dots = [mapDot(svg, lw, BASE), mapDot(svg, lw, YOU)];
     const yT = traceOf(r), bT = traceOf(baseRun);
     if (wb.race) wb.race.pause();
-    wb.race = player(svg, Math.max(r.sprint_s, baseRun.sprint_s), t => {
+    const end = Math.max(r.sprint_s, baseRun.sprint_s);
+    scrub.max = String(end); scrub.sync(0);
+    wb.race = player(svg, end, t => {
       const you = carAt(yT, t), base = carAt(bT, t);
       wb.live = { you, base };
       placeDot(dots[0], base.k); placeDot(dots[1], you.k);
-      drawSlice(); placeChartDots();
-      gap.textContent = `${t.toFixed(1)} s   you are ${Math.abs(Math.round(you.s - base.s))} m ${you.s >= base.s ? "ahead" : "behind"}`;
-      if (reduceMotion) g3.draw();
+      drawSlice(); placeChartDots(); scrub.sync(t);
+      gap.textContent = t >= end ? (Math.abs(dl) < 0.005 ? "Dead heat." : `Finished ${Math.abs(dl).toFixed(2)} s ${dl < 0 ? "ahead" : "behind"}.`)
+        : `${t.toFixed(1)} s   you are ${Math.abs(Math.round(you.s - base.s))} m ${you.s >= base.s ? "ahead" : "behind"}`;
     });
-    wb.race.onEnd = () => {
-      wb.live = null; drawSlice(); cdots.forEach(d => d.setAttribute("visibility", "hidden")); g3.draw();
-      gap.textContent = Math.abs(dl) < 0.005 ? "Dead heat." : `Finished ${Math.abs(dl).toFixed(2)} s ${dl < 0 ? "ahead" : "behind"}.`;
-      btn.textContent = "▶ Race again";
-    };
+    wb.race.rate = wb.rate;
+    wb.race.onEnd = () => { btn.textContent = "▶ Race again"; };
     gap.textContent = ""; btn.textContent = "▶ Race";
   };
   onRedraw(box, drawSpeed);
