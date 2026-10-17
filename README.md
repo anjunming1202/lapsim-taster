@@ -2,7 +2,7 @@
 
 A hands-on introduction to lap time simulation for the Oxford University Racing freshers taster session. It looks and works like a Colab notebook, but runs entirely in the browser: open it on a phone or laptop and press ▶ on each cell.
 
-**Open it:** `https://<org>.github.io/lapsim-taster/` (fill in once GitHub Pages is on), or double-click `index.html`.
+**Open it:** https://anjunming1202.github.io/lapsim-taster/ or double-click `index.html`.
 
 ## The cells
 
