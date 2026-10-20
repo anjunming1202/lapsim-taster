@@ -167,6 +167,7 @@ svg text { font-family: var(--f-code); }
 /* car drawings */
 .drawing { width: 100%; height: auto; display: block; }
 .pad { touch-action: none; cursor: crosshair; }
+.dimmed { opacity: 0.3; transition: opacity 0.2s; }
 /* Figures you can click or drag never select their own text. */
 .chart, .map, .ggv3d, .drawing { user-select: none; -webkit-user-select: none; }
 /* Click or drag to move a replay. Vertical swipes still scroll the page on phones. */
@@ -749,9 +750,10 @@ function topView(svg, W) {
   }
   const kF = 0.00015;
   wheels.forEach(([x, y], i) => {
-    const w = W.w[i], u = Math.min(1, Math.hypot(w.Fx / Math.max(w.Fxmax, 1), w.Fy / Math.max(w.Fymax, 1)));
+    // Grip used, not clamped: above 100% the model is asking this tyre for more than it can give.
+    const w = W.w[i], u = Math.hypot(w.Fx / Math.max(w.Fxmax, 1), w.Fy / Math.max(w.Fymax, 1));
     const atLimit = u > 0.97;
-    svgEl("ellipse", { cx: x, cy: y, rx: Math.max(w.Fymax * kF, 0.01), ry: Math.max(w.Fxmax * kF, 0.01), fill: atLimit ? css("--brk") : css("--accent"), "fill-opacity": 0.08 + 0.17 * u, stroke: atLimit ? css("--brk") : css("--accent"), "stroke-width": 0.012 }, svg);
+    svgEl("ellipse", { cx: x, cy: y, rx: Math.max(w.Fymax * kF, 0.01), ry: Math.max(w.Fxmax * kF, 0.01), fill: atLimit ? css("--brk") : css("--accent"), "fill-opacity": 0.08 + 0.17 * Math.min(u, 1), stroke: atLimit ? css("--brk") : css("--accent"), "stroke-width": 0.012 }, svg);
     svgEl("rect", { x: x - 0.07, y: y - 0.14, width: 0.14, height: 0.28, rx: 0.03, fill: ink }, svg);
     // ay > 0 is a left turn, so lateral force points left (negative x). Forward is up (negative y).
     arrow(svg, x, y, x - w.Fy * kF, y - w.Fx * kF, css("--f-tyre"), 0.024);
@@ -816,47 +818,81 @@ const CELLS = {
     onRedraw(side, draw); draw();
   },
   3(out) {
+    // The GGV built up one physical limit at a time; the last step is the full model.
+    const CARVE = D.carve.map(c => ({ key: c.key, ggv3d: c.ggv3d }));
+    const STEPS = [
+      ["① tyre grip", "Tyre grip only. Each tyre can push up to μ × the load on it, in any direction, and all four can drive. The same circle of about 1.54 g at every speed."],
+      ["② + downforce", "The wings press the car down harder as speed rises (downforce grows with v²), so the circle grows with speed."],
+      ["③ + weight transfer", "Braking moves load onto the front tyres, cornering onto the outside ones, and a tyre gives a little less grip per newton the harder it is pressed."],
+      ["④ + rear-wheel drive", "Only the two rear tyres can push, so the top of the shape drops to about 0.9 g. Braking still uses all four."],
+      ["⑤ + motor torque", "The motor could push harder than the rear tyres can grip, so nothing changes: grip, not the motor, limits acceleration."],
+      ["⑥ + 80 kW limit", "FS rules cap power at 80 kW. Force = power ÷ speed, so from about 85 km/h the top of the shape comes down."],
+      ["⑦ + drag", "Air resistance pulls the whole shape down, more at high speed: weaker acceleration, stronger braking. This is the GGV the sim uses."],
+    ];
+    let step = STEPS.length;
+    const full = () => step === STEPS.length;
+    const cur = () => CARVE[step - 1], prev = () => (step > 1 ? CARVE[step - 2] : null);
     const cv = canvas3d("3D GGV diagram: grip envelope rings stacked by speed");
     const padBox = h("div", { class: "chart" });
     const read = stdout("");
+    const caption = h("p", { class: "caption" });
     const side = svgEl("svg", { class: "drawing", role: "img", "aria-label": "Side view free body diagram" });
     const top = svgEl("svg", { class: "drawing", role: "img", "aria-label": "Top view: load and grip used at each tyre" });
+    const forces = h("div", { class: "row fbd" }, h("div", { style: "max-width:300px;width:100%;justify-self:center" }, top), h("div", {}, side));
+    const forcesNote = h("span", { class: "hint", text: "Forces are shown for the finished GGV (step ⑦). Drag the dot to go there." });
     let pad = null, dot = null, pt = fbdPoint(gf.v, gf.ax10, gf.ay10);
-    const g3 = make3d(cv, () => ({ rings: [{ run: baseRun }], hl: [{ slice: sliceAt(baseRun, gf.v), v: gf.v, color: css("--hi") }], pts: [{ ax: pt.ax, ay: pt.ay, v: gf.v, color: css("--hi") }] }));
+    const g3 = make3d(cv, () => {
+      const rings = [{ run: cur() }];
+      if (prev()) rings.push({ run: prev(), ghost: true });
+      return { rings, hl: [{ slice: sliceAt(cur(), gf.v), v: gf.v, color: css("--hi") }], pts: full() ? [{ ax: pt.ax, ay: pt.ay, v: gf.v, color: css("--hi") }] : [] };
+    });
     const slider = speedSlider(gf.v, v => { gf.v = v; drawPad(); });
+    const btns = h("div", { class: "steps", role: "group", "aria-label": "Carve the GGV" });
+    STEPS.forEach(([label], i) => { const b = h("button", { type: "button", text: label }); b.addEventListener("click", () => { step = i + 1; drawPad(); }); btns.append(b); });
     function drawForces() {   // cheap: runs on every pointer move
       pt = fbdPoint(gf.v, gf.ax10, gf.ay10);
       gf.ax10 = Math.round(pt.ax * 10); gf.ay10 = Math.round(pt.ay * 10);   // snap to the grid point shown
       dot.setAttribute("cx", pad.sx(-pt.ay)); dot.setAttribute("cy", pad.sy(pt.ax));
+      dot.setAttribute("visibility", full() ? "visible" : "hidden");
       const aero = FBD.aero[FBD.speeds_kph.indexOf(gf.v)], w = pt.w;
       sideView(side, { mg: CAR.mass_kg * G, dfF: aero.df_front, dfR: aero.df_rear, drag: aero.drag, NzF: w[0].Fz + w[1].Fz, NzR: w[2].Fz + w[3].Fz, FxF: w[0].Fx + w[1].Fx, FxR: w[2].Fx + w[3].Fx });
       topView(top, pt);
       renderGgvSrc(); g3.draw();
     }
-    function drawPad() {      // slice, dot and forces: speed change, presets, resize
-      const sl = sliceAt(baseRun, gf.v);
-      pad = ggvSlice(padBox, [{ slice: sliceAt(baseRun, VMIN3), color: css("--muted"), width: 1.25, dash: "4 3" }, { slice: sl, color: css("--hi"), width: 2.5, fill: css("--hi"), fillOpacity: 0.1 }], 250);
+    function drawPad() {      // steps, slice, dot and forces: speed change, steps, presets, resize
+      btns.querySelectorAll("button").forEach((b, i) => b.setAttribute("aria-pressed", String(i + 1 === step)));
+      caption.textContent = STEPS[step - 1][1];
+      const sl = sliceAt(cur(), gf.v), layers = [];
+      if (prev()) layers.push({ slice: sliceAt(prev(), gf.v), color: css("--muted"), width: 1.25, dash: "4 3" });
+      layers.push({ slice: sl, color: css("--hi"), width: 2.5, fill: css("--hi"), fillOpacity: 0.1 });
+      pad = ggvSlice(padBox, layers, 250);
       pad.svg.classList.add("pad");
       dot = svgEl("circle", { r: 7, fill: css("--hi"), stroke: "#fff", "stroke-width": 2.5 }, pad.svg);
       const svgP = pad.svg, P = pad;
       // x on the pad is lateral g turning right, so a left turn (ay > 0) is to the left.
       const move = e => { const r = svgP.getBoundingClientRect(); const [x, ax] = P.inv((e.clientX - r.left) * P.W / r.width, (e.clientY - r.top) * P.H / r.height); gf.ax10 = Math.round(ax * 10); gf.ay10 = Math.round(-x * 10); drawForces(); };
-      svgP.addEventListener("pointerdown", e => { e.preventDefault(); svgP.setPointerCapture(e.pointerId); move(e); svgP.onpointermove = move; });
+      svgP.addEventListener("pointerdown", e => {
+        e.preventDefault(); svgP.setPointerCapture(e.pointerId);
+        if (!full()) { step = STEPS.length; drawPad(); return; }   // forces only exist for the finished GGV
+        move(e); svgP.onpointermove = move;
+      });
       const stop = () => { svgP.onpointermove = null; };
       svgP.addEventListener("pointerup", stop); svgP.addEventListener("pointercancel", stop);
       read.textContent = `at ${gf.v} km/h:  ${sliceReadout(sl)}`;
+      forces.classList.toggle("dimmed", !full()); forcesNote.hidden = full();
       drawForces();
     }
     const PRE = [["Hard braking", 90, s => [Math.round(Math.min(...s.ax_min) * 10), 0]], ["Fast corner", 90, s => [0, Math.floor(s.ay[s.ay.length - 1] * 10)]],
       ["Corner exit", 50, s => { const i = Math.round(s.ay.length * 0.6); return [Math.floor(s.ax_max[i] * 10), Math.floor(s.ay[i] * 10)]; }], ["Full throttle", 30, s => [Math.floor(s.ax_max[0] * 10), 0]]];
     const preBox = h("div", { class: "ctl" });
-    PRE.forEach(([name, v, f]) => { const b = h("button", { class: "tb sm", type: "button", text: name }); b.addEventListener("click", () => { gf.v = v; slider.set(v); [gf.ax10, gf.ay10] = f(sliceAt(baseRun, v)); drawPad(); }); preBox.append(b); });
+    PRE.forEach(([name, v, f]) => { const b = h("button", { class: "tb sm", type: "button", text: name }); b.addEventListener("click", () => { step = STEPS.length; gf.v = v; slider.set(v); [gf.ax10, gf.ay10] = f(sliceAt(baseRun, v)); drawPad(); }); preBox.append(b); });
     out.append(h("div", { class: "ctl" }, slider, preBox),
-      h("div", { class: "row halves" }, h("div", { class: "stack" }, cv, h("span", { class: "hint", text: "Drag to rotate." })), padBox),
+      btns, caption,
+      h("div", { class: "row halves" }, h("div", { class: "stack" }, cv, h("span", { class: "hint", text: "Drag to rotate. Dashed: the step before." })), padBox),
       read,
-      h("div", { class: "row fbd" }, h("div", { style: "max-width:300px;width:100%;justify-self:center" }, top), h("div", {}, side)),
+      forcesNote, forces,
       legend([["weight", css("--ink")], ["wing force", css("--accent")], ["ground support", css("--f-ground")], ["tyre force", css("--f-tyre")], ["acceleration", css("--hi")], ["grip ellipse (red at 100%)", css("--brk"), "area"]]),
-      why("Inside the shape is possible; outside it the tyres slide. Each ring is one speed; faster rings are wider because the wings press the car down harder. To build it, the model shifts weight between the tyres (forwards when braking, outwards in a corner), adds the wing forces, and asks how much force each tyre can still give: up to its ellipse, which grows with the load on it. The edge of the shape is where the tyres reach 100%. The top is flat because only the rear wheels drive."));
+      why("Inside the shape is possible; outside it the tyres slide. Steps ① to ⑦ build it up from the tyres alone, adding one physical limit at a time, each computed by the real model with the later limits switched off. Each ring is one speed. To find each point, the model shifts weight between the tyres, adds the wing forces, and asks how much force each tyre can still give: up to its ellipse, which grows with the load on it."));
     onRedraw(padBox, drawPad);
     drawPad();
   },
