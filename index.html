@@ -587,16 +587,16 @@ function ringPts(sl) {   // closed envelope: top edge left→right, bottom edge 
   for (let i = 1; i < sl.ay.length; i++) p.push([-sl.ay[i], sl.ax_min[i]]);
   return p;
 }
-function ggvSlice(box, layers, maxH = 300) {
+function ggvSlice(box, layers, maxH = 300, yRange = [-2.2, 1.3]) {
   box.replaceChildren();
-  const W = Math.max(220, box.clientWidth), gx = [-2.3, 2.3], gy = [-2.2, 1.3], m = { l: 36, r: 6, t: 14, b: 24 };
+  const W = Math.max(220, box.clientWidth), gx = [-2.3, 2.3], gy = yRange, m = { l: 36, r: 6, t: 14, b: 24 };
   const k = Math.min((W - m.l - m.r) / (gx[1] - gx[0]), maxH / (gy[1] - gy[0]));
   const Hh = Math.round(k * (gy[1] - gy[0]) + m.t + m.b), ox = (W - m.l - m.r - k * (gx[1] - gx[0])) / 2;
   const svg = svgEl("svg", { viewBox: `0 0 ${W} ${Hh}`, height: Hh }, box);
   const sx = v => m.l + ox + (v - gx[0]) * k, sy = v => m.t + (gy[1] - v) * k;
   const ax = svgEl("g", { class: "ax" }, svg);
   for (let v = -2; v <= 2; v++) { svgEl("line", { x1: sx(v), x2: sx(v), y1: sy(gy[0]), y2: sy(gy[1]), class: "gridline" }, ax); svgText(ax, sx(v), Hh - 7, v ? `${Math.abs(v)} g` : "0", { "text-anchor": "middle" }); }
-  for (let v = -2; v <= 1; v++) { svgEl("line", { x1: sx(gx[0]), x2: sx(gx[1]), y1: sy(v), y2: sy(v), class: "gridline" }, ax); svgText(ax, sx(gx[0]) - 4, sy(v) + 4, v ? `${Math.abs(v)} g` : "0", { "text-anchor": "end" }); }
+  for (let v = Math.ceil(gy[0]); v <= Math.floor(gy[1]); v++) { svgEl("line", { x1: sx(gx[0]), x2: sx(gx[1]), y1: sy(v), y2: sy(v), class: "gridline" }, ax); svgText(ax, sx(gx[0]) - 4, sy(v) + 4, v ? `${Math.abs(v)} g` : "0", { "text-anchor": "end" }); }
   const lab = (x, y, t, a) => svgText(svg, x, y, t, { "text-anchor": a, fill: css("--ink-2"), "font-size": 11 });
   lab(sx(0), sy(gy[1]) + 2, "accelerate ↑", "middle"); lab(sx(0), sy(gy[0]) - 4, "brake ↓", "middle");
   lab(sx(gx[1]), sy(gy[1]) + 2, "turn →", "end"); lab(sx(gx[0]), sy(gy[1]) + 2, "← turn", "start");
@@ -884,7 +884,8 @@ function vChart(box, o) {
     for (let i = 0; i < V.length; i++) { if (hi[i] == null || lo[i] == null) flush(); else run.push(i); }
     flush(); return d;
   };
-  const linePath = arr => { let d = "", pen = false; arr.forEach((g, i) => { if (g == null) { pen = false; return; } d += (pen ? "L" : "M") + sx(V[i]).toFixed(1) + "," + sy(Math.max(y0, Math.min(y1, g))).toFixed(1); pen = true; }); return d; };
+  // A line that runs off the chart is not drawn there (drawing it along the edge would look like a real flat limit).
+  const linePath = arr => { let d = "", pen = false; arr.forEach((g, i) => { if (g == null || g > y1 || g < y0) { pen = false; return; } d += (pen ? "L" : "M") + sx(V[i]).toFixed(1) + "," + sy(g).toFixed(1); pen = true; }); return d; };
   if (o.fill) svgEl("path", { d: poly(o.fill.top, o.fill.bot), fill: o.fill.color, "fill-opacity": 0.1 }, svg);
   for (const b of o.bands || []) svgEl("path", { d: poly(b.hi, b.lo), fill: b.color, "fill-opacity": 0.28 }, svg);
   for (const s of o.series) svgEl("path", { d: linePath(s.y), fill: "none", stroke: s.color, "stroke-width": s.width || 2, "stroke-dasharray": s.dash || "", "stroke-opacity": s.opacity || 1, "stroke-linejoin": "round" }, svg);
@@ -916,6 +917,7 @@ function edgeBands(prev, cur, sign, cutColor, grownColor) {
   return [cut, grown];
 }
 
+const CARVE_Y = [-2.3, 2.3];   // g, the deep dive's slice: early steps reach well above 1.3 g
 const CARVE_CIRC = "①②③④⑤⑥⑦", peakT = CAR.peak_torque_Nm;
 const CARVE_INFO = {
   grip: { name: "Tyre grip", law: "|a| ≤ μ·g", call: v => `tyre_grip(mu=${v.toFixed(2)})`, what: "μ", fmt: v => v.toFixed(2),
@@ -1080,14 +1082,14 @@ const CELLS = {
       const pv = prevData(), cur = sliceInterp(disp, speed), layers = [];
       if (pv) layers.push({ slice: sliceInterp(pv, speed), color: PREV, width: 1.25, dash: "4 3" });
       layers.push({ slice: cur, color: NOW, width: 2.25, fill: NOW, fillOpacity: 0.1 });
-      const s = ggvSlice(topBox, layers, 230);
+      const s = ggvSlice(topBox, layers, 230, CARVE_Y);
       const quad = q => "M" + q.map(([x, y]) => `${s.sx(x).toFixed(1)},${s.sy(y).toFixed(1)}`).join("L") + "Z";
       if (pv) {
         const { cut, grown } = shaveQuads(sliceInterp(pv, speed), cur);
         svgEl("path", { d: cut.map(quad).join(""), fill: CUT, "fill-opacity": 0.3 }, s.svg);
         svgEl("path", { d: grown.map(quad).join(""), fill: GROWN, "fill-opacity": 0.3 }, s.svg);
       } else {   // step ①: everything outside the circle is cut away
-        const [x0, y0] = [-2.3, -2.2], [x1, y1] = [2.3, 1.3];
+        const [x0, y0] = [-2.3, CARVE_Y[0]], [x1, y1] = [2.3, CARVE_Y[1]];
         const rect = `M${s.sx(x0)},${s.sy(y0)}L${s.sx(x1)},${s.sy(y0)}L${s.sx(x1)},${s.sy(y1)}L${s.sx(x0)},${s.sy(y1)}Z`;
         svgEl("path", { d: rect + s.ringD(cur), fill: CUT, "fill-opacity": 0.12, "fill-rule": "evenodd" }, s.svg);
       }
