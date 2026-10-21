@@ -916,6 +916,40 @@ function edgeBands(prev, cur, sign, cutColor, grownColor) {
   return [cut, grown];
 }
 
+const CARVE_CIRC = "①②③④⑤⑥⑦", peakT = CAR.peak_torque_Nm;
+const CARVE_INFO = {
+  grip: { name: "Tyre grip", law: "|a| ≤ μ·g", call: v => `tyre_grip(mu=${v.toFixed(2)})`, what: "μ", fmt: v => v.toFixed(2),
+    text: "Every tyre can give at most μ times the load on it, in any direction. Everything outside that circle is cut away, at every speed." },
+  downforce: { name: "Downforce", law: "F = ½ρ·C_L·A·v²", call: v => `downforce(C_L=${v.toFixed(1)})`, what: "C_L", fmt: v => v.toFixed(1),
+    text: "The wings press the tyres into the road harder as speed rises, so the shape grows with speed squared." },
+  transfer: { name: "Weight transfer", law: "ΔFz = m·a·h / L", call: v => `weight_transfer(h=${v.toFixed(2)})`, what: "CoG height (m)", fmt: v => v.toFixed(2),
+    text: "Accelerating, braking and cornering move load between the tyres, more for a higher centre of gravity. A tyre gives a little less grip per newton the harder it is pressed." },
+  drive: { name: "Driven wheels", law: "only driven tyres push", call: v => `driven_wheels("${v}")`, what: "driven wheels", fmt: v => v,
+    text: "Only the driven tyres can push the car forward, so the top of the shape drops. Braking still uses all four." },
+  motor: { name: "Motor torque", law: "F ≤ T·G·η / r", call: v => `motor(torque=${Math.round(peakT * v)})`, what: "peak torque (Nm)", fmt: v => String(Math.round(peakT * v)),
+    text: "The motor and gearbox can only deliver so much force. Ours delivers more than the rear tyres can grip, so it cuts nothing. Try less torque." },
+  power: { name: "Power limit", law: "F ≤ P·η / v", call: v => `power_limit(kW=${Math.round(v)})`, what: "power (kW)", fmt: v => String(Math.round(v)),
+    text: "With fixed power, the force the motor can give falls as 1/v. FS rules allow 80 kW, so the top of the shape comes down at high speed." },
+  drag: { name: "Drag", law: "F = ½ρ·C_D·A·v²", call: v => `drag(C_D=${v.toFixed(1)})`, what: "C_D", fmt: v => v.toFixed(1),
+    text: "Air resistance always pulls backwards, more at high speed: less acceleration, more braking." },
+};
+
+// Deep-dive source: one physical law per line. step = 0 (before the cell runs) lists them all;
+// otherwise later laws are dimmed and this one is highlighted, with its "what if" value.
+function renderCarveSrc(step = 0, vi = null) {
+  const ST = D.carve.steps, pre = $("#carveSrc"); pre.replaceChildren();
+  const c = t => h("span", { class: "c", text: t }), v = t => h("span", { class: "v", text: t }), f = t => h("span", { class: "f", text: t });
+  pre.append(h("span", { class: "ln" }, c("# Deep dive: carve the GGV, one physical law at a time")));
+  pre.append(h("span", { class: "ln" }, v("ggv"), " = ", f("GGV"), "()", " ".repeat(29), c("# anything goes")));
+  ST.forEach((s, i) => {
+    const info = CARVE_INFO[s.key], call = info.call(i === step - 1 && vi != null ? s.values[vi] : s.base);
+    const ln = h("span", { class: "ln" + (i + 1 === step ? " on" : "") }, v("ggv"), ".", f("add"), "(", call, ")", " ".repeat(Math.max(1, 30 - call.length)), c(`# ${CARVE_CIRC[i]} ${info.law}`));
+    if (step && i + 1 > step) ln.style.opacity = "0.35";
+    pre.append(ln);
+  });
+}
+renderCarveSrc();
+
 // ---------- cells ----------
 const why = text => h("details", { class: "why" }, h("summary", { text: "Why?" }), h("p", { text }));
 const stdout = (text, cls = "") => h("pre", { class: "stdout " + cls, text });
@@ -1007,23 +1041,7 @@ const CELLS = {
     // Deep dive: the GGV carved one physical law at a time. Every shape is the real model with
     // only the laws so far switched on (and this step's number set by the "what if" slider).
     const C = D.carve, V = C.v_kph, ST = C.steps, N = ST.length;
-    const CIRC = "①②③④⑤⑥⑦", peakT = CAR.peak_torque_Nm;
-    const INFO = {
-      grip: { name: "Tyre grip", law: "|a| ≤ μ·g", call: v => `tyre_grip(mu=${v.toFixed(2)})`, what: "μ", fmt: v => v.toFixed(2),
-        text: "Every tyre can give at most μ times the load on it, in any direction. Everything outside that circle is cut away, at every speed." },
-      downforce: { name: "Downforce", law: "F = ½ρ·C_L·A·v²", call: v => `downforce(C_L=${v.toFixed(1)})`, what: "C_L", fmt: v => v.toFixed(1),
-        text: "The wings press the tyres into the road harder as speed rises, so the shape grows with speed squared." },
-      transfer: { name: "Weight transfer", law: "ΔFz = m·a·h / L", call: v => `weight_transfer(h=${v.toFixed(2)})`, what: "CoG height (m)", fmt: v => v.toFixed(2),
-        text: "Accelerating, braking and cornering move load between the tyres, more for a higher centre of gravity. A tyre gives a little less grip per newton the harder it is pressed." },
-      drive: { name: "Driven wheels", law: "only driven tyres push", call: v => `driven_wheels("${v}")`, what: "driven wheels", fmt: v => v,
-        text: "Only the driven tyres can push the car forward, so the top of the shape drops. Braking still uses all four." },
-      motor: { name: "Motor torque", law: "F ≤ T·G·η / r", call: v => `motor(torque=${Math.round(peakT * v)})`, what: "peak torque (Nm)", fmt: v => String(Math.round(peakT * v)),
-        text: "The motor and gearbox can only deliver so much force. Ours delivers more than the rear tyres can grip, so it cuts nothing. Try less torque." },
-      power: { name: "Power limit", law: "F ≤ P·η / v", call: v => `power_limit(kW=${Math.round(v)})`, what: "power (kW)", fmt: v => String(Math.round(v)),
-        text: "With fixed power, the force the motor can give falls as 1/v. FS rules allow 80 kW, so the top of the shape comes down at high speed." },
-      drag: { name: "Drag", law: "F = ½ρ·C_D·A·v²", call: v => `drag(C_D=${v.toFixed(1)})`, what: "C_D", fmt: v => v.toFixed(1),
-        text: "Air resistance always pulls backwards, more at high speed: less acceleration, more braking." },
-    };
+    const INFO = CARVE_INFO, CIRC = CARVE_CIRC;
     const CUT = css("--brk"), GROWN = css("--f-ground"), NOW = css("--hi"), PREV = css("--muted");
     const baseIdx = i => ST[i].values.indexOf(ST[i].base);
     let step = 1, vi = baseIdx(0), speed = 60, hoverV = null, anim = 0, auto = null;
@@ -1033,19 +1051,7 @@ const CELLS = {
     const lineIdx = (k, i) => (step === k + 1 ? vi : baseIdx(k));   // a limit line follows "what if" only on its own step
     const tyresLine = ST[3].data[baseIdx(3)].prof.ax_max;            // rear tyres alone (step ④)
 
-    // --- source: one physical law per line; later laws dimmed, this one highlighted
-    function renderSrc() {
-      const pre = $("#carveSrc"); pre.replaceChildren();
-      const c = t => h("span", { class: "c", text: t }), v = t => h("span", { class: "v", text: t }), f = t => h("span", { class: "f", text: t });
-      pre.append(h("span", { class: "ln" }, c("# Deep dive: carve the GGV, one physical law at a time")));
-      pre.append(h("span", { class: "ln" }, v("ggv"), " = ", f("GGV"), "()", " ".repeat(29), c("# anything goes")));
-      ST.forEach((s, i) => {
-        const info = INFO[s.key], call = info.call(i === step - 1 ? s.values[vi] : s.base);
-        const ln = h("span", { class: "ln" + (i + 1 === step ? " on" : "") }, v("ggv"), ".", f("add"), "(", call, ")", " ".repeat(Math.max(1, 30 - call.length)), c(`# ${CIRC[i]} ${info.law}`));
-        if (i + 1 > step) ln.style.opacity = "0.35";
-        pre.append(ln);
-      });
-    }
+    const renderSrc = () => renderCarveSrc(step, vi);
 
     // --- controls
     const btns = h("div", { class: "steps", role: "group", "aria-label": "Carving step" });
@@ -1508,6 +1514,7 @@ $("#resetAll").addEventListener("click", () => {
   ran.clear(); execCount = 0; if (wb.race) wb.race.pause();
   Object.assign(setup, D.baseline_setup); syncForm(); renderFormSrc();
   document.querySelectorAll("#passSrc .ln").forEach(l => l.classList.remove("on"));
+  renderCarveSrc();
   document.querySelectorAll(".cell.code").forEach(c => { $(".out", c).replaceChildren(); $(".out", c).hidden = true; $(".count", c).textContent = "[ ]"; c.classList.add("fresh"); });
   window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
 });
