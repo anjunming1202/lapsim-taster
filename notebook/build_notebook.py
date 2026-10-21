@@ -23,7 +23,8 @@ def code(text, hidden_title=None):
     meta = {}
     if hidden_title:
         src = f'# @title {hidden_title} {{ display-mode: "form" }}\n' + src
-        meta = {"cellView": "form"}
+        # Colab shows a form cell as its title only; Jupyter and VS Code fold its code with source_hidden.
+        meta = {"cellView": "form", "jupyter": {"source_hidden": True}}
     cells.append({"cell_type": "code", "metadata": meta, "execution_count": None, "outputs": [], "source": src})
 
 
