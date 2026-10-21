@@ -35,6 +35,28 @@ Cells depend on each other the way a real notebook does: running cell 4 before c
 
 Short on time: in cell 3 skip the force presets, and in cell 4 go straight to ④.
 
+## Running a 30-minute session (lab PCs, 5–6 people)
+
+| Time | Do |
+|---|---|
+| 0–10 min | The page, as in the 10-minute route: cells 1, 3, 4 (press ① to ④) and 5. |
+| 10–25 min | Everyone opens **Hands-on notebook** (top right of the page, or the link below) on a lab PC, in pairs, and writes part of the car model and the lap algorithm. |
+| 25–30 min | Compare lap times with our sim's 57.45 s, and open *What would you improve?* on the page. |
+
+Notebook: <https://colab.research.google.com/github/anjunming1202/lapsim-taster/blob/main/notebook/lapsim_handson.ipynb> (needs a Google account to run).
+
+Most of the car model is given, one line of physics each, for them to read. They write four pieces:
+
+| Exercise | Writes | Idea | Minutes |
+|---|---|---|---|
+| 1 | `max_accel(v)` | rear tyres, motor and power each set a limit; the car gets the smallest, minus drag | 3 |
+| 2 | `backward_pass` | mirror the given forward pass: brake, working back from the finish | 5 |
+| 3 | `lap_time`, `np.minimum` | the lap is the lower curve; time is Σ distance ÷ speed. First result: 54.6 s, 5% fast | 2 |
+| 4 | `grip_share` (friction ellipse) | one line of physics: 57.9 s, within 0.5 s of our sim | 3 |
+| Challenge | `max_accel_with_transfer` | weight transfer: solve for a when it is on both sides; 56.9 s | for fast pairs |
+
+Every exercise has a check that says what is wrong, and a hidden solution to run when stuck, so nobody gets left behind. Edit the notebook through `notebook/build_notebook.py` (see its docstring).
+
 **Run all** in the header fills every cell at once, for anyone who arrives late. **Reset** clears the outputs for the next group.
 
 ## Where the numbers come from

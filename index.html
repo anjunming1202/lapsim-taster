@@ -59,11 +59,12 @@ a { color: var(--accent); }
 .tb { border: 1px solid var(--line); background: var(--page); border-radius: 18px; padding: 6px 14px; cursor: pointer; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
 .tb:hover { background: var(--code-bg); }
 .tb.sm { padding: 3px 10px; font-size: 13px; }
+a.tb { text-decoration: none; color: var(--ink); }
 .tb.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
 .tb.primary:hover { background: #1765cc; }
 .chip { font: 400 12px/1 var(--f-code); color: var(--ink-2); display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
 .chip i { width: 8px; height: 8px; border-radius: 50%; background: var(--acc); }
-@media (max-width: 620px) { .chip, .fname small { display: none; } .tb { padding: 6px 10px; } }
+@media (max-width: 620px) { .chip, .fname small, #handsOn { display: none; } .tb { padding: 6px 10px; } }
 
 /* notebook */
 .nb { max-width: 1080px; margin: 0 auto; padding: 18px max(16px, env(safe-area-inset-right)) 64px max(16px, env(safe-area-inset-left)); display: grid; gap: 14px; }
@@ -247,6 +248,7 @@ svg text { font-family: var(--f-code); }
     <div class="fname">lapsim_taster.ipynb<small>Oxford University Racing · Simulation</small></div>
     <span class="sp"></span>
     <span class="chip" id="chip"><i></i><span></span></span>
+    <a class="tb" id="handsOn" href="https://colab.research.google.com/github/anjunming1202/lapsim-taster/blob/main/notebook/lapsim_handson.ipynb" target="_blank" rel="noopener">Hands-on notebook</a>
     <button class="tb" type="button" id="resetAll">Reset</button>
     <button class="tb primary" type="button" id="runAll">▶ Run all</button>
   </div>
