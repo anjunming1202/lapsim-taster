@@ -63,7 +63,9 @@ md("""
 
 A lap sim is two things: a **model** of what the car can do, and an **algorithm** that applies it to every slice of track. The track is a list of 1 m slices, each with a curvature κ = 1 / (bend radius).
 
-Most of the model is written for you. Read it: every line is one piece of physics. Units are SI (m, s, kg, N); speeds are in m/s.
+Most of the model is written for you: run the next two cells and read them. Units are SI (m, s, kg, N); speeds are in m/s.
+
+First, our car's numbers:
 """)
 code("""
 m, g = 360.0, 9.81                 # mass with driver (kg), gravity (m/s²)
@@ -72,7 +74,11 @@ rho, A = 1.162, 0.72               # air density (kg/m³), reference area (m²)
 CL, CD = 2.0, 1.0                  # downforce and drag coefficients
 P, eta = 80e3, 0.92                # power limit (W, FS rules), drivetrain efficiency
 T, G, r = 255.0, 3.58, 0.2032      # motor torque (Nm), gear ratio, tyre radius (m)
-
+""")
+md("""
+Then the physics, one function each: what the wings do, and how hard the car can turn and brake.
+""")
+code("""
 def downforce(v):                  # the wings push the car down, more at speed: ½ρ·CL·A·v²
     return 0.5 * rho * CL * A * v**2
 
@@ -224,9 +230,9 @@ md("""
 
 A tyre cannot give full grip sideways **and** full grip forwards at the same time. If a fraction
 
-$$f = \\frac{v^2\\,|\\kappa|}{\\text{max\\_lateral}(v)}$$
+$$f = \\frac{v^2\\,|\\kappa|}{a_{\\text{lat,max}}(v)}$$
 
-of the grip is already used for turning, only $\\sqrt{1 - f^2}$ of it is left for accelerating or braking. Write `grip_share`, then run the simulation again: your forward and backward passes already use it.
+of the grip is already used for turning ($a_{\\text{lat,max}}$ is `max_lateral(v)` from part 1), only $\\sqrt{1 - f^2}$ of it is left for accelerating or braking. Write `grip_share`, then run the simulation again: your forward and backward passes already use it.
 """)
 code("""
 def grip_share(v, kappa):
